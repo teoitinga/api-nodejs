@@ -193,7 +193,7 @@ async function class_00(req, res, next) {
     nivel_minimo = 0;
 
     next();
-}
+} 
 module.exports = {
     class_10, 
     class_06, 
