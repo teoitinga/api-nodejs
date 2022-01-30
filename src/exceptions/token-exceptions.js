@@ -37,6 +37,7 @@ const NotAuthorizedException = class NotAuthorizedException {
         this.stack = (new Error()).stack;
     }
 }
+
 module.exports = {
     TokenException,
     NotAuthorizedException,
