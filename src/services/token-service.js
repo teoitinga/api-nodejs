@@ -194,8 +194,9 @@ async function class_00(req, res, next) {
 
     next();
 } 
+
 module.exports = {
-    class_10, 
+    class_10,
     class_06, 
     class_03,
     class_02,
