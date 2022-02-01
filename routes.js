@@ -5,12 +5,8 @@ const routes = express.Router();
 
 const jwt = require('jsonwebtoken');
 const {
-    class_10,
-    class_06,
-    class_03,
-    class_02,
-    class_01,
-    class_00
+    class_0,
+    class_10
 } = require('./src/services/token-service');
 
 //Definição de controllers
@@ -18,20 +14,35 @@ const {
  * Rotas de Login
  */
 const LoginController = require('./src/controllers/login-controller');
-logincontroller = new LoginController();
+const logincontroller = new LoginController();
 
-routes.post('/api/v1/users/login', class_00, logincontroller.login);
-routes.post('/api/v1/users', class_06, logincontroller.create);
-routes.get('/api/v1/users', class_06, logincontroller.findall);
+const apiUserPath = '/api/v1/users';
+
+routes.post(`${apiUserPath}/login`, class_0, logincontroller.login);
+routes.post(`${apiUserPath}`, class_10, logincontroller.create);
+routes.get(`${apiUserPath}`, class_10, logincontroller.findall);
 
 /**
  * Rotas de Roles
  */
 const RoleController = require('./src/controllers/role-controller');
-rolecontroller = new RoleController();
+const rolecontroller = new RoleController();
 
-routes.post('/api/v1/roles', class_10, rolecontroller.create);
-routes.get('/api/v1/roles', class_00, rolecontroller.findall);
+const apiRolePath = '/api/v1/roles';
+
+routes.post(apiRolePath, class_10, rolecontroller.create);
+routes.get(apiRolePath, class_10, rolecontroller.findall);
+
+/**
+ * Rotas de Contracts
+ */
+const ContractController = require('./src/controllers/contract-controller');
+const contractcontroller = new ContractController();
+
+const apiContractPath = '/api/v1/contracts';
+
+routes.post(apiContractPath, class_10, contractcontroller.create);
+routes.get(apiContractPath, class_10, contractcontroller.findall);
 
 
 module.exports = routes;

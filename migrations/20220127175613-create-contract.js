@@ -22,7 +22,7 @@ module.exports = {
       },
       ps: {
         type: Sequelize.STRING
-      },
+      }, 
       expiresDate: {
         allowNull: false,
         type: Sequelize.DATE

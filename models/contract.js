@@ -1,10 +1,10 @@
 const { Model, DataTypes } = require('sequelize');
 
 class Contract extends Model {
-
+   
   static init(connection) {
     super.init({
-      payment: DataTypes.STRING,
+      payment: DataTypes.NUMBER,
       quota: DataTypes.INTEGER,
       partner_id: DataTypes.STRING,
       ps: DataTypes.STRING,

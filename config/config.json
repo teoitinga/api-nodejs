@@ -1,5 +1,5 @@
 {
-  "production": {
+  "development": {
     "username": "esloctaru",
     "password": "#H0864#@",
     "database": "smart",
@@ -10,7 +10,18 @@
       "underscored": false
     }
   },
-  "development": {
+  "local": {
+    "username": "esloctaru",
+    "password": "#H0864#@",
+    "database": "smart",
+    "host": "45.174.40.217",
+    "dialect": "mysql",
+    "define": {
+      "timestamps": true,
+      "underscored": false
+    }
+  },
+  "production": {
     "username": "3conn",
     "password": "$2a$12$fDM90eiqN5gXQfJAAecPFOzplJnPnp5I9TgI174r2Rh3LYsoyJ4Hm",
     "database": "smart",

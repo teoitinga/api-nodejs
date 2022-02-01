@@ -71,21 +71,21 @@ class UserService {
         });
 
         //Verifica se a senha é válida
-
+ 
         if (!usuario) {
-            throw new UserErrorException(500, 'Usuários não existe/Senha está incorreto.')
+            throw new UserErrorException(401, 'Usuários não existe/Senha está incorreto.')
         }
 
         if (!(await this._passworValid(password, usuario.password))) {
-            throw new UserErrorException(500, 'Usuários/Senha está incorreto.')
+            throw new UserErrorException(401, 'Usuários/Senha está incorreto.')
         }
         //verifica se o usuario está ativo
         if (usuario.lockedDate) {
-            throw new UserErrorException(500, 'Usuário está bloqueado para uso nesta plataforma. Verifique com o superior imediato.')
+            throw new UserErrorException(401, 'Usuário está bloqueado para uso nesta plataforma. Verifique com o superior imediato.')
         }
         //verifica se o usuario não está expirado
         if (!(await this._isExpired(usuario.expiresDate))) {
-            throw new UserErrorException(500, 'Seu cadastro expirou, portanto não poderá acessar esta plataforma. Verifique com o superior imediato.')
+            throw new UserErrorException(401, 'Seu cadastro expirou, portanto não poderá acessar esta plataforma. Verifique com o superior imediato.')
         }
         //Rotina de Verificações da Divisão correspondente
 

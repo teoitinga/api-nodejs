@@ -7,42 +7,50 @@ const roleService = new RoleService();
 const {
     TokenException,
     NotAuthorizedException,
-    TokenIsExpired
+    TokenIsExpired,
+    TokenHeaderException
 } = require('../exceptions/token-exceptions')
 
 let user = undefined;
 
-async function _decodetoken(auth) {
+async function _decodetoken(req) {
+    const authorization = req.headers.authorization;
 
     let usertoken = undefined;
 
-    if (!auth) {
-        return false;
+    if (!authorization) {
+        return undefined;
     }
 
-    const token = auth.split(' ')[1];
+    const token = authorization.split(' ')[1];
 
     await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (!err) {
             usertoken = user;
         }
-        else{
-            console.log(err);
+        else {
+            return false;
         }
     })
     return usertoken;
 }
 
 async function class_10(req, res, next) {
+    _class_level_access(req, res, next, 8);
+}
+async function class_0(req, res, next) {
+    next();
+}
+async function _class_level_access(req, res, next, level = 1) {
 
-    nivel_minimo = 10;
+    nivel_minimo = level;
 
-    const user = await _decodetoken(req.headers.authorization);
+    const user = await _decodetoken(req)
 
     //verifica o token
-    
+
     if (!user) {
-        return res.status(401).json(new TokenException(401, 'Invalid Token.'));
+        res.status(401).json(new TokenHeaderException(401));
     }
 
     const expired = moment().isBefore(user.expiresIn);
@@ -57,149 +65,15 @@ async function class_10(req, res, next) {
 
     //Verifica se a permissão e comativel - classe de permissão menor ou igual
     if (classe < nivel_minimo) {
-        //throw new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.');
         return res.status(403).json(new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.'));
-
     }
-
+    req.user = user;
+    console.log('Usuário logado');
+    console.log(req.user);
     next();
 }
-async function class_06(req, res, next) {
-
-    nivel_minimo = 6;
-
-    const user = await _decodetoken(req.headers.authorization);
-
-    //verifica o token
-    
-    if (!user) {
-        return res.status(401).json(new TokenException(401, 'Invalid Token.'));
-    }
-
-    const expired = moment().isBefore(user.expiresIn);
-
-    if (!expired) {
-        return res.status(401).json(new TokenIsExpired(401, 'Sua credendial expirou.'));
-    }
-
-    //confere a classe da permissão do usuario
-    const role = await roleService.findOne(user.role_id);
-    const classe = role.class;
-
-    //Verifica se a permissão e comativel - classe de permissão menor ou igual
-    if (classe < nivel_minimo) {
-        //throw new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.');
-        return res.status(403).json(new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.'));
-
-    }
-
-    next();
-}
-async function class_03(req, res, next) {
-
-    nivel_minimo = 3;
-
-    const user = await _decodetoken(req.headers.authorization);
-
-    //verifica o token
-    
-    if (!user) {
-        return res.status(401).json(new TokenException(401, 'Invalid Token.'));
-    }
-
-    const expired = moment().isBefore(user.expiresIn);
-
-    if (!expired) {
-        return res.status(401).json(new TokenIsExpired(401, 'Sua credendial expirou.'));
-    }
-
-    //confere a classe da permissão do usuario
-    const role = await roleService.findOne(user.role_id);
-    const classe = role.class;
-
-    //Verifica se a permissão e comativel - classe de permissão menor ou igual
-    if (classe < nivel_minimo) {
-        //throw new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.');
-        return res.status(403).json(new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.'));
-
-    }
-
-    next();
-}
-async function class_02(req, res, next) {
-
-    nivel_minimo = 2;
-
-    const user = await _decodetoken(req.headers.authorization);
-
-    //verifica o token
-    
-    if (!user) {
-        return res.status(401).json(new TokenException(401, 'Invalid Token.'));
-    }
-
-    const expired = moment().isBefore(user.expiresIn);
-
-    if (!expired) {
-        return res.status(401).json(new TokenIsExpired(401, 'Sua credendial expirou.'));
-    }
-
-    //confere a classe da permissão do usuario
-    const role = await roleService.findOne(user.role_id);
-    const classe = role.class;
-
-    //Verifica se a permissão e comativel - classe de permissão menor ou igual
-    if (classe < nivel_minimo) {
-        //throw new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.');
-        return res.status(403).json(new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.'));
-
-    }
-
-    next();
-}
-async function class_01(req, res, next) {
-
-    nivel_minimo = 1;
-
-    const user = await _decodetoken(req.headers.authorization);
-
-    //verifica o token
-    
-    if (!user) {
-        return res.status(401).json(new TokenException(401, 'Invalid Token.'));
-    }
-
-    const expired = moment().isBefore(user.expiresIn);
-
-    if (!expired) {
-        return res.status(401).json(new TokenIsExpired(401, 'Sua credendial expirou.'));
-    }
-
-    //confere a classe da permissão do usuario
-    const role = await roleService.findOne(user.role_id);
-    const classe = role.class;
-
-    //Verifica se a permissão e comativel - classe de permissão menor ou igual
-    if (classe < nivel_minimo) {
-        //throw new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.');
-        return res.status(403).json(new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.'));
-
-    }
-
-    next();
-}
-async function class_00(req, res, next) {
-
-    nivel_minimo = 0;
-
-    next();
-} 
 
 module.exports = {
     class_10,
-    class_06, 
-    class_03,
-    class_02,
-    class_01,
-    class_00,
+    class_0
 };
