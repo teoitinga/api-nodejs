@@ -73,11 +73,11 @@ class UserService {
         //Verifica se a senha é válida
  
         if (!usuario) {
-            throw new UserErrorException(401, 'Usuários não existe/Senha está incorreto.')
+            throw new UserErrorException(401, 'Usuários/Senha não existe ou está incorreto.')
         }
 
         if (!(await this._passworValid(password, usuario.password))) {
-            throw new UserErrorException(401, 'Usuários/Senha está incorreto.')
+            throw new UserErrorException(401, 'Usuários/Senha incorreta.')
         }
         //verifica se o usuario está ativo
         if (usuario.lockedDate) {
