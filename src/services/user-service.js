@@ -11,23 +11,33 @@ const roleService = new RoleService();
 
 const { ServerErrorException } = require('../exceptions/server-exception');
 const { UserErrorException } = require('../exceptions/user-exception');
+const { RoleErrorException } = require('../exceptions/role-exception');
 
 const Token = require('../dtos/token');
 
 class UserService {
     async create(request) {
         const user = request.body;
-        
+
         const salt = process.env.BRCRYPT_SECRET;
-        const passHashed = await brcrypt.hash(user.password, salt);
+
+        console.log(salt);
+        const passHashed = await brcrypt.hash(user.password, 10, salt)
+            .then(function onSuccess(data) {
+                return data;
+            })
+            .catch(function onError(error) {
+                throw new ServerErrorException(500, e);
+            });
 
         user.id = uuid.v4().toUpperCase();
-        user.expiresDate = moment().add(1, 'months');
+        user.expiresDate = moment().utc().add(1, 'months');
         user.createdby = request.user.id;
-        user.created = moment();
+        user.created = moment().utc();
         user.password = passHashed;
 
         const role = await this._checkRole(user.role_id);
+
         user.role_id = role;
 
         try {
@@ -43,19 +53,19 @@ class UserService {
     }
     async findall() {
 
-        try{
-    
+        try {
+
             const users = await UserModel.findAll();
 
             let dto = [];
-            users.map(async function(user){
+            users.map(async function (user) {
                 dto.push(await new UserDto(user).obj);
             });
 
             return dto;
-    
-        }catch(e){
-            throw new RoleErrorException(500, 'A permissão que você informou não existe no banco de dados.');
+
+        } catch (e) {
+            throw new ServerErrorException(404, 'Não há registros no banco de dados.');
         }
     }
     async login(user) {
@@ -71,13 +81,13 @@ class UserService {
         });
 
         //Verifica se a senha é válida
- 
+
         if (!usuario) {
-            throw new UserErrorException(401, 'Usuários/Senha não existe ou está incorreto.')
+            throw new UserErrorException('Usuários/Senha não existe ou está incorreto.')
         }
 
         if (!(await this._passworValid(password, usuario.password))) {
-            throw new UserErrorException(401, 'Usuários/Senha incorreta.')
+            throw new UserErrorException(404, 'Usuários/Senha incorreta.')
         }
         //verifica se o usuario está ativo
         if (usuario.lockedDate) {
@@ -91,8 +101,6 @@ class UserService {
 
         //Rotina de verificações da Empresa Correspondente
 
-
-
         //Retorna a informação do usuário logado
         let dto = await new UserDto(usuario.toJSON())
 
@@ -100,7 +108,7 @@ class UserService {
         token.obj.expiresIn = await moment().add(process.env.JWT_EXPIRES, 'minutes').toDate();
 
         const tk = jwt.sign(JSON.stringify(token.obj), process.env.JWT_SECRET);
-        return {token: tk};
+        return { token: tk };
     }
     /**
      * Função para conferir se o password é válido
@@ -118,7 +126,10 @@ class UserService {
     }
     async _checkRole(role_id) {
         const role = await roleService.findOne(role_id);
-        return role.id;
+        if (role)
+            return role.id;
+
+        throw new RoleErrorException(401, 'Permissão de usuário não reconhecida.')
     }
 }
 module.exports = UserService;

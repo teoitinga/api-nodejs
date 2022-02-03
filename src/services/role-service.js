@@ -22,7 +22,7 @@ class RoleService {
             let dto = await new RoleDto(role)
             return dto.obj;
         }catch(e){
-            throw new ServerErrorException(500, e.errors);
+            return new ServerErrorException(500, e.errors);
         }
     }
     async findOne(id){
@@ -50,7 +50,8 @@ class RoleService {
             return dto;
     
         }catch(e){
-            throw new RoleErrorException(500, 'A permissão que você informou não existe no banco de dados.');
+            console.log(e)
+            return new RoleErrorException(500, 'A permissão que você informou não existe no banco de dados.');
         }
     }
 }

@@ -5,7 +5,7 @@ const routes = require('../../routes');
 const Sequelize = require('../../config/index');
 
 require('dotenv').config()
-require('express-async-errors');
+//require('express-async-errors');
 
 module.exports = () => {
   const app = express();
@@ -38,6 +38,7 @@ module.exports = () => {
 
   //Routes
   app.use(routes);
+
 
   return app;
 };

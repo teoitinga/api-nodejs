@@ -13,7 +13,7 @@ module.exports = class Token {
         this.contact = obj.contact;
         this.address = obj.address;
         this.city = obj.city;
-        this.expiresIn = moment().add(process.env.JWT_EXPIRES, 'minutes').toDate();
+        this.expiresIn = moment().utc().add(process.env.JWT_EXPIRES, 'minutes').toDate();
     }
 
 }

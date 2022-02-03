@@ -4,14 +4,26 @@ const RoleErrorException = class RoleErrorException extends Error {
      * @param {number} status 
      * @param {string} message 
      */
-    constructor(status, message) {
-        super(message);
-        this.status = status || 500;
-        this.message = message || 'Erro ao registrar permissão.';
+    constructor(message) {
+        super(message)
+        this.status = 500;
         this.name = 'Erro no informar permissão.';
-        this.stack = (new Error()).stack;
+    }
+}
+
+const RoleNotFoundException = class RoleNotFoundException extends Error {
+    /**
+     * Trata Erros do Servidor
+     * @param {number} status 
+     * @param {string} message 
+     */
+    constructor(message) {
+        super(message)
+        this.status = 500;
+        this.name = 'Permissão nã reconhecida por este sistema.';
     }
 }
 module.exports = {
-    RoleErrorException
+    RoleErrorException,
+    RoleNotFoundException
 }

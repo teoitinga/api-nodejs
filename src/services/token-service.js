@@ -53,9 +53,13 @@ async function _class_level_access(req, res, next, level = 1) {
         res.status(401).json(new TokenHeaderException(401));
     }
 
-    const expired = moment().isBefore(user.expiresIn);
+    const dtatual = moment().utc();
+    const expiradt = user.expiresIn;
 
-    if (!expired) {
+    const dtExpires = moment.utc(expiradt);
+    const notExpired = dtExpires.isBefore(dtatual);
+
+     if (notExpired) {
         return res.status(401).json(new TokenIsExpired(401, 'Sua credendial expirou.'));
     }
 
