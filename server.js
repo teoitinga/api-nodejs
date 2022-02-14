@@ -3,5 +3,5 @@ const port = app.get('port');
 
 // RODANDO NOSSA APLICAÇÃO NA PORTA SETADA
 app.listen(port, () => {
-    console.log(`Server is runnig on port ${port}`)
+    console.log(`JP-Ares Server is runnig on port ${port}`)
 });

@@ -1,50 +1,68 @@
-const TokenException = class TokenException extends Error{
+const httpStatusCode = require('../exceptions/httpStatusCode');
+const ApiErrors = require('./api-error');
+
+const TokenException = class TokenException extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {number} status 
      * @param {string} message 
      */
     constructor(message) {
-        super(message)
-        this.status = 401;
-        this.name = 'Acesso não autorizado.';
-        this.message = message || 'Você não tem permissão para acessar esta URL.';
+        super({
+            name: 'Acesso não autorizado.',
+            message: message || 'Você não tem permissão para acessar esta URL.',
+            httpStatusCode: httpStatusCode.UNAUTHORIZED,
+            stack: (new Error()).stack
+        }
+        );
     }
 }
-const TokenHeaderException = class TokenHeaderException extends Error{
+const TokenHeaderException = class TokenHeaderException extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {number} status 
      * @param {string} message 
      */
     constructor(message) {
-        super(message);
-        this.status = 401;
-        this.name = 'Não há token válido.';
+        super({
+            name: 'Não há token válido.',
+            message: message,
+            httpStatusCode: httpStatusCode.UNAUTHORIZED,
+            stack: (new Error()).stack
+        }
+        );
     }
 }
-const TokenIsExpired = class TokenIsExpired  extends Error{
+const TokenIsExpired = class TokenIsExpired extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {number} status 
      * @param {string} message 
      */
     constructor(message) {
-        super(message);
-        this.status = 401;
-        this.name = 'Acesso não autorizado.';
+        super({
+            name: 'Acesso não autorizado.',
+            message: message,
+            httpStatusCode: httpStatusCode.UNAUTHORIZED,
+            stack: (new Error()).stack
+        }
+        );
     }
 }
-const NotAuthorizedException = class NotAuthorizedException extends Error {
+const NotAuthorizedException = class NotAuthorizedException extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {number} status 
      * @param {string} message 
      */
     constructor(message) {
-        super(message);
-        this.status = 401;
-        this.name = 'Acesso não autorizado.';
+        super({
+            name: 'Acesso não autorizado.',
+            message: message,
+            httpStatusCode: httpStatusCode.UNAUTHORIZED,
+            stack: (new Error()).stack
+        }
+        );
     }
 }
 

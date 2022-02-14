@@ -1,26 +1,36 @@
-const RoleErrorException = class RoleErrorException extends Error {
+const httpStatusCode = require('../exceptions/httpStatusCode');
+const ApiErrors = require('./api-error');
+
+const RoleErrorException = class RoleErrorException extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {number} status 
      * @param {string} message 
      */
     constructor(message) {
-        super(message)
-        this.status = 500;
-        this.name = 'Erro no informar permissão.';
+        super(
+            'Erro no informar permissão.',
+            message,
+            httpStatusCode.UNAUTHORIZED,
+            (new Error()).stack
+        );
+
     }
 }
 
-const RoleNotFoundException = class RoleNotFoundException extends Error {
+const RoleNotFoundException = class RoleNotFoundException extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {number} status 
      * @param {string} message 
      */
     constructor(message) {
-        super(message)
-        this.status = 500;
-        this.name = 'Permissão nã reconhecida por este sistema.';
+        super(
+            'Permissão nã reconhecida por este sistema.',
+            message,
+            httpStatusCode.UNAUTHORIZED,
+            (new Error()).stack
+        );
     }
 }
 module.exports = {

@@ -9,7 +9,13 @@ const {
     NotAuthorizedException,
     TokenIsExpired,
     TokenHeaderException
-} = require('../exceptions/token-exceptions')
+} = require('../exceptions/token-exceptions');
+
+
+async function decode(token){
+    const dados = await _decode(token);
+    return dados;
+}
 
 let user = undefined;
 
@@ -24,6 +30,10 @@ async function _decodetoken(req) {
 
     const token = authorization.split(' ')[1];
 
+    return await _decode(token);
+}
+async function _decode(token) {
+    let usertoken = '';
     await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (!err) {
             usertoken = user;
@@ -32,7 +42,15 @@ async function _decodetoken(req) {
             return false;
         }
     })
+    console.log(usertoken);
     return usertoken;
+}
+async function getCredencial(token) {
+    const user = this._decodetoken(token);
+    const userId = user.id;
+    const partnerId = user.partner_id;
+    const divisionId = user.division_id;
+    return userid, partnerId, divisionId;
 }
 
 async function class_10(req, res, next) {
@@ -50,7 +68,7 @@ async function _class_level_access(req, res, next, level = 1) {
     //verifica o token
 
     if (!user) {
-        res.status(401).json(new TokenHeaderException(401));
+        throw new TokenIsExpired('Sem autorização');
     }
 
     const dtatual = moment().utc();
@@ -59,8 +77,8 @@ async function _class_level_access(req, res, next, level = 1) {
     const dtExpires = moment.utc(expiradt);
     const notExpired = dtExpires.isBefore(dtatual);
 
-     if (notExpired) {
-        return res.status(401).json(new TokenIsExpired(401, 'Sua credendial expirou.'));
+    if (notExpired) {
+        return next(TokenIsExpired('Sua credendial expirou.'));
     }
 
     //confere a classe da permissão do usuario
@@ -69,15 +87,14 @@ async function _class_level_access(req, res, next, level = 1) {
 
     //Verifica se a permissão e comativel - classe de permissão menor ou igual
     if (classe < nivel_minimo) {
-        return res.status(403).json(new NotAuthorizedException(403, 'Você não tem autorização para acessar esta URL.'));
+        return next(new NotAuthorizedException('Você não tem autorização para acessar esta URL.'));
     }
     req.user = user;
-    console.log('Usuário logado');
-    console.log(req.user);
-    next();
+    return next();
 }
 
 module.exports = {
+    decode,
     class_10,
     class_0
 };

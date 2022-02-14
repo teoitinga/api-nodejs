@@ -13,6 +13,7 @@ class User extends Model {
       password: DataTypes.STRING,
       address: DataTypes.STRING,
       phone: DataTypes.STRING,
+      city: DataTypes.STRING,
       expiresDate: DataTypes.DATE,
       lockedDate: DataTypes.DATE,
       createdby: DataTypes.STRING,
