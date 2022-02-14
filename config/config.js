@@ -11,7 +11,7 @@ module.exports = {
       timestamps: true,
       underscored: false
     }
-  },
+  }, 
   local: {
     username: "esloctaru",
     password: "#H0864#@",
