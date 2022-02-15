@@ -11,7 +11,7 @@ module.exports = class UsuarioDto {
             this.phone = obj.phone,
 
             this.role_id = obj.role_id,
-            this.role_name = obj.role_id,
+            this.role_type = obj.role_id,
             this.role_class = obj.role_id,
 
             this.partner_id = obj.partner_id,
@@ -21,12 +21,13 @@ module.exports = class UsuarioDto {
             this.partner_email = obj.partner_email,
             this.partner_city = obj.partner_city,
             
-            this.section_id = obj.section_id,
-            this.section_name = obj.section_name,
-            this.section_address = obj.section_address,
-            this.section_fone = obj.section_fone,
-            this.section_email = obj.section_email,
-            this.section_city = obj.section_city,
+            this.division_id = obj.division_id,
+            this.division_name = obj.division_name,
+            this.division_address = obj.division_address,
+            this.division_fone = obj.division_fone,
+            this.division_email = obj.division_email,
+            this.division_city = obj.division_city,
+            this.division_theme = obj.division_theme,
                         
             this.expiresDate = obj.expiresDate,
             this.lockedDate = obj.lockedDate,

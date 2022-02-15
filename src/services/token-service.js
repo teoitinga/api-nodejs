@@ -11,7 +11,7 @@ const {
     TokenHeaderException
 } = require('../exceptions/token-exceptions');
 
-
+ 
 async function decode(token){
     const dados = await _decode(token);
     return dados;

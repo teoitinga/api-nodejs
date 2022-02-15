@@ -36,6 +36,7 @@ class UserService {
 
         const token = await request.headers.authorization.split(' ')[1];
         const userActive = await cache.userLogged(token);
+
         user.partner_id = userActive.partner_id;
         user.division_id = userActive.division_id;
 
@@ -43,6 +44,9 @@ class UserService {
         user.created = moment().utc();
         user.password = passHashed;
 
+        /**
+         * Confere se existe o ID da permissão no banco de dados e configura caso exista.
+         */
         const role = await this._checkRole(user.role_id);
 
         user.role_id = role;
@@ -107,14 +111,55 @@ class UserService {
         //Rotina de Verificações da Divisão correspondente
         //Configura a Divisão correspondente
 
+        const division = '';
+
         //Rotina de verificações da Empresa Correspondente
         //Configura a Empresa Correspondente
 
-        //Retorna a informação do usuário logado
-        let dto = await new UserDto(usuario.toJSON())
+        const partner = '';
 
+        //Define a variável com os dados encontrados e configura o token
+        let dto = await new UserDto(usuario.toJSON())
+        
         const token = new Token(dto.obj);
+
         token.obj.expiresIn = await moment().add(process.env.JWT_EXPIRES, 'minutes').toDate();
+        
+        //Retorna a informação do usuário logado
+        //configurações adicionais em usuario
+        
+        /**
+         * Verificações e configurações da permissão
+         */
+        const role = '';
+        
+        //token.obj.role_id = 'obj.role_id';
+        token.obj.role_type = 'obj.role_id';
+        token.obj.role_class = 'obj.role_id';
+        
+        /**
+         * Verificações e configurações da Empresa na qual o usuário pertence
+         */
+        //token.obj.partner_id = 'obj.partner_id';
+        token.obj.partner_name = 'obj.partner_name';
+        token.obj.partner_address = 'obj.partner_address';
+        token.obj.partner_fone = 'obj.partner_fone';
+        token.obj.partner_email = 'obj.partner_email';
+        token.obj.partner_city = 'obj.partner_city';
+        
+        /**
+         * Verificações e configurações da Divisão no qual o usuário pertence
+         */
+        //token.obj.division_id = 'obj.division_id';
+        token.obj.division_name = 'obj.division_name';
+        token.obj.division_address = 'obj.division_address';
+        token.obj.division_fone = 'obj.division_fone';
+        token.obj.division_email = 'obj.division_email';
+        token.obj.division_city = 'obj.division_city';
+        token.obj.division_theme = 'obj.division_them';
+
+        /** Oculta os dados do password */
+        token.obj.password = '***';
 
         const tk = jwt.sign(JSON.stringify(token.obj), process.env.JWT_SECRET);
         return { token: tk };
