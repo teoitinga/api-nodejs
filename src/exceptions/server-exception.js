@@ -6,10 +6,11 @@ const ServerErrorException = class ServerErrorException extends ApiErrors{
      * @param {number} status 
      * @param {string} message 
      */
-    constructor(message) {
+    constructor(error) {
+        console.log(error);
         super({
             name: 'Ocorreu um erro no servidor da api.',
-            message: message,
+            message: error,
             httpStatusCode: httpStatusCode.INTERNAL_SERVER,
             stack: (new Error()).stack
         });

@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       registry: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(50),
         unique: true
       },
       email: {
@@ -32,13 +32,28 @@ module.exports = {
         type: Sequelize.STRING
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(50)
+      },
+      num: {
+        type: Sequelize.STRING(3)
+      },
+      district: {
+        type: Sequelize.STRING(50)
+      },
+      complement: {
+        type: Sequelize.STRING(50)
       },
       city: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(50)
+      },
+      uf: {
+        type: Sequelize.STRING(2)
+      },
+      cep: {
+        type: Sequelize.STRING(8)
       },
       phone: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(13)
       },
       expiresDate: {
         allowNull: false,

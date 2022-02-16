@@ -1,24 +1,19 @@
-const {Model, DataTypes} = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
-class User extends Model {
+class Division extends Model {
 
-  static init(connection){
+  static init(connection) {
     super.init({
       name: DataTypes.STRING,
+      nickname: DataTypes.STRING,
       registry: DataTypes.STRING,
       email: DataTypes.STRING,
-      role_id: DataTypes.STRING,
+      representative_id: DataTypes.STRING,
       partner_id: DataTypes.STRING,
-      division_id: DataTypes.STRING,
-      password: DataTypes.STRING,
       address: DataTypes.STRING,
-      num: DataTypes.STRING,
-      district: DataTypes.STRING,
-      complement: DataTypes.STRING,
-      cep: DataTypes.STRING,
       phone: DataTypes.STRING,
       city: DataTypes.STRING,
-      uf: DataTypes.STRING,
+      theme: DataTypes.STRING,
       expiresDate: DataTypes.DATE,
       lockedDate: DataTypes.DATE,
       createdby: DataTypes.STRING,
@@ -29,8 +24,8 @@ class User extends Model {
       createdAt: 'created',
       updatedAt: 'updated',
       sequelize: connection,
-      modelName: 'User',
+      modelName: 'Division',
     })
   }
 };
-module.exports = User;
+module.exports = Division;

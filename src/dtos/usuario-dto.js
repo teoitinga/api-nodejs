@@ -8,8 +8,13 @@ module.exports = class UsuarioDto {
             this.user_city = obj.user_city
             this.password = obj.password,
             this.address = obj.address,
+            this.num = obj.num,
+            this.district = obj.district,
+            this.complement = obj.complement,
+            this.city = obj.city,
+            this.cep = obj.cep,
+            this.uf = obj.uf,
             this.phone = obj.phone,
-
             this.role_id = obj.role_id,
             this.role_type = obj.role_id,
             this.role_class = obj.role_id,

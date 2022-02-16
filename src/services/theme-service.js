@@ -1,0 +1,36 @@
+const uuid = require('uuid');
+const ThemeModel = require('../../models/theme');
+const moment = require('moment');
+
+const { ServerErrorException } = require('../exceptions/server-exception');
+
+class ThemeService {
+
+    async create(theme) {
+        try {
+
+            theme.id = uuid.v4().toUpperCase();
+            theme.createdby = 'sldakshdkajsd'
+            theme.created = moment();
+
+            await ThemeModel.create(theme);
+
+            theme = await ThemeModel.findByPk(theme.id);
+
+            return theme;
+
+        } catch (e) {
+            return new ServerErrorException(e.errors);
+        }
+    }
+    async findOne(id) {
+        const theme = await ThemeModel.findByPk(id);
+        return theme;
+    }
+    async findByType(type) {
+            const theme = await ThemeModel.findOne({ where: { type } });
+            return theme;
+    }
+
+}
+module.exports = ThemeService;

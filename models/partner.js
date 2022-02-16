@@ -5,10 +5,10 @@ class Partner extends Model {
   static init(connection) {
     super.init({
       name: DataTypes.STRING,
+      nickname: DataTypes.STRING,
       registry: DataTypes.STRING,
       email: DataTypes.STRING,
-      representative: DataTypes.STRING,
-      registryRepresentative: DataTypes.STRING,
+      idRepresentative: DataTypes.STRING,
       address: DataTypes.STRING,
       phone: DataTypes.STRING,
       city: DataTypes.STRING,

@@ -20,6 +20,10 @@ module.exports = {
         type: Sequelize.STRING,
         unique: true,
       },
+      mode_id: {
+        type: Sequelize.STRING,
+        unique: true,
+      },
       ps: {
         type: Sequelize.STRING
       }, 

@@ -12,14 +12,27 @@
 					"name": "Login",
 					"event": [
 						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//set an environment variable\r",
+									"postman.setEnvironmentVariable(\"token\", \"asçdkhasdkjha\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Departamento is created!\", () => {\r",
-									"    pm.response.to.have.status(201)\r",
-									"    const responseJson = pm.response.json();\r",
-									"    postman.setEnvironmentVariable('token', responseJson.token);\r",
-									"});"
+									"pm.test(\"User is loged!\", () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"    const token = pm.response.json().token;\r",
+									"    postman.setEnvironmentVariable('token', token);\r",
+									"    console.log('Token de acesso');\r",
+									"    console.log(token);\r",
+									"});\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -33,7 +46,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"login\": \"04459471604\",\r\n    \"password\": \"jacare\"\r\n}",
+							"raw": "{\r\n    \"login\": \"04459471604\",\r\n    \"password\": \"meu bem\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -41,9 +54,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{ARESAPI}}/users/login",
+							"raw": "{{API}}/users/login",
 							"host": [
-								"{{ARESAPI}}"
+								"{{API}}"
 							],
 							"path": [
 								"users",
@@ -70,7 +83,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"João Paulo Santana Gusmão\",\r\n    \"registry\": \"AaAAaA04459471604\",\r\n    \"email\": \"teo.itinga@gmail.com\",\r\n    \"role_id\": \"43F193D0-54DB-4115-A084-5C1C3F1C2F82\",\r\n    \"partner_id\": \"ASDGGDGFDGDF\",\r\n    \"division_id\": \"MBVBNVVNCVB\",\r\n    \"password\": \"jacare\",\r\n    \"address\": \"Trv. Augusto de Lima, 22\",\r\n    \"phone\": \"33999065029\"\r\n}",
+							"raw": "{\r\n    \"name\": \"José Firmino de Jesus\",\r\n    \"registry\": \"12q34567890\",\r\n    \"email\": \"teo.itinga@gmail.com\",\r\n    \"role_id\": \"QWQW43F193D0-54DB-4115-A084-5C1C3F1C2F82\",\r\n    \"partner_id\": \"ASDGGDGFDGDF\",\r\n    \"division_id\": \"MBVBNVVNCVB\",\r\n    \"password\": \"jacare\",\r\n    \"address\": \"Trv. Augusto de Lima, 22\",\r\n    \"phone\": \"33999065029\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -78,18 +91,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://45.174.40.217:3000/api/v1/users",
-							"protocol": "http",
+							"raw": "{{API}}/users",
 							"host": [
-								"45",
-								"174",
-								"40",
-								"217"
+								"{{API}}"
 							],
-							"port": "3000",
 							"path": [
-								"api",
-								"v1",
 								"users"
 							]
 						}
@@ -98,6 +104,9 @@
 				},
 				{
 					"name": "Find all User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -109,7 +118,7 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -121,18 +130,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://45.174.40.217:3000/api/v1/users",
-							"protocol": "http",
+							"raw": "{{API}}/users",
 							"host": [
-								"45",
-								"174",
-								"40",
-								"217"
+								"{{API}}"
 							],
-							"port": "3000",
 							"path": [
-								"api",
-								"v1",
 								"users"
 							]
 						}
@@ -168,6 +170,128 @@
 								"v1",
 								"role",
 								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Find all Roles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/roles",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"description\": \"Acesso geral à plataforma\",\r\n\"class\": \"1\",\r\n\"type\": \"FUNCIONARIO\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/roles",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contract",
+			"item": [
+				{
+					"name": "Create Tender",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"payment\": \"13200\",\r\n\"quota\": \"3\",\r\n\"ps\": \"***\",\r\n\"partner_name\": \"Prefeitura Municipal de Tarumirim\",\r\n\"partner_nickname\": \"PM Taru\",\r\n\"partner_registry\": \"04AA1q3200031234567890ABC\",\r\n\"partner_email\": \"teo.itinga@gmail.com\",\r\n\"partner_address\": \"Rua. Prof. Ma. Ant. G. Reis\",\r\n\"partner_address_num\": \"36\",\r\n\"partner_address_complement\": \"Prédio\",\r\n\"partner_address_district\": \"Centro\",\r\n\"partner_address_cep\": \"35140000\",\r\n\"partner_phone\": \"333733-1158\",\r\n\"partner_city\": \"Itinga\",\r\n\"partner_uf\": \"MG\",\r\n\"division_name\": \"Gabinete\",\r\n\"user_name\": \"Fernanda Cristina de Andrade\",\r\n\"user_registry\": \"04459471604\",\r\n\"mode_contract\": \"XFF19491D-B9A4-417A-8D70-CFFCB1D7D398\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/contracts/tender",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"contracts",
+								"tender"
 							]
 						}
 					},

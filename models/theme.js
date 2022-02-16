@@ -1,16 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Contract extends Model {
-   
+class Theme extends Model {
+ 
   static init(connection) {
     super.init({
-      payment: DataTypes.NUMBER,
-      quota: DataTypes.INTEGER,
-      partner_id: DataTypes.STRING,
-      mode_id: DataTypes.STRING,
-      ps: DataTypes.STRING,
-      expiresDate: DataTypes.DATE,
-      lockedDate: DataTypes.DATE,
+      description: DataTypes.STRING,
+      class: DataTypes.STRING,
+      type: DataTypes.STRING,
       createdby: DataTypes.STRING,
       updatedby: DataTypes.STRING,
       created: DataTypes.DATE,
@@ -19,8 +15,8 @@ class Contract extends Model {
       createdAt: 'created',
       updatedAt: 'updated',
       sequelize: connection,
-      modelName: 'Contract',
+      modelName: 'Theme',
     })
   }
 };
-module.exports = Contract;
+module.exports = Theme;

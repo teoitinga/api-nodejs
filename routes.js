@@ -52,8 +52,9 @@ const contractcontroller = new ContractController();
 
 const apiContractPath = '/api/v1/contracts';
 
-routes.post(apiContractPath, asynchandler(class_10), asynchandler(contractcontroller.create));
-routes.get(apiContractPath, asynchandler(class_10), asynchandler(contractcontroller.findall));
+routes.post(`${apiContractPath}`, asynchandler(class_10), asynchandler(contractcontroller.create));
+routes.get(`${apiContractPath}`, asynchandler(class_10), asynchandler(contractcontroller.findall));
+routes.post(`${apiContractPath}/tender`, asynchandler(class_0), asynchandler(contractcontroller.tender));
 
 
 routes.use((error, req, res, next)=>{

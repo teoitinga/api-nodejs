@@ -14,4 +14,16 @@ Role.init(connection);
 const Contract = require('../models/contract');
 Contract.init(connection);
 
+const Partner = require('../models/partner');
+Partner.init(connection);
+
+const Division = require('../models/division');
+Division.init(connection);
+
+const Theme = require('../models/theme');
+Theme.init(connection);
+
+const Mode = require('../models/mode');
+Mode.init(connection);
+
 module.exports = connection;

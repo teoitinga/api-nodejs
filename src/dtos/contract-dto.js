@@ -6,6 +6,7 @@ class ContractDto {
             this.payment = obj.payment,
             this.quota = obj.quota,
             this.partner_id = obj.partner_id,
+            this.mode_id = obj.mode_id,
             this.ps = obj.ps,
             this.expiresDate = obj.expiresDate,
             this.lockedDate = obj.lockedDate,
