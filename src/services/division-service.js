@@ -18,6 +18,10 @@ class DivisionService {
     async exists(registry){
         return await DivisionModel.findOne({where:{registry}});
     }
+    async findById(id){
+        return await DivisionModel.findByPk(id);
+        
+    }
     async storage(division){
 
         try{

@@ -91,7 +91,6 @@ class ContractService {
         //Existe o plano informado?
         /** Verifica o plano de contrato informado */
         const plan = await modeService.findOne(tenderDto.mode_contract);
-        console.log(plan);
 
         if(!( plan ))
             throw new ServerErrorException(`O plano definido neste contrato não existe.`)

@@ -12,6 +12,15 @@ const UserDto = require('../../src/dtos/usuario-dto');
 const RoleService = require('../services/role-service');
 const roleService = new RoleService();
 
+const PartnerService = require('../services/partner-service');
+const partnerService = new PartnerService();
+
+const DivisionService = require('../services/division-service');
+const divisionService = new DivisionService();
+
+const ThemeService = require('../services/theme-service');
+const themeService = new ThemeService();
+
 const { ServerErrorException } = require('../exceptions/server-exception');
 const { UserErrorException } = require('../exceptions/user-exception');
 const { RoleErrorException } = require('../exceptions/role-exception');
@@ -152,12 +161,12 @@ class UserService {
         //Rotina de Verificações da Divisão correspondente
         //Configura a Divisão correspondente
 
-        const division = '';
+        const division = await divisionService.findById(usuario.division_id);
 
         //Rotina de verificações da Empresa Correspondente
         //Configura a Empresa Correspondente
 
-        const partner = '';
+        const partner = await partnerService.findById(usuario.partner_id);
 
         //Define a variável com os dados encontrados e configura o token
         let dto = await new UserDto(usuario.toJSON())
@@ -172,33 +181,41 @@ class UserService {
         /**
          * Verificações e configurações da permissão
          */
-        const role = '';
+        const role = await roleService.findById(usuario.role_id);
 
-        //token.obj.role_id = 'obj.role_id';
-        token.obj.role_type = 'obj.role_id';
-        token.obj.role_class = 'obj.role_id';
-
+        
+        //token.obj.role_id = role.id;
+        token.obj.role_type = role.type;
+        token.obj.role_class = role.class;
+        
         /**
          * Verificações e configurações da Empresa na qual o usuário pertence
          */
-        //token.obj.partner_id = 'obj.partner_id';
-        token.obj.partner_name = 'obj.partner_name';
-        token.obj.partner_address = 'obj.partner_address';
-        token.obj.partner_fone = 'obj.partner_fone';
-        token.obj.partner_email = 'obj.partner_email';
-        token.obj.partner_city = 'obj.partner_city';
-
+        //token.obj.partner_id = partner.id;
+        token.obj.partner_name = partner.name;
+        token.obj.partner_address = partner.address;
+        token.obj.partner_fone = partner.phone;
+        token.obj.partner_email = partner.email;
+        token.obj.partner_city = partner.city;
+        
         /**
          * Verificações e configurações da Divisão no qual o usuário pertence
          */
-        //token.obj.division_id = 'obj.division_id';
-        token.obj.division_name = 'obj.division_name';
-        token.obj.division_address = 'obj.division_address';
-        token.obj.division_fone = 'obj.division_fone';
-        token.obj.division_email = 'obj.division_email';
-        token.obj.division_city = 'obj.division_city';
-        token.obj.division_theme = 'obj.division_them';
-
+        //token.obj.division_id = division.id;
+        token.obj.division_name = division.name
+        token.obj.division_address = division.address
+        token.obj.division_fone = division.phone
+        token.obj.division_email = division.email
+        token.obj.division_city = division.city
+        
+        /**
+         * 
+         * Verificações e configurações de Theme da Divisão no qual o usuário pertence
+         */
+        const theme = await themeService.findById(division.theme);
+        
+        token.obj.division_theme = theme.type;
+        
         /** Oculta os dados do password */
         token.obj.password = '***';
 

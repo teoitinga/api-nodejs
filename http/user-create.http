@@ -13,3 +13,20 @@ Content-Type: application/json
     "address": "Trv. Augusto de Lima, 22",
     "phone": "33999065029"
 }
+
+###
+
+POST http://45.174.40.217:3000/api/v1/create
+Content-Type: application/json
+
+{
+    "name": "João Paulo Santana Gusmão",
+    "registry": "04459471604",
+    "email": "teo.itinga@gmail.com",
+    "role_id": "abc",
+    "partner_id": "ASDGGDGFDGDF",
+    "division_id": "MBVBNVVNCVB",
+    "password": "jacare",
+    "address": "Trv. Augusto de Lima, 22",
+    "phone": "33999065029"
+}

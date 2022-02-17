@@ -15,7 +15,10 @@ class PartnerService {
 
         return await this.storage(partner);
     }
-
+    async findById(id){
+        return await PartnerModel.findByPk(id);
+        
+    }
     async exists(registry){
         return await PartnerModel.findOne({where:{registry}})?true:false;
     }

@@ -30,6 +30,12 @@ class RoleService {
         let dto = await new RoleDto(role)
         return dto.obj;
     }
+
+    async findById(id){
+        return await RoleModel.findByPk(id);
+        
+    }
+
     async findByClass(c) {
             const role = await RoleModel.findOne({ where: { class: c } });
             let dto = await new RoleDto(role)

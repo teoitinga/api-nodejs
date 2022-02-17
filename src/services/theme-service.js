@@ -23,10 +23,11 @@ class ThemeService {
             return new ServerErrorException(e.errors);
         }
     }
-    async findOne(id) {
-        const theme = await ThemeModel.findByPk(id);
-        return theme;
+
+    async findById(id){
+        return await ThemeModel.findByPk(id);
     }
+
     async findByType(type) {
             const theme = await ThemeModel.findOne({ where: { type } });
             return theme;
