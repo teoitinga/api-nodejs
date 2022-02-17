@@ -5,14 +5,13 @@ const RoleService = require('../services/role-service');
 const roleService = new RoleService();
 
 const {
-    TokenException,
     NotAuthorizedException,
     TokenIsExpired,
-    TokenHeaderException
+    TokenException
 } = require('../exceptions/token-exceptions');
 
- 
-async function decode(token){
+
+async function decode(token) {
     const dados = await _decode(token);
     return dados;
 }
@@ -25,36 +24,65 @@ async function _decodetoken(req) {
     let usertoken = undefined;
 
     if (!authorization) {
-        return undefined;
+        throw new TokenException('Não há token válido.');
     }
 
     const token = authorization.split(' ')[1];
 
     return await _decode(token);
 }
+
 async function _decode(token) {
     let usertoken = '';
     await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (!err) {
-            usertoken = user;
-        }
-        else {
+        if (err)
             return false;
-        }
-    })
-    console.log(usertoken);
-    return usertoken;
-}
-async function getCredencial(token) {
-    const user = this._decodetoken(token);
-    const userId = user.id;
-    const partnerId = user.partner_id;
-    const divisionId = user.division_id;
-    return userid, partnerId, divisionId;
-}
 
+        usertoken = user;
+    })
+
+    if (usertoken) {
+        return usertoken;
+    }
+
+    throw new TokenException('Não há token válido.');
+}
+/**
+ * 
+ * @param {Request} token 
+ * @returns 
+ async function getCredencial(token) {
+     
+     const user = {};
+     
+     const authorization = token.headers.authorization;
+     
+     const tk = authorization.split(' ')[1];
+     
+     await jwt.verify(tk, process.env.JWT_SECRET, (err, usr) => {
+         user = usr;
+        })
+        
+        const userId = user.id;
+        const partnerId = user.partner_id;
+        const divisionId = user.division_id;
+        
+        const obj = {
+            userId: userId,
+            partnerId: partnerId,
+            divisionId: divisionId,
+            role_class: user.role_class
+        };
+        
+        return obj;
+    }
+    
+    */
 async function class_10(req, res, next) {
-    _class_level_access(req, res, next, 8);
+    await _class_level_access(req, res, next, 10);
+}
+async function class_7(req, res, next) {
+    await _class_level_access(req, res, next, 7);
 }
 async function class_0(req, res, next) {
     next();
@@ -68,17 +96,17 @@ async function _class_level_access(req, res, next, level = 1) {
     //verifica o token
 
     if (!user) {
-        throw new TokenIsExpired('Sem autorização');
+        throw new NotAuthorizedException('Sem autorização para prosseguir.');
     }
 
     const dtatual = moment().utc();
     const expiradt = user.expiresIn;
 
     const dtExpires = moment.utc(expiradt);
-    const notExpired = dtExpires.isBefore(dtatual);
+    const notExpired = await dtExpires.isBefore(dtatual);
 
     if (notExpired) {
-        return next(TokenIsExpired('Sua credendial expirou.'));
+        throw new TokenIsExpired('Sua credendial expirou.');
     }
 
     //confere a classe da permissão do usuario
@@ -87,14 +115,18 @@ async function _class_level_access(req, res, next, level = 1) {
 
     //Verifica se a permissão e comativel - classe de permissão menor ou igual
     if (classe < nivel_minimo) {
-        return next(new NotAuthorizedException('Você não tem autorização para acessar esta URL.'));
+        throw new NotAuthorizedException('Você não tem autorização para acessar esta URL.');
     }
+
     req.user = user;
-    return next();
+
+    return req.user;
 }
 
 module.exports = {
     decode,
+    //getCredencial,
     class_10,
+    class_7,
     class_0
 };

@@ -5,12 +5,20 @@ const DivisionDto = require('../../src/dtos/division-dto');
 const moment = require('moment');
 
 const { ServerErrorException } = require('../exceptions/server-exception');
+const { request } = require('express');
+const { getCredencial } = require('../services/token-service');
 
 class DivisionService {
 
-    async create(division){
+    async create(request){
+
+        const credendial = await getCredencial(request);
+        const activeUser = credendial.userId;
+
+        const division = request.body;
+        
         division.id = uuid.v4().toUpperCase();
-        division.createdby = 'sldakshdkajsd'
+        division.createdby = activeUser;
         division.created = moment();
 
         return await this.storage(division);

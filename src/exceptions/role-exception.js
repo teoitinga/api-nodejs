@@ -8,13 +8,13 @@ const RoleErrorException = class RoleErrorException extends ApiErrors {
      * @param {string} message 
      */
     constructor(message) {
-        super(
-            'Erro no informar permissão.',
-            message,
-            httpStatusCode.UNAUTHORIZED,
-            (new Error()).stack
+        super({
+            name: 'Erro no informar permissão.',
+            message: message,
+            httpStatusCode: httpStatusCode.BAD_REQUEST,
+            stack: (new Error()).stack
+        }
         );
-
     }
 }
 
@@ -24,12 +24,13 @@ const RoleNotFoundException = class RoleNotFoundException extends ApiErrors {
      * @param {number} status 
      * @param {string} message 
      */
-    constructor(message) {
-        super(
-            'Permissão nã reconhecida por este sistema.',
-            message,
-            httpStatusCode.UNAUTHORIZED,
-            (new Error()).stack
+     constructor(message) {
+        super({
+            name: 'Permissão não reconhecida por este sistema.',
+            message: message,
+            httpStatusCode: httpStatusCode.NOT_FOUND,
+            stack: (new Error()).stack
+        }
         );
     }
 }

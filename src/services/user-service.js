@@ -22,14 +22,22 @@ const ThemeService = require('../services/theme-service');
 const themeService = new ThemeService();
 
 const { ServerErrorException } = require('../exceptions/server-exception');
-const { UserErrorException } = require('../exceptions/user-exception');
+const {
+    UserErrorException,
+    UserAlreadyException
+} = require('../exceptions/user-exception');
+
 const { RoleErrorException } = require('../exceptions/role-exception');
+const { NotAuthorizedException } = require('../exceptions/token-exceptions');
+const { PartnerNotFoundException } = require('../exceptions/partner-exception');
 
 const Token = require('../dtos/token');
 
 
 
 require('dotenv').config();
+
+const { getCredencial } = require('../services/token-service');
 
 const Cache = new require('../core/cache-user');
 const cache = new Cache();
@@ -53,23 +61,24 @@ class UserService {
 
         try {
             await UserModel.create(user);
-            const usuario = await UserModel.findByPk(user.id);
-
-
-            let dto = await new UserDto(usuario)
-            dto.obj.password = passwordOrigin;
-            
-            /** Envia email para o usuario informando o registro e o password */
-            await this.sendMail(dto.obj);
-            
-            /**Oculta o password */
-            dto.obj.password = '***';
-
-            return dto.obj;
-
         } catch (e) {
-            throw new ServerErrorException(e);
+            throw new ServerErrorException(e.message);
         }
+
+        const usuario = await UserModel.findByPk(user.id);
+
+
+        let dto = await new UserDto(usuario)
+        dto.obj.password = passwordOrigin;
+
+        /** Envia email para o usuario informando o registro e o password */
+        //await this.sendMail(dto.obj);
+
+        /**Oculta o password */
+        dto.obj.password = '***';
+
+        return dto.obj;
+
     }
     async sendMail(obj) {
         console.log(`...enviando email para ${obj}`);
@@ -96,16 +105,108 @@ class UserService {
             `
         });
     }
+    
+    async createByAdmin(request) {
+        console.log('Usuário Admin');
+        const credendial = await getCredencial(request);
+        const data = request.body;
+        /**
+         * Administradores do prtal informam a empresa e o Departamento/Divisão
+         */
+        const partner_exists = partnerService.exists(data.partner_id);
+        /**
+         * Verifica se já existe a empresa informada existe
+         //Exite a empresa?
+         */
+         if (!partner_exists) {
+             throw new PartnerNotFoundException(`Não existe a empresa informada.`)
+         }
+
+        const division = divisionService.findById();
+
+        return await this._create(request);
+        
+    }
+    async createByPartner(request) {
+        console.log('Usuário Gestor');
+        const credendial = await getCredencial(request);
+        request.body.partner_id = credendial.partnerId;
+
+        /**
+         * Gestores somente informam o Departamento/Divisão
+         */
+        const division = divisionService.findById()
+        return await this._create(request);
+
+    }
+    async createByDivision(request) {
+        console.log('Usuário diretor');
+        const credendial = await getCredencial(request);
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+        
+        return await this._create(request);
+        
+    }
+    async createByUser(request) {
+        console.log('Usuário Usuario');
+        const credendial = await getCredencial(request);
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+
+        return await this._create(request);
+
+    }
+    /**
+     * Avalia o token e direciona a ação de cordo com a permissão do usuário
+     * 
+     * @param {object} request 
+     * @returns 
+     */
     async create(request) {
+        console.log('Create...')
+
+        //const credendial = await getCredencial(request);
+        //const c = credendial.role_class;
+const c=7;
+        console.log(credendial);
+        if (c > 7)
+            return await this.createByAdmin(request);
+
+        if ((c > 5) && (c <= 7))
+            return await this.createByPartner(request);
+
+        if ((c > 2) && (c <= 5))
+            return await this.createByDivision(request);
+
+        if ((c > 0) && (c <= 2))
+            return await this.createByUser(request);
+    }
+
+    async _create(request) {
+
+        console.log(request.body);
+
+        const credendial = await getCredencial(request);
+        const activeUser = credendial.userId;
+
         const user = request.body;
         user.expiresDate = moment().utc().add(1, 'months');
 
-        const token = await request.headers.authorization.split(' ')[1];
-        const userActive = await cache.userLogged(token);
+        user.id = uuid.v4().toUpperCase();
+        user.partner_id = request.body.partner_id;//credendial.partnerId;
+        user.division_id = request.body.division_id;//credendial.divisionId;
+        user.createdby = credendial.userId;
 
-        user.partner_id = userActive.partner_id;
-        user.division_id = userActive.division_id;
+        /**
+         * Verifica se já existe este usuário nos registros
+         //Exite o usuário?
+         */
+        const user_exists = await this.exists(user.registry);
 
+        if (user_exists) {
+            throw new UserAlreadyException(`O registro de usuário: ${user.registry} já existe no banco de dados.`)
+        }
         return this.storage(user);
     }
 
@@ -126,8 +227,8 @@ class UserService {
             throw new ServerErrorException('Não há registros no banco de dados.');
         }
     }
-    async exists(registry){
-        return await UserModel.findOne({where:{registry}})?true:false;
+    async exists(registry) {
+        return await UserModel.findOne({ where: { registry } }) ? true : false;
     }
     async login(user) {
 
@@ -183,11 +284,11 @@ class UserService {
          */
         const role = await roleService.findById(usuario.role_id);
 
-        
+
         //token.obj.role_id = role.id;
         token.obj.role_type = role.type;
         token.obj.role_class = role.class;
-        
+
         /**
          * Verificações e configurações da Empresa na qual o usuário pertence
          */
@@ -197,7 +298,7 @@ class UserService {
         token.obj.partner_fone = partner.phone;
         token.obj.partner_email = partner.email;
         token.obj.partner_city = partner.city;
-        
+
         /**
          * Verificações e configurações da Divisão no qual o usuário pertence
          */
@@ -207,15 +308,15 @@ class UserService {
         token.obj.division_fone = division.phone
         token.obj.division_email = division.email
         token.obj.division_city = division.city
-        
+
         /**
          * 
          * Verificações e configurações de Theme da Divisão no qual o usuário pertence
          */
         const theme = await themeService.findById(division.theme);
-        
+
         token.obj.division_theme = theme.type;
-        
+
         /** Oculta os dados do password */
         token.obj.password = '***';
 
@@ -240,8 +341,6 @@ class UserService {
         const role = await roleService.findOne(role_id);
         if (role)
             return role.id;
-
-        throw new RoleErrorException('Permissão de usuário não reconhecida.')
     }
 }
 module.exports = UserService;

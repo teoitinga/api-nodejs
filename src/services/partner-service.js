@@ -2,15 +2,24 @@ const uuid = require('uuid');
 const PartnerModel = require('../../models/partner');
 const PartnerDto = require('../../src/dtos/partner-dto');
 
+const { getCredencial } = require('../services/token-service');
+
 const moment = require('moment');
 
 const { ServerErrorException } = require('../exceptions/server-exception');
+const { request } = require('express');
 
 class PartnerService {
 
-    async create(partner) {
+    async create(request) {
+
+        const credendial = await getCredencial(request);
+        const activeUser = credendial.userId;
+
+        const partner = request.body;
+
         partner.id = uuid.v4().toUpperCase();
-        partner.createdby = 'sldakshdkajsd'
+        partner.createdby = activeUser
         partner.created = moment();
 
         return await this.storage(partner);

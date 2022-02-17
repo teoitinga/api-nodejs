@@ -2,6 +2,7 @@ const moment = require('moment');
 const brcrypt = require('bcrypt');
 const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
+const { getCredencial } = require('../services/token-service');
 
 const ContractModel = require('../../models/contract');
 const PartnerModel = require('../../models/partner');
@@ -33,9 +34,15 @@ const modeService = new ModeService();
 
 class ContractService {
     async create(request) {
+
+        const credendial = await getCredencial(request);
+        const activeUser = credendial.userId;
+        
         const contract = await request.body;
+        
         contract.id = await uuid.v4().toUpperCase();
         contract.created = await moment();
+        contract.createdBy = activeUser;
 
         return this.storage(contract);
     }
@@ -65,14 +72,13 @@ class ContractService {
     async tender(request) {
 
         const tenderDto = await request.body;
-
+        
         const id = uuid.v4().toUpperCase();
         const date = moment().utc();
         const dateExp = moment().utc().add(await this.calcExpires(tenderDto.quota), 'month');
-
-        //const token = await request.headers.authorization.split(' ')[1];
-        //const userActive = await cache.userLogged(token);
-        const activeUser = 'jp-teo';
+        
+        const credendial = await getCredencial(request);
+        const activeUser = credendial.userId;
 
         /**Verifica consistencia das informações */
         //Existe a empresa?

@@ -1,7 +1,7 @@
 const uuid = require('uuid');
 const ThemeModel = require('../../models/theme');
 const moment = require('moment');
-
+const { getCredencial } = require('../services/token-service');
 const { ServerErrorException } = require('../exceptions/server-exception');
 
 class ThemeService {

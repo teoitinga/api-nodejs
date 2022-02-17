@@ -1,4 +1,5 @@
 const ModeModel = require('../../models/mode');
+const { getCredencial } = require('../services/token-service');
 
 class ModeService {
 

@@ -6,6 +6,7 @@ const asynchandler = require('express-async-handler');
 
 const {
     class_0,
+    class_7,
     class_10
 } = require('./src/services/token-service');
 
@@ -30,8 +31,8 @@ const logincontroller = new LoginController();
 const apiUserPath = '/api/v1/users';
 
 routes.post(`${apiUserPath}/login`, asynchandler(class_0),  asynchandler(logincontroller.login));
-routes.post(`${apiUserPath}`,  asynchandler(class_0), asynchandler(logincontroller.create));
-routes.get(`${apiUserPath}`,  asynchandler(class_10), asynchandler(logincontroller.findall));
+routes.post(`${apiUserPath}`,  asynchandler(class_7), asynchandler(logincontroller.create));
+routes.get(`${apiUserPath}`,  asynchandler(class_7), asynchandler(logincontroller.findall));
 
 /**
  * Rotas de Roles
@@ -56,10 +57,8 @@ routes.post(`${apiContractPath}`, asynchandler(class_10), asynchandler(contractc
 routes.get(`${apiContractPath}`, asynchandler(class_10), asynchandler(contractcontroller.findall));
 routes.post(`${apiContractPath}/tender`, asynchandler(class_0), asynchandler(contractcontroller.tender));
 
-
 routes.use((error, req, res, next)=>{
-    console.error(error);
-    res.status(error.status || 500).json(error);
+    res.status(error.status || 500).json(error || {message: 'Ocorreu um erro e não foi identificado, por favor entre em contato com o administrador do portal'});
 })
 
 module.exports = routes;

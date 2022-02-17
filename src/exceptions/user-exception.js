@@ -5,7 +5,7 @@ const UserErrorException = class UserErrorException extends ApiErrors {
     /**
      * Trata Erros do Servidor
      * @param {string} message 
-     */
+     */ 
     constructor(message) {
         super({
             name: 'Erro no logar no sistema.',
@@ -16,6 +16,22 @@ const UserErrorException = class UserErrorException extends ApiErrors {
         );
     }
 }
+const UserAlreadyException = class UserAlreadyException extends ApiErrors {
+    /**
+     * Trata Erros do Servidor
+     * @param {string} message 
+     */
+    constructor(message) {
+        super({
+            name: 'Usuário já existe.',
+            message: message,
+            httpStatusCode: httpStatusCode.BAD_REQUEST,
+            stack: (new Error()).stack
+        }
+        );
+    }
+}
 module.exports = {
+    UserAlreadyException,
     UserErrorException
 }
