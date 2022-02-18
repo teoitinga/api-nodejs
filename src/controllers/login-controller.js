@@ -14,7 +14,7 @@ class LoginController {
     };
 
     async create(req, res) {
-        const stored = await service.create(req)
+        const stored = await service.save(req)
         res.status(httpStatusCode.CREATED).json(stored);
     };
 

@@ -21,25 +21,23 @@ const divisionService = new DivisionService();
 const ThemeService = require('../services/theme-service');
 const themeService = new ThemeService();
 
-const { ServerErrorException } = require('../exceptions/server-exception');
+const { 
+    ServerErrorException, 
+    NotFoundErrorException
+ } = require('../exceptions/server-exception');
+
 const {
     UserErrorException,
     UserAlreadyException
 } = require('../exceptions/user-exception');
 
-const { RoleErrorException } = require('../exceptions/role-exception');
-const { NotAuthorizedException } = require('../exceptions/token-exceptions');
 const { PartnerNotFoundException } = require('../exceptions/partner-exception');
 
 const Token = require('../dtos/token');
 
-
-
 require('dotenv').config();
 
-const { getCredencial } = require('../services/token-service');
-
-const Cache = new require('../core/cache-user');
+const Cache = require('../core/cache-user');
 const cache = new Cache();
 
 class UserService {
@@ -72,7 +70,7 @@ class UserService {
         dto.obj.password = passwordOrigin;
 
         /** Envia email para o usuario informando o registro e o password */
-        //await this.sendMail(dto.obj);
+        await this.sendMail(dto.obj);
 
         /**Oculta o password */
         dto.obj.password = '***';
@@ -81,17 +79,16 @@ class UserService {
 
     }
     async sendMail(obj) {
-        console.log(`...enviando email para ${obj}`);
         await mailService.send({
             to: obj.email,
             subject: `Cadastro de usuário na plataforma JP-Ares`,
             text: `Você acaba de ser registrado na plataforma JP-AREs, nosso portal de gestão e acompanhamento de projetos. Segue abaixo os dados para acesso`,
             html: `
             <h1>Olá <strong>${obj.name},</strong></h1>
-            <h3>
+            <h3 style="color: black">
             <p>Você acaba de ser registrado na plataforma JP-AREs, nosso portal de gestão e acompanhamento de projetos. Segue abaixo os dados para acesso:</p>
-            <p>Seu login: ${obj.registry}</p>
-            <p>Sua senha provisória: ${obj.password}</p>
+            <p><strong>Seu login:</strong> ${obj.registry}</p>
+            <p><strong>Sua senha provisória:</strong> ${obj.password}</p>
             <br>
             <p>clique neste link para acessar o portal: <a href="${process.env.APP_LINK_API}">JP-ARES</a></p>
             <p>"${process.env.TEXT_LGPG}"</p>
@@ -108,40 +105,64 @@ class UserService {
     
     async createByAdmin(request) {
         console.log('Usuário Admin');
-        const credendial = await getCredencial(request);
+
+        const credendial = await cache.getCredencial(request);
         const data = request.body;
         /**
          * Administradores do prtal informam a empresa e o Departamento/Divisão
          */
         const partner_exists = partnerService.exists(data.partner_id);
         /**
-         * Verifica se já existe a empresa informada existe
+         * Verifica se já existe a empresa informada
          //Exite a empresa?
          */
          if (!partner_exists) {
              throw new PartnerNotFoundException(`Não existe a empresa informada.`)
          }
-
-        const division = divisionService.findById();
+         
+         const division_exists = await divisionService.exists(data.division_id);
+         /**
+          * Verifica se já existe o departamento informado
+          //Exite a Departamento/Divisão?
+          */
+          if (!division_exists) {
+              throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
+          }
 
         return await this._create(request);
         
     }
     async createByPartner(request) {
-        console.log('Usuário Gestor');
-        const credendial = await getCredencial(request);
-        request.body.partner_id = credendial.partnerId;
 
+        console.log('Usuário Gestor');
+
+        const credendial = await cache.getCredencial(request);
+        const data = request.body;
         /**
          * Gestores somente informam o Departamento/Divisão
+         * O ID da empresa já é configurado de acordo com a empresa na qual o gestor pertence
          */
-        const division = divisionService.findById()
+        request.body.partner_id = credendial.partnerId;
+ 
+        const division_exists = await divisionService.exists(data.division_id);
+        /**
+         * Verifica se já existe o departamento informado
+         //Exite a Departamento/Divisão?
+         */
+         if (!division_exists) {
+             throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
+         }
         return await this._create(request);
-
+        
     }
     async createByDivision(request) {
-        console.log('Usuário diretor');
-        const credendial = await getCredencial(request);
+        
+        const credendial = await cache.getCredencial(request);
+
+        /**
+         * Diretores não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
         request.body.partner_id = credendial.partnerId;
         request.body.division_id = credendial.divisionId;
         
@@ -149,8 +170,14 @@ class UserService {
         
     }
     async createByUser(request) {
+        
         console.log('Usuário Usuario');
-        const credendial = await getCredencial(request);
+        
+        const credendial = await cache.getCredencial(request);
+        /**
+         * Usuários, Diretores  não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
         request.body.partner_id = credendial.partnerId;
         request.body.division_id = credendial.divisionId;
 
@@ -163,13 +190,11 @@ class UserService {
      * @param {object} request 
      * @returns 
      */
-    async create(request) {
-        console.log('Create...')
+    async save(request) {
 
-        //const credendial = await getCredencial(request);
-        //const c = credendial.role_class;
-const c=7;
-        console.log(credendial);
+        const credendial = await cache.getCredencial(request);
+        const c = credendial.role_class;
+
         if (c > 7)
             return await this.createByAdmin(request);
 
@@ -185,17 +210,15 @@ const c=7;
 
     async _create(request) {
 
-        console.log(request.body);
-
-        const credendial = await getCredencial(request);
+        const credendial = await cache.getCredencial(request);
         const activeUser = credendial.userId;
 
         const user = request.body;
         user.expiresDate = moment().utc().add(1, 'months');
 
         user.id = uuid.v4().toUpperCase();
-        user.partner_id = request.body.partner_id;//credendial.partnerId;
-        user.division_id = request.body.division_id;//credendial.divisionId;
+        //user.partner_id = request.body.partner_id;//credendial.partnerId;
+        //user.division_id = request.body.division_id;//credendial.divisionId;
         user.createdby = credendial.userId;
 
         /**

@@ -33,7 +33,9 @@ async function _decodetoken(req) {
 }
 
 async function _decode(token) {
+    
     let usertoken = '';
+
     await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err)
             return false;
@@ -44,49 +46,24 @@ async function _decode(token) {
     if (usertoken) {
         return usertoken;
     }
-
+ 
     throw new TokenException('Não há token válido.');
 }
-/**
- * 
- * @param {Request} token 
- * @returns 
- async function getCredencial(token) {
-     
-     const user = {};
-     
-     const authorization = token.headers.authorization;
-     
-     const tk = authorization.split(' ')[1];
-     
-     await jwt.verify(tk, process.env.JWT_SECRET, (err, usr) => {
-         user = usr;
-        })
-        
-        const userId = user.id;
-        const partnerId = user.partner_id;
-        const divisionId = user.division_id;
-        
-        const obj = {
-            userId: userId,
-            partnerId: partnerId,
-            divisionId: divisionId,
-            role_class: user.role_class
-        };
-        
-        return obj;
-    }
-    
-    */
+
 async function class_10(req, res, next) {
     await _class_level_access(req, res, next, 10);
+    next();
 }
+
 async function class_7(req, res, next) {
     await _class_level_access(req, res, next, 7);
+    next();
 }
+
 async function class_0(req, res, next) {
     next();
 }
+
 async function _class_level_access(req, res, next, level = 1) {
 
     nivel_minimo = level;

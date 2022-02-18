@@ -1,5 +1,7 @@
 const ModeModel = require('../../models/mode');
-const { getCredencial } = require('../services/token-service');
+
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
 
 class ModeService {
 

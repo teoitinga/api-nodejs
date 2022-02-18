@@ -1,8 +1,11 @@
+const moment = require('moment');
 const uuid = require('uuid');
+
 const RoleModel = require('../../models/role');
 const RoleDto = require('../../src/dtos/usuario-dto');
-const moment = require('moment');
-const { getCredencial } = require('../services/token-service');
+
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
 
 const { ServerErrorException } = require('../exceptions/server-exception');
 const { RoleNotFoundException } = require('../exceptions/role-exception');
@@ -11,7 +14,8 @@ class RoleService {
 
     async create(request) {
 
-        const credendial = await getCredencial(request);
+        const credendial = await cache.getCredencial(request);
+
         const activeUser = credendial.userId;
 
         const role = request.body;

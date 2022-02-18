@@ -2,7 +2,8 @@ const uuid = require('uuid');
 const PartnerModel = require('../../models/partner');
 const PartnerDto = require('../../src/dtos/partner-dto');
 
-const { getCredencial } = require('../services/token-service');
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
 
 const moment = require('moment');
 
@@ -13,7 +14,7 @@ class PartnerService {
 
     async create(request) {
 
-        const credendial = await getCredencial(request);
+        const credendial = await cache.getCredencial(request);
         const activeUser = credendial.userId;
 
         const partner = request.body;

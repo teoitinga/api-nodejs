@@ -1,18 +1,14 @@
 const moment = require('moment');
-const brcrypt = require('bcrypt');
 const uuid = require('uuid');
-const jwt = require('jsonwebtoken');
-const { getCredencial } = require('../services/token-service');
+
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
 
 const ContractModel = require('../../models/contract');
-const PartnerModel = require('../../models/partner');
 
 const ContractDto = require('../dtos/contract-dto');
-const tenderDto = require('../dtos/tender-dto');
 
 const { ServerErrorException } = require('../exceptions/server-exception');
-const { NotAuthorizedException } = require('../exceptions/token-exceptions');
-const PartnerDto = require('../dtos/partner-dto');
 
 const DivisionService = require('../services/division-service');
 const divisionService = new DivisionService();
@@ -35,7 +31,7 @@ const modeService = new ModeService();
 class ContractService {
     async create(request) {
 
-        const credendial = await getCredencial(request);
+        const credendial = await cache.getCredencial(request);
         const activeUser = credendial.userId;
         
         const contract = await request.body;
@@ -77,13 +73,13 @@ class ContractService {
         const date = moment().utc();
         const dateExp = moment().utc().add(await this.calcExpires(tenderDto.quota), 'month');
         
-        const credendial = await getCredencial(request);
+        const credendial = await cache.getCredencial(request);
         const activeUser = credendial.userId;
 
         /**Verifica consistencia das informações */
         //Existe a empresa?
         const partner_exists = await partnerService.exists(tenderDto.partner_registry);
-        console.log(partner_exists);
+
         if( partner_exists ){
             throw new ServerErrorException(`O registro da empresa: ${tenderDto.partner_registry} já existe no banco de dados.`)
         }
@@ -214,6 +210,7 @@ class ContractService {
 
         return tenderDto;
     }
+
     async generatehashPassword() {
 
         const lower = [...'abcdefghijklmnopqrstuvwzyz'];
@@ -234,6 +231,7 @@ class ContractService {
         return ''.concat(...hash);
 
     }
+
     async findall() {
 
         try {
@@ -253,4 +251,5 @@ class ContractService {
     }
 
 }
+
 module.exports = ContractService;

@@ -6,13 +6,15 @@ const moment = require('moment');
 
 const { ServerErrorException } = require('../exceptions/server-exception');
 const { request } = require('express');
-const { getCredencial } = require('../services/token-service');
+
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
 
 class DivisionService {
 
     async create(request){
 
-        const credendial = await getCredencial(request);
+        const credendial = await cache.getCredencial(request);
         const activeUser = credendial.userId;
 
         const division = request.body;
@@ -24,6 +26,9 @@ class DivisionService {
         return await this.storage(division);
     }
     async exists(registry){
+        return await DivisionModel.findOne({where:{registry}});
+    }
+    async existsOnPartner(registry){
         return await DivisionModel.findOne({where:{registry}});
     }
     async findById(id){
