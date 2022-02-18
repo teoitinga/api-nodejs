@@ -23,6 +23,10 @@ class ThemeService {
         }
     }
 
+    async exists(id){
+        return await ThemeModel.findByPk(id)?true:false;
+    }
+
     async findById(id){
         return await ThemeModel.findByPk(id);
     }

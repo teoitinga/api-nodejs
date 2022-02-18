@@ -21,10 +21,10 @@ const divisionService = new DivisionService();
 const ThemeService = require('../services/theme-service');
 const themeService = new ThemeService();
 
-const { 
-    ServerErrorException, 
+const {
+    ServerErrorException,
     NotFoundErrorException
- } = require('../exceptions/server-exception');
+} = require('../exceptions/server-exception');
 
 const {
     UserErrorException,
@@ -102,7 +102,7 @@ class UserService {
             `
         });
     }
-    
+
     async createByAdmin(request) {
         console.log('Usuário Admin');
 
@@ -116,21 +116,21 @@ class UserService {
          * Verifica se já existe a empresa informada
          //Exite a empresa?
          */
-         if (!partner_exists) {
-             throw new PartnerNotFoundException(`Não existe a empresa informada.`)
-         }
-         
-         const division_exists = await divisionService.exists(data.division_id);
-         /**
-          * Verifica se já existe o departamento informado
-          //Exite a Departamento/Divisão?
-          */
-          if (!division_exists) {
-              throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
-          }
+        if (!partner_exists) {
+            throw new PartnerNotFoundException(`Não existe a empresa informada.`)
+        }
+
+        const division_exists = await divisionService.exists(data.division_id);
+        /**
+         * Verifica se já existe o departamento informado
+         //Exite a Departamento/Divisão?
+         */
+        if (!division_exists) {
+            throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
+        }
 
         return await this._create(request);
-        
+
     }
     async createByPartner(request) {
 
@@ -143,20 +143,20 @@ class UserService {
          * O ID da empresa já é configurado de acordo com a empresa na qual o gestor pertence
          */
         request.body.partner_id = credendial.partnerId;
- 
+
         const division_exists = await divisionService.exists(data.division_id);
         /**
          * Verifica se já existe o departamento informado
          //Exite a Departamento/Divisão?
          */
-         if (!division_exists) {
-             throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
-         }
+        if (!division_exists) {
+            throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
+        }
         return await this._create(request);
-        
+
     }
     async createByDivision(request) {
-        
+
         const credendial = await cache.getCredencial(request);
 
         /**
@@ -165,14 +165,14 @@ class UserService {
          */
         request.body.partner_id = credendial.partnerId;
         request.body.division_id = credendial.divisionId;
-        
+
         return await this._create(request);
-        
+
     }
     async createByUser(request) {
-        
+
         console.log('Usuário Usuario');
-        
+
         const credendial = await cache.getCredencial(request);
         /**
          * Usuários, Diretores  não  informam dados de departamento ou empresa
@@ -282,6 +282,16 @@ class UserService {
         if (!(await this._isExpired(usuario.expiresDate))) {
             throw new UserErrorException('Seu cadastro expirou, portanto não poderá acessar esta plataforma. Verifique com o superior imediato.')
         }
+
+        /**
+         * 
+         * Se o usuario for Administrador da plataforma(Classe 8 ou 9), é dispensada as verificações
+         */
+
+        console.log(usuario);
+        const role = await roleService.findById(usuario.role_id);
+        console.log(role)
+
         //Rotina de Verificações da Divisão correspondente
         //Configura a Divisão correspondente
 
@@ -305,8 +315,6 @@ class UserService {
         /**
          * Verificações e configurações da permissão
          */
-        const role = await roleService.findById(usuario.role_id);
-
 
         //token.obj.role_id = role.id;
         token.obj.role_type = role.type;
@@ -315,30 +323,33 @@ class UserService {
         /**
          * Verificações e configurações da Empresa na qual o usuário pertence
          */
-        //token.obj.partner_id = partner.id;
-        token.obj.partner_name = partner.name;
-        token.obj.partner_address = partner.address;
-        token.obj.partner_fone = partner.phone;
-        token.obj.partner_email = partner.email;
-        token.obj.partner_city = partner.city;
+        if (role.class <= 7) {
 
-        /**
-         * Verificações e configurações da Divisão no qual o usuário pertence
-         */
-        //token.obj.division_id = division.id;
-        token.obj.division_name = division.name
-        token.obj.division_address = division.address
-        token.obj.division_fone = division.phone
-        token.obj.division_email = division.email
-        token.obj.division_city = division.city
+            //token.obj.partner_id = partner.id;
+            token.obj.partner_name = partner.name;
+            token.obj.partner_address = partner.address;
+            token.obj.partner_fone = partner.phone;
+            token.obj.partner_email = partner.email;
+            token.obj.partner_city = partner.city;
 
-        /**
-         * 
-         * Verificações e configurações de Theme da Divisão no qual o usuário pertence
-         */
-        const theme = await themeService.findById(division.theme);
+            /**
+             * Verificações e configurações da Divisão no qual o usuário pertence
+             */
+            //token.obj.division_id = division.id;
+            token.obj.division_name = division.name
+            token.obj.division_address = division.address
+            token.obj.division_fone = division.phone
+            token.obj.division_email = division.email
+            token.obj.division_city = division.city
 
-        token.obj.division_theme = theme.type;
+            /**
+             * 
+             * Verificações e configurações de Theme da Divisão no qual o usuário pertence
+             */
+            const theme = await themeService.findById(division.theme);
+
+            token.obj.division_theme = theme.type;
+        }
 
         /** Oculta os dados do password */
         token.obj.password = '***';

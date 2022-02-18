@@ -22,7 +22,7 @@ module.exports = {
         createdby: '',
         updatedby: '',
         created: '2022-02-13'
-      }
+      },
       {
         id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D390',
         description: 'trata de assuntos relacionados ao gerenciamento de pessoal/funcionários',

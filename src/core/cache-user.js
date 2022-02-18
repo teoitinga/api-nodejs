@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { TokenException } = require('../exceptions/token-exceptions');
 
 class UserCache {
 
@@ -16,6 +17,9 @@ class UserCache {
             user = usr;
         })
 
+        if(!user){
+            throw new TokenException('Usuário não identificado!');
+        }
         const obj = {
             username: user.name,
             userId: user.id,

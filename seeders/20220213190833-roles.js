@@ -78,7 +78,7 @@ module.exports = {
         created: '2022-02-13'
       },
       {
-        id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D390',
+        id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D389',
         description: 'Destinada ao público em geral, seu acesso é bastante restrito',
         class: 0,
         type: 'PUBLICO',
@@ -88,7 +88,7 @@ module.exports = {
       }
     ], {});
   },
-
+ 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Roles', null, {});
   }

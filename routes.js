@@ -17,9 +17,9 @@ const {
 const IndexController = require('./src/controllers/index');
 const indexController = new IndexController();
 
-const apiIndexPath = '/api/v1';
+const indexPath = '/api/v1';
 
-routes.get(`${apiIndexPath}`, indexController.welcome);
+routes.get(`${indexPath}`, indexController.welcome);
 
 //Definição de controllers
 /**
@@ -28,11 +28,11 @@ routes.get(`${apiIndexPath}`, indexController.welcome);
 const LoginController = require('./src/controllers/login-controller');
 const logincontroller = new LoginController();
 
-const apiUserPath = '/api/v1/users';
+const userPath = '/api/v1/users';
 
-routes.post(`${apiUserPath}/login`, asynchandler(class_0),  asynchandler(logincontroller.login));
-routes.post(`${apiUserPath}`,  asynchandler(class_7), asynchandler(logincontroller.create));
-routes.get(`${apiUserPath}`,  asynchandler(class_7), asynchandler(logincontroller.findall));
+routes.post(`${userPath}/login`, asynchandler(class_0),  asynchandler(logincontroller.login));
+routes.post(`${userPath}`,  asynchandler(class_7), asynchandler(logincontroller.create));
+routes.get(`${userPath}`,  asynchandler(class_7), asynchandler(logincontroller.findall));
 
 /**
  * Rotas de Roles
@@ -40,10 +40,11 @@ routes.get(`${apiUserPath}`,  asynchandler(class_7), asynchandler(logincontrolle
 const RoleController = require('./src/controllers/role-controller');
 const rolecontroller = new RoleController();
 
-const apiRolePath = '/api/v1/roles';
+const rolePath = '/api/v1/roles';
 
-routes.post(apiRolePath,  asynchandler(class_0), asynchandler(rolecontroller.create));
-routes.get(apiRolePath,  asynchandler(class_0), asynchandler(rolecontroller.findall));
+routes.post(rolePath,  asynchandler(class_0), asynchandler(rolecontroller.create));
+routes.get(rolePath,  asynchandler(class_0), asynchandler(rolecontroller.findall));
+
 
 /**
  * Rotas de Contracts
@@ -51,13 +52,26 @@ routes.get(apiRolePath,  asynchandler(class_0), asynchandler(rolecontroller.find
 const ContractController = require('./src/controllers/contract-controller');
 const contractcontroller = new ContractController();
 
-const apiContractPath = '/api/v1/contracts';
+const contractPath = '/api/v1/contracts';
 
-routes.post(`${apiContractPath}`, asynchandler(class_10), asynchandler(contractcontroller.create));
-routes.get(`${apiContractPath}`, asynchandler(class_10), asynchandler(contractcontroller.findall));
-routes.post(`${apiContractPath}/tender`, asynchandler(class_0), asynchandler(contractcontroller.tender));
+routes.post(`${contractPath}`, asynchandler(class_10), asynchandler(contractcontroller.create));
+routes.get(`${contractPath}`, asynchandler(class_10), asynchandler(contractcontroller.findall));
+routes.post(`${contractPath}/tender`, asynchandler(class_0), asynchandler(contractcontroller.tender));
+
+/**
+ * Rotas de Division
+ */
+const DivisionController = require('./src/controllers/division-controller');
+const divisionController = new DivisionController();
+
+const divisionPath = '/api/v1/divisions';
+
+routes.post(divisionPath,  asynchandler(class_7), asynchandler(divisionController.create));
+routes.get(divisionPath,  asynchandler(class_0), asynchandler(divisionController.findall));
+
 
 routes.use((error, req, res, next)=>{
+    console.log(error);
     res.status(error.status || 500).json(error || {message: 'Ocorreu um erro e não foi identificado, por favor entre em contato com o administrador do portal'});
 })
 
