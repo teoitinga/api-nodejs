@@ -8,8 +8,7 @@ class RoleController {
             res.status(201).json(stored);
     };
     async findall(req, res) {
-            getCredencial(req);
-            const stored = await service.findall();
+            const stored = await service.findall(req);
             res.status(200).json(stored)
     };
 }

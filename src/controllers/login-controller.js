@@ -19,7 +19,7 @@ class LoginController {
     };
 
     async findall(req, res) {
-        const stored = await service.findall()
+        const stored = await service.findall(req)
         res.status(200).json(stored);
     };
 }

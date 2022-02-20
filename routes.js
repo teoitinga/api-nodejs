@@ -32,7 +32,7 @@ const userPath = '/api/v1/users';
 
 routes.post(`${userPath}/login`, asynchandler(class_0),  asynchandler(logincontroller.login));
 routes.post(`${userPath}`,  asynchandler(class_7), asynchandler(logincontroller.create));
-routes.get(`${userPath}`,  asynchandler(class_7), asynchandler(logincontroller.findall));
+routes.get(`${userPath}`,  asynchandler(class_0), asynchandler(logincontroller.findall));
 
 /**
  * Rotas de Roles

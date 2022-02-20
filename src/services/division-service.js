@@ -18,16 +18,31 @@ const themeService = new ThemeService();
 
 class DivisionService {
 
-    async save(request){
+    async save(request) {
         return await this._create(request);
     }
-      
-    async _create(request){
+
+    async findall(request) {
+
+        const credencial = await cache.getCredencial(request);
+
+        console.log(credencial);
+        const partner_id = credencial.partnerId;
+
+        const divisions = await DivisionModel.findAll({
+            where: {
+                partner_id
+            }
+        });
+
+        return divisions;
+    }
+    async _create(request) {
 
         const credendial = await cache.getCredencial(request);
 
         const division = request.body;
-        
+
         division.id = uuid.v4().toUpperCase();
 
         division.partner_id = credendial.partnerId;
@@ -38,32 +53,32 @@ class DivisionService {
 
         return await this.storage(division);
     }
-    async exists(registry){
-        return await DivisionModel.findOne({where:{registry}});
+    async exists(registry) {
+        return await DivisionModel.findOne({ where: { registry } });
     }
-    async existsOnPartner(registry){
-        return await DivisionModel.findOne({where:{registry}});
+    async existsOnPartner(registry) {
+        return await DivisionModel.findOne({ where: { registry } });
     }
-    async findById(id){
+    async findById(id) {
         return await DivisionModel.findByPk(id);
-        
+
     }
-    async storage(division){
+    async storage(division) {
 
         /**
          * Verifiaca se o theme informado é válido
          */
         const theme_exists = await themeService.exists(division.theme);
 
-        if(!theme_exists)
+        if (!theme_exists)
             throw new ServerErrorException('Tema não suportado pela plataforma.');
 
-            await DivisionModel.create(division);
-    
-            division = await DivisionModel.findByPk(division.id);
-    
-            let dto = await new DivisionDto(division)
-            return dto.obj;
+        await DivisionModel.create(division);
+
+        division = await DivisionModel.findByPk(division.id);
+
+        let dto = await new DivisionDto(division)
+        return dto.obj;
 
     }
 

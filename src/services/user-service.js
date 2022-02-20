@@ -233,11 +233,53 @@ class UserService {
         return this.storage(user);
     }
 
-    async findall() {
+    async findall(request) {
+        const credencial = await cache.getCredencial(request);
+
+        const partner_id = credencial.partnerId;
+        const division_id = credencial.divisionId;
+        const role_class = credencial.role_class;
+        const id = credencial.userId;
+
+        //Se classe >8, retorna todos
+        if(role_class > 8){
+            return await UserModel.findAll();
+        }
+        //Se classe >5 e <8 retorn os usuarios da empresa
+        if( (role_class > 5) && (role_class <= 8) ){
+            return await UserModel.findAll({
+                where: {
+                    partner_id
+                }
+            });            
+        }
+        //Se classe <5 e maio que 2 os usuario do departamento
+        if( (role_class > 2) && (role_class <=5 ) ){
+            return await UserModel.findAll({
+                where: {
+                    partner_id,
+                    division_id
+                }
+            });            
+            
+        }
+        //Se classe <2 somente o proprie registro
+        if(role_class <= 2){
+            return await UserModel.findAll({
+                where: {
+                    id
+                }
+            });            
+            
+        }
 
         try {
 
-            const users = await UserModel.findAll();
+            const users = await UserModel.findAll({
+                where: {
+                    partner_id
+                }
+            });
 
             let dto = [];
             users.map(async function (user) {

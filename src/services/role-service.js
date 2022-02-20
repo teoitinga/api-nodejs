@@ -10,6 +10,8 @@ const cache = new UserCache();
 const { ServerErrorException } = require('../exceptions/server-exception');
 const { RoleNotFoundException } = require('../exceptions/role-exception');
 
+const { Op } = require("sequelize");
+
 class RoleService {
 
     async create(request) {
@@ -56,8 +58,19 @@ class RoleService {
         return dto.obj;
     }
 
-    async findall() {
-        const roles = await RoleModel.findAll();
+    async findall(request) {
+        
+        const credencial = await cache.getCredencial(request);
+
+        console.log(credencial);
+        const role_class = credencial.role_class;
+
+        const roles = await RoleModel.findAll({where:{
+
+            class: {
+                [Op.lt]:role_class
+            }
+        }});
         let dto = [];
         roles.map(async function (role) {
             dto.push(await new RoleDto(role).obj);
