@@ -56,7 +56,7 @@ const contractPath = '/api/v1/contracts';
 
 routes.post(`${contractPath}`, asynchandler(class_10), asynchandler(contractcontroller.create));
 routes.get(`${contractPath}`, asynchandler(class_10), asynchandler(contractcontroller.findall));
-routes.post(`${contractPath}/tender`, asynchandler(class_0), asynchandler(contractcontroller.tender));
+routes.post(`${contractPath}/tender`, asynchandler(class_7), asynchandler(contractcontroller.tender));
 
 /**
  * Rotas de Division

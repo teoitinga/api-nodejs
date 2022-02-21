@@ -3,6 +3,9 @@ const brcrypt = require('bcrypt');
 const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
 
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
+
 const MailService = require('../core/mail-service');
 const mailService = new MailService();
 
@@ -36,9 +39,6 @@ const { PartnerNotFoundException } = require('../exceptions/partner-exception');
 const Token = require('../dtos/token');
 
 require('dotenv').config();
-
-const Cache = require('../core/cache-user');
-const cache = new Cache();
 
 class UserService {
     constructor() { }
@@ -78,6 +78,11 @@ class UserService {
         return dto.obj;
 
     }
+
+    async generatehashPassword() {
+        return await this.ca
+    }
+
     async sendMail(obj) {
         await mailService.send({
             to: obj.email,
@@ -93,7 +98,7 @@ class UserService {
             <p>clique neste link para acessar o portal: <a href="${process.env.APP_LINK_API}">JP-ARES</a></p>
             <p>"${process.env.TEXT_LGPG}"</p>
             <br>
-            <p>"Atenciosamente,"</p>
+            <p>Atenciosamente,</p>
             <strong>
             <p>${process.env.DESENVOLVEDOR_NAME}</p>
             <p>${process.env.DESENVOLVEDOR_COMPANY}</p>
@@ -138,11 +143,12 @@ class UserService {
 
         const credendial = await cache.getCredencial(request);
         const data = request.body;
+
         /**
          * Gestores somente informam o Departamento/Divisão
          * O ID da empresa já é configurado de acordo com a empresa na qual o gestor pertence
          */
-        request.body.partner_id = credendial.partnerId;
+        request.user.partner_id = credendial.partnerId;
 
         const division_exists = await divisionService.exists(data.division_id);
         /**
@@ -152,6 +158,7 @@ class UserService {
         if (!division_exists) {
             throw new NotFoundErrorException(`Não existe esta Divisão/Departamento informado.`)
         }
+
         return await this._create(request);
 
     }
@@ -211,14 +218,11 @@ class UserService {
     async _create(request) {
 
         const credendial = await cache.getCredencial(request);
-        const activeUser = credendial.userId;
 
         const user = request.body;
         user.expiresDate = moment().utc().add(1, 'months');
 
         user.id = uuid.v4().toUpperCase();
-        //user.partner_id = request.body.partner_id;//credendial.partnerId;
-        //user.division_id = request.body.division_id;//credendial.divisionId;
         user.createdby = credendial.userId;
 
         /**
@@ -230,6 +234,12 @@ class UserService {
         if (user_exists) {
             throw new UserAlreadyException(`O registro de usuário: ${user.registry} já existe no banco de dados.`)
         }
+        /**
+         * Defineum password aleatório para o usuários
+         */
+
+        user.password = await cache.generatehashPassword();
+
         return this.storage(user);
     }
 
@@ -293,7 +303,12 @@ class UserService {
         }
     }
     async exists(registry) {
-        return await UserModel.findOne({ where: { registry } }) ? true : false;
+        try{
+            await UserModel.findOne({ where: { registry } });
+            return true;
+        }catch(e){
+            return false;
+        }
     }
     async login(user) {
 

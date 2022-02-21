@@ -19,6 +19,7 @@ async function decode(token) {
 let user = undefined;
 
 async function _decodetoken(req) {
+    console.log(req.headers.authorization);
     const authorization = req.headers.authorization;
 
     let usertoken = undefined;
@@ -56,6 +57,7 @@ async function class_10(req, res, next) {
 }
 
 async function class_7(req, res, next) {
+    console.log(req.headers);
     await _class_level_access(req, res, next, 7);
     next();
 }
@@ -66,6 +68,7 @@ async function class_0(req, res, next) {
 
 async function _class_level_access(req, res, next, level = 1) {
 
+    console.log(req.headers.authorization);
     nivel_minimo = level;
 
     const user = await _decodetoken(req)
@@ -102,7 +105,6 @@ async function _class_level_access(req, res, next, level = 1) {
 
 module.exports = {
     decode,
-    //getCredencial,
     class_10,
     class_7,
     class_0

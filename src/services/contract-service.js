@@ -212,24 +212,7 @@ class ContractService {
     }
 
     async generatehashPassword() {
-
-        const lower = [...'abcdefghijklmnopqrstuvwzyz'];
-        const upper = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
-        const numbers = [...'0123456789'];
-        const chars = [...'#$&*()@'];
-
-        const vetor = [...lower, ...upper, ...numbers, ...chars];
-        const hashpass = [...'12345678'];
-        const size = hashpass.length;
-
-        let hash = [];
-        hashpass.forEach(h => {
-            h = vetor[(Math.floor(Math.random() * vetor.length))];
-            hash = hash.concat(h);
-        });
-
-        return ''.concat(...hash);
-
+        return await this.cache.generatehashPassword();
     }
 
     async findall() {

@@ -26,7 +26,6 @@ class DivisionService {
 
         const credencial = await cache.getCredencial(request);
 
-        console.log(credencial);
         const partner_id = credencial.partnerId;
 
         const divisions = await DivisionModel.findAll({
@@ -54,14 +53,13 @@ class DivisionService {
         return await this.storage(division);
     }
     async exists(registry) {
-        return await DivisionModel.findOne({ where: { registry } });
+        return await DivisionModel.findOne({ where: { id: registry } });
     }
     async existsOnPartner(registry) {
-        return await DivisionModel.findOne({ where: { registry } });
+        return await DivisionModel.findOne({ where: { id: registry } });
     }
     async findById(id) {
         return await DivisionModel.findByPk(id);
-
     }
     async storage(division) {
 
