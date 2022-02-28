@@ -62,7 +62,6 @@ class RoleService {
         
         const credencial = await cache.getCredencial(request);
 
-        console.log(credencial);
         const role_class = credencial.role_class;
 
         const roles = await RoleModel.findAll({where:{

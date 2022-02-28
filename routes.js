@@ -7,6 +7,7 @@ const asynchandler = require('express-async-handler');
 const {
     class_0,
     class_7,
+    class_1,
     class_10
 } = require('./src/services/token-service');
 
@@ -30,9 +31,9 @@ const logincontroller = new LoginController();
 
 const userPath = '/api/v1/users';
 
-routes.post(`${userPath}/login`, asynchandler(class_0),  asynchandler(logincontroller.login));
+routes.post(`${userPath}/login`,  asynchandler(logincontroller.login));
 routes.post(`${userPath}`,  asynchandler(class_7), asynchandler(logincontroller.create));
-routes.get(`${userPath}`,  asynchandler(class_0), asynchandler(logincontroller.findall));
+routes.get(`${userPath}`,  asynchandler(class_1), asynchandler(logincontroller.findall));
 
 /**
  * Rotas de Roles
@@ -69,9 +70,8 @@ const divisionPath = '/api/v1/divisions';
 routes.post(divisionPath,  asynchandler(class_7), asynchandler(divisionController.create));
 routes.get(divisionPath,  asynchandler(class_0), asynchandler(divisionController.findall));
 
-
 routes.use((error, req, res, next)=>{
-    console.log(error);
+    console.error(error);
     res.status(error.status || 500).json(error || {message: 'Ocorreu um erro e não foi identificado, por favor entre em contato com o administrador do portal'});
 })
 

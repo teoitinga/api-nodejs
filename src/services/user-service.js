@@ -148,7 +148,7 @@ class UserService {
          * Gestores somente informam o Departamento/Divisão
          * O ID da empresa já é configurado de acordo com a empresa na qual o gestor pertence
          */
-        request.user.partner_id = credendial.partnerId;
+        data.partner_id = credendial.partnerId;
 
         const division_exists = await divisionService.exists(data.division_id);
         /**
@@ -177,8 +177,6 @@ class UserService {
 
     }
     async createByUser(request) {
-
-        console.log('Usuário Usuario');
 
         const credendial = await cache.getCredencial(request);
         /**
@@ -304,8 +302,7 @@ class UserService {
     }
     async exists(registry) {
         try{
-            await UserModel.findOne({ where: { registry } });
-            return true;
+            return await UserModel.findOne({ where: { registry } })?true:false;
         }catch(e){
             return false;
         }
@@ -345,9 +342,7 @@ class UserService {
          * Se o usuario for Administrador da plataforma(Classe 8 ou 9), é dispensada as verificações
          */
 
-        console.log(usuario);
         const role = await roleService.findById(usuario.role_id);
-        console.log(role)
 
         //Rotina de Verificações da Divisão correspondente
         //Configura a Divisão correspondente
