@@ -11,5 +11,11 @@ class RoleController {
             const stored = await service.findall(req);
             res.status(200).json(stored)
     };
+    async findById(req, res) {
+        const id = req.params['id'];
+        console.log(id);
+        const stored = await service.findById(id);
+        res.status(200).json(stored)
+};
 }
 module.exports = RoleController;

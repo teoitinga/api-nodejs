@@ -34,6 +34,11 @@ const userPath = '/api/v1/users';
 routes.post(`${userPath}/login`,  asynchandler(logincontroller.login));
 routes.post(`${userPath}`,  asynchandler(class_7), asynchandler(logincontroller.create));
 routes.get(`${userPath}`,  asynchandler(class_1), asynchandler(logincontroller.findall));
+routes.get(`${userPath}/:id`,  asynchandler(class_1), asynchandler(logincontroller.findbyid));
+routes.put(`${userPath}/:id`,  asynchandler(class_1), asynchandler(logincontroller.update));
+routes.put(`${userPath}/recovery/:id`,  asynchandler(class_1), asynchandler(logincontroller.recovery));
+routes.put(`${userPath}/toggle-lock/:id`,  asynchandler(class_1), asynchandler(logincontroller.toggleLock));
+routes.put(`${userPath}/extend/:id`,  asynchandler(class_1), asynchandler(logincontroller.extend));
 
 /**
  * Rotas de Roles
@@ -43,8 +48,9 @@ const rolecontroller = new RoleController();
 
 const rolePath = '/api/v1/roles';
 
-routes.post(rolePath,  asynchandler(class_0), asynchandler(rolecontroller.create));
-routes.get(rolePath,  asynchandler(class_0), asynchandler(rolecontroller.findall));
+routes.post(`${rolePath}`,  asynchandler(class_0), asynchandler(rolecontroller.create));
+routes.get(`${rolePath}`,  asynchandler(class_0), asynchandler(rolecontroller.findall));
+routes.get(`${rolePath}/:id`,  asynchandler(class_1), asynchandler(rolecontroller.findById));
 
 
 /**
@@ -67,8 +73,9 @@ const divisionController = new DivisionController();
 
 const divisionPath = '/api/v1/divisions';
 
-routes.post(divisionPath,  asynchandler(class_7), asynchandler(divisionController.create));
-routes.get(divisionPath,  asynchandler(class_0), asynchandler(divisionController.findall));
+routes.post(`${divisionPath}`,  asynchandler(class_7), asynchandler(divisionController.create));
+routes.get(`${divisionPath}`,  asynchandler(class_1), asynchandler(divisionController.findall));
+routes.get(`${divisionPath}/:id`,  asynchandler(class_1), asynchandler(divisionController.findById));
 
 routes.use((error, req, res, next)=>{
     console.error(error);

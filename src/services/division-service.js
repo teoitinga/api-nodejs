@@ -59,7 +59,7 @@ class DivisionService {
         return await DivisionModel.findOne({ where: { id: registry } });
     }
     async findById(id) {
-        return await DivisionModel.findByPk(id);
+        return await DivisionModel.findOne({ where: { id } });
     }
     async storage(division) {
 

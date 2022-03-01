@@ -31,12 +31,14 @@ const {
 
 const {
     UserErrorException,
+    UserNotFoundException,
     UserAlreadyException
 } = require('../exceptions/user-exception');
 
 const { PartnerNotFoundException } = require('../exceptions/partner-exception');
 
 const Token = require('../dtos/token');
+const DivisionDto = require('../dtos/division-dto');
 
 require('dotenv').config();
 
@@ -79,10 +81,6 @@ class UserService {
 
     }
 
-    async generatehashPassword() {
-        return await this.ca
-    }
-
     async sendMail(obj) {
         await mailService.send({
             to: obj.email,
@@ -106,6 +104,7 @@ class UserService {
             </h3>
             `
         });
+        return true;
     }
 
     async createByAdmin(request) {
@@ -241,6 +240,137 @@ class UserService {
         return this.storage(user);
     }
 
+    async extend(request, id) {
+
+        /**
+         * Obtem os dados do usuário ativo
+         */
+        const credendial = await cache.getCredencial(request);
+        const updatedby = credendial.userId;
+        /**
+        * Recupera o ID do usuário para verificar se existe e também uma possível
+        * manipulação das informações caso seja necessário.
+        */
+        const user = await this.findById(id);
+        if (!user) {
+            throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+        }
+        
+        /**
+        * Atualiza o banco de dados, somente  expiresDate e updatedby
+        */
+        let expiresDate = user.expiresDate;
+
+        expiresDate = moment(user.expiresDate).utc().add(process.env.USER_EXPIRES_EXTEND, 'days');
+        /*
+        if (!expiresDate) {
+            expiresDate = moment(user.expiresDate).utc().add(process.env.USER_EXPIRES_EXTEND, 'days');
+        } else {
+            expiresDate = null;
+        }*/
+        await UserModel.update({ expiresDate,  updatedby}, { where: { id } });
+    }
+    async toggleLock(request, id) {
+
+        /**
+         * Obtem os dados do usuário ativo
+         */
+        const credendial = await cache.getCredencial(request);
+        const updatedby = credendial.userId;
+        /**
+        * Recupera o ID do usuário para verificar se existe e também uma possível
+        * manipulação das informações caso seja necessário.
+        */
+        const user = await this.findById(id);
+        if (!user) {
+            throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+        }
+        
+        /**
+        * Atualiza o banco de dados, somente  lockedDate e updatedby
+        */
+        let lockedDate = user.lockedDate;
+
+        if (!lockedDate) {
+            lockedDate = moment().utc();
+        } else {
+            lockedDate = null;
+        }
+        await UserModel.update({ lockedDate,  updatedby}, { where: { id } });
+    }
+
+    async update(request, id){
+        const credencial = await cache.getCredencial(request);
+
+         /**
+         * Recupera o ID do usuário para verificar se existe e também uma possível
+         * manipulação das informações caso seja necessário.
+         */
+          const user = await this.findById(id);
+          if (!user) {
+  
+              throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+          }
+         /**
+         * Atualiza o banco de dados, somente a senha
+         */
+        const dataUpdated = request.body;
+
+        return await UserModel.update({ 
+            name: dataUpdated.name, 
+            registry: dataUpdated.registry, 
+            email: dataUpdated.email, 
+            address: dataUpdated.address, 
+            num: dataUpdated.num, 
+            district: dataUpdated.district, 
+            complement: dataUpdated.complement, 
+            cep: dataUpdated.cep, 
+            phone: dataUpdated.phone, 
+            city: dataUpdated.city, 
+            uf: dataUpdated.uf, 
+            role_id: dataUpdated.role_id, 
+            division_id: dataUpdated.division_id,
+            updatedby: credencial.userId,
+            updated: moment().utc()
+            }, { where: { id } });         
+          
+    }
+    async recovery(request, id) {
+        /**
+         * Recupera o ID do usuário para verificar se existe e também uma possível
+         * manipulação das informações caso seja necessário.
+         */
+        const user = await this.findById(id);
+        if (!user) {
+
+            throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+        }
+
+        /**
+         * Gera nova senha
+         */
+        const novaSenha = await cache.generatehashPassword();
+
+        /**
+         * Atualiza o banco de dados, somente a senha
+         */
+        await UserModel.update({ password: novaSenha }, { where: { id } });
+
+        /**
+         * Envia o email
+         */
+        /**
+         * Grava a senha temporária "aberta" no objeto que será enviado por email
+         * para utilização do usuário que deverá modificá-la o mais breve possível.
+         */
+        user.password = novaSenha;
+        return await this.sendMail(user);
+
+
+    }
+    async findById(id) {
+        return await UserModel.findByPk(id);
+    }
     async findall(request) {
         const credencial = await cache.getCredencial(request);
 
@@ -250,35 +380,35 @@ class UserService {
         const id = credencial.userId;
 
         //Se classe >8, retorna todos
-        if(role_class > 8){
+        if (role_class > 8) {
             return await UserModel.findAll();
         }
         //Se classe >5 e <8 retorn os usuarios da empresa
-        if( (role_class > 5) && (role_class <= 8) ){
+        if ((role_class > 5) && (role_class <= 8)) {
             return await UserModel.findAll({
                 where: {
                     partner_id
                 }
-            });            
+            });
         }
         //Se classe <5 e maio que 2 os usuario do departamento
-        if( (role_class > 2) && (role_class <=5 ) ){
+        if ((role_class > 2) && (role_class <= 5)) {
             return await UserModel.findAll({
                 where: {
                     partner_id,
                     division_id
                 }
-            });            
-            
+            });
+
         }
         //Se classe <2 somente o proprie registro
-        if(role_class <= 2){
+        if (role_class <= 2) {
             return await UserModel.findAll({
                 where: {
                     id
                 }
-            });            
-            
+            });
+
         }
 
         try {
@@ -301,9 +431,9 @@ class UserService {
         }
     }
     async exists(registry) {
-        try{
-            return await UserModel.findOne({ where: { registry } })?true:false;
-        }catch(e){
+        try {
+            return await UserModel.findOne({ where: { registry } }) ? true : false;
+        } catch (e) {
             return false;
         }
     }
