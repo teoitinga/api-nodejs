@@ -27,6 +27,10 @@ class ThemeService {
         return await ThemeModel.findByPk(id)?true:false;
     }
 
+    async findAll(id){
+        return await ThemeModel.findAll();
+    }
+
     async findById(id){
         return await ThemeModel.findByPk(id);
     }

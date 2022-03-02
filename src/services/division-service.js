@@ -8,6 +8,11 @@ const DivisionModel = require('../../models/division');
 const DivisionDto = require('../../src/dtos/division-dto');
 
 const { ServerErrorException } = require('../exceptions/server-exception');
+const {
+    DivisionNotFoundException,
+    DivisionErrorException
+} = require('../exceptions/division-exception');
+
 const { request } = require('express');
 
 const UserCache = require('../core/cache-user');
@@ -80,6 +85,96 @@ class DivisionService {
 
     }
 
+    async extend(request, id) {
+
+        /**
+         * Obtem os dados do usuário ativo
+         */
+        const credendial = await cache.getCredencial(request);
+        const updatedby = credendial.userId;
+        /**
+        * Recupera o ID do usuário para verificar se existe e também uma possível
+        * manipulação das informações caso seja necessário.
+        */
+        const division = await this.findById(id);
+        if (!division) {
+            throw new DivisionNotFoundException(`Divisão com ID: ${id} não reconhecido nesta plataforma.`);
+        }
+        /**
+         * Atualiza o banco de dados, somente  expiresDate e updatedby
+        */
+       let expiresDate = division.expiresDate;
+       
+       expiresDate = moment(division.expiresDate).utc().add(process.env.DIVISION_EXPIRES_EXTEND, 'days');
+
+       await DivisionModel.update({ expiresDate, updatedby }, { where: { id } });
+    }
+    async toggleLock(request, id) {
+        
+        /**
+         * Obtem os dados do usuário ativo
+         */
+        const credendial = await cache.getCredencial(request);
+        const updatedby = credendial.userId;
+        /**
+         * Recupera o ID do usuário para verificar se existe e também uma possível
+         * manipulação das informações caso seja necessário.
+         */
+        const division = await this.findById(id);
+        
+        if (!division) {
+            throw new DivisionNotFoundException(`Divisão com ID: ${id} não reconhecido nesta plataforma.`);
+        }
+
+        /**
+        * Atualiza o banco de dados, somente  lockedDate e updatedby
+        */
+        let lockedDate = division.lockedDate;
+
+        if (!lockedDate) {
+            lockedDate = moment().utc();
+        } else {
+            lockedDate = null;
+        }
+        await DivisionModel.update({ lockedDate, updatedby }, { where: { id } });
+    }
+
+    async update(request, id) {
+        const credencial = await cache.getCredencial(request);
+
+        /**
+        * Recupera o ID do usuário para verificar se existe e também uma possível
+        * manipulação das informações caso seja necessário.
+        */
+        const user = await this.findById(id);
+        if (!user) {
+
+            throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+        }
+        /**
+        * Atualiza o banco de dados, somente a senha
+        */
+        const dataUpdated = request.body;
+
+        return await UserModel.update({
+            name: dataUpdated.name,
+            registry: dataUpdated.registry,
+            email: dataUpdated.email,
+            address: dataUpdated.address,
+            num: dataUpdated.num,
+            district: dataUpdated.district,
+            complement: dataUpdated.complement,
+            cep: dataUpdated.cep,
+            phone: dataUpdated.phone,
+            city: dataUpdated.city,
+            uf: dataUpdated.uf,
+            role_id: dataUpdated.role_id,
+            division_id: dataUpdated.division_id,
+            updatedby: credencial.userId,
+            updated: moment().utc()
+        }, { where: { id } });
+
+    }
 
 }
 module.exports = DivisionService;

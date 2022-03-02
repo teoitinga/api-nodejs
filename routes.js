@@ -52,6 +52,18 @@ routes.post(`${rolePath}`,  asynchandler(class_0), asynchandler(rolecontroller.c
 routes.get(`${rolePath}`,  asynchandler(class_0), asynchandler(rolecontroller.findall));
 routes.get(`${rolePath}/:id`,  asynchandler(class_1), asynchandler(rolecontroller.findById));
 
+/**
+ * Rotas de Themes
+ */
+const ThemeController = require('./src/controllers/theme-controller');
+const themeController = new ThemeController();
+
+const themePath = '/api/v1/themes';
+
+//routes.post(`${themePath}`,  asynchandler(class_0), asynchandler(themeController.create));
+routes.get(`${themePath}`,  asynchandler(class_0), asynchandler(themeController.findall));
+routes.get(`${themePath}/:id`,  asynchandler(class_1), asynchandler(themeController.findById));
+
 
 /**
  * Rotas de Contracts
@@ -76,6 +88,11 @@ const divisionPath = '/api/v1/divisions';
 routes.post(`${divisionPath}`,  asynchandler(class_7), asynchandler(divisionController.create));
 routes.get(`${divisionPath}`,  asynchandler(class_1), asynchandler(divisionController.findall));
 routes.get(`${divisionPath}/:id`,  asynchandler(class_1), asynchandler(divisionController.findById));
+
+routes.put(`${divisionPath}/:id`,  asynchandler(class_1), asynchandler(divisionController.update));
+routes.put(`${divisionPath}/toggle-lock/:id`,  asynchandler(class_1), asynchandler(divisionController.toggleLock));
+routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(divisionController.extend));
+
 
 routes.use((error, req, res, next)=>{
     console.error(error);

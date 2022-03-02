@@ -28,18 +28,19 @@ class LoginController {
         const stored = await service.findById(id);
         res.status(200).json(stored);
     };
+    async recovery(req, res) {
+        const id = req.params['id'];
+        const stored = await service.recovery(req, id);
+        res.status(200).json(stored);
+    };
+    
     async update(req, res) {
         const id = req.params['id'];
         const body = req.body;
         const stored = await service.update(req, id);
         res.status(200).json(stored);
     };
-    async recovery(req, res) {
-        const id = req.params['id'];
-        const stored = await service.recovery(req, id);
-        res.status(200).json(stored);
-    };
-
+    
     async toggleLock(req, res) {
         const id = req.params['id'];
         const stored = await service.toggleLock(req, id);

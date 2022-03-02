@@ -298,7 +298,7 @@ class UserService {
         }
         await UserModel.update({ lockedDate,  updatedby}, { where: { id } });
     }
-
+ 
     async update(request, id){
         const credencial = await cache.getCredencial(request);
 

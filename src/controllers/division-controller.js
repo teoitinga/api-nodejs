@@ -16,5 +16,22 @@ class DivisionController {
                 const stored = await service.findById(id);
                 res.status(200).json(stored)
         };
+        async update(req, res) {
+                const id = req.params['id'];
+                const body = req.body;
+                const stored = await service.update(req, id);
+                res.status(200).json(stored);
+        };
+
+        async toggleLock(req, res) {
+                const id = req.params['id'];
+                const stored = await service.toggleLock(req, id);
+                res.status(200).json(stored);
+        };
+        async extend(req, res) {
+                const id = req.params['id'];
+                const stored = await service.extend(req, id);
+                res.status(200).json(stored);
+        };
 }
 module.exports = DivisionController;
