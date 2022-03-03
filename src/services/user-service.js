@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const moment = require('moment');
 const brcrypt = require('bcrypt');
 const uuid = require('uuid');
@@ -255,7 +257,7 @@ class UserService {
         if (!user) {
             throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
         }
-        
+
         /**
         * Atualiza o banco de dados, somente  expiresDate e updatedby
         */
@@ -268,7 +270,7 @@ class UserService {
         } else {
             expiresDate = null;
         }*/
-        await UserModel.update({ expiresDate,  updatedby}, { where: { id } });
+        await UserModel.update({ expiresDate, updatedby }, { where: { id } });
     }
     async toggleLock(request, id) {
 
@@ -285,7 +287,7 @@ class UserService {
         if (!user) {
             throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
         }
-        
+
         /**
         * Atualiza o banco de dados, somente  lockedDate e updatedby
         */
@@ -296,44 +298,44 @@ class UserService {
         } else {
             lockedDate = null;
         }
-        await UserModel.update({ lockedDate,  updatedby}, { where: { id } });
+        await UserModel.update({ lockedDate, updatedby }, { where: { id } });
     }
- 
-    async update(request, id){
+
+    async update(request, id) {
         const credencial = await cache.getCredencial(request);
 
-         /**
-         * Recupera o ID do usuário para verificar se existe e também uma possível
-         * manipulação das informações caso seja necessário.
-         */
-          const user = await this.findById(id);
-          if (!user) {
-  
-              throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
-          }
-         /**
-         * Atualiza o banco de dados, somente a senha
-         */
+        /**
+        * Recupera o ID do usuário para verificar se existe e também uma possível
+        * manipulação das informações caso seja necessário.
+        */
+        const user = await this.findById(id);
+        if (!user) {
+
+            throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+        }
+        /**
+        * Atualiza o banco de dados, somente a senha
+        */
         const dataUpdated = request.body;
 
-        return await UserModel.update({ 
-            name: dataUpdated.name, 
-            registry: dataUpdated.registry, 
-            email: dataUpdated.email, 
-            address: dataUpdated.address, 
-            num: dataUpdated.num, 
-            district: dataUpdated.district, 
-            complement: dataUpdated.complement, 
-            cep: dataUpdated.cep, 
-            phone: dataUpdated.phone, 
-            city: dataUpdated.city, 
-            uf: dataUpdated.uf, 
-            role_id: dataUpdated.role_id, 
+        return await UserModel.update({
+            name: dataUpdated.name,
+            registry: dataUpdated.registry,
+            email: dataUpdated.email,
+            address: dataUpdated.address,
+            num: dataUpdated.num,
+            district: dataUpdated.district,
+            complement: dataUpdated.complement,
+            cep: dataUpdated.cep,
+            phone: dataUpdated.phone,
+            city: dataUpdated.city,
+            uf: dataUpdated.uf,
+            role_id: dataUpdated.role_id,
             division_id: dataUpdated.division_id,
             updatedby: credencial.userId,
             updated: moment().utc()
-            }, { where: { id } });         
-          
+        }, { where: { id } });
+
     }
     async recovery(request, id) {
         /**
@@ -370,6 +372,137 @@ class UserService {
     }
     async findById(id) {
         return await UserModel.findByPk(id);
+    }
+
+    /**
+     * Retorna a lista de todos os usuários da plataforma
+     * @param {reques} request 
+     * @returns 
+     */
+    async findByAdmin(request) {
+
+        const name = req.params['name'];
+        const credendial = await cache.getCredencial(request);
+
+        return await UserModel.findAll({
+            where: {
+                name: {
+                    [Op.like]: `%${name}%`
+                },
+                [Op.and]: {
+                    lockedDate: null
+                }
+            }
+        });
+    }
+
+    /**
+     * Retorna a lista de todos os usuários da Empresa parceira
+     * @param {reques} request 
+     * @returns 
+     */
+    async findByPartner(request) {
+
+        const name = request.params['name'];
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+
+        return await UserModel.findAll({
+            where: {
+                name: {
+                    [Op.like]: `%${name}%`
+                },
+                [Op.and]: {
+                    partner_id
+                },
+                [Op.and]: {
+                    lockedDate: null
+                }
+            }
+        });
+    }
+    /**
+     * Retorna a lista de todos os usuários do Departamento que não estejam bloqueados para acesso
+     * @param {reques} request 
+     * @returns 
+     */
+    async findByDivision(request) {
+
+        const name = request.params['name'];
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+
+        return await UserModel.findAll({
+            where: {
+                name: {
+                    [Op.like]: `%${name}%`
+                },
+                [Op.and]: {
+                    partner_id
+                },
+                [Op.and]: {
+                    division_id
+                },
+                [Op.and]: {
+                    lockedDate: null
+                }
+            }
+        });
+    }
+    /**
+     * Retorna a lista de todos os usuários do Departamento
+     * @param {reques} request 
+     * @returns 
+     */
+    async findByUser(request) {
+        return await this.findByDivision(request);
+    }
+    /**
+     * No momento não há utilidade, portanto retorna uma lista vazia.
+     * @param {reques} request 
+     * @returns 
+     */
+    async findByPublic(request) {
+        return {};
+    }
+
+    async findByName(request) {
+        /**
+         * Retorna todos os usuários que pertencam a empresa logada
+         */
+        const credendial = await cache.getCredencial(request);
+        const c = credendial.role_class;
+        /**
+         * Caso classe for Administrador da plataforma (8-10)
+         */
+
+        if (c > 7)
+            return await this.findByAdmin(request);
+
+        /**
+         * Caso classe for Gestor (6-7)
+         */
+        if ((c > 5) && (c <= 7))
+            return await this.findByPartner(request);
+
+        /**
+         * Caso classe for Diretor (3-5)
+         */
+        if ((c > 2) && (c <= 5))
+            return await this.findByDivision(request);
+
+        /**
+         * Caso classe for Funcionario (1-3)
+         */
+        if ((c > 0) && (c <= 2))
+            return await this.findByUser(request);
+
+        /**
+         * Caso classe for publico (0 )
+         */
+        return await this.findByPublic(request);
+
     }
     async findall(request) {
         const credencial = await cache.getCredencial(request);

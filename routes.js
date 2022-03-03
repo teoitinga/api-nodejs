@@ -39,6 +39,7 @@ routes.put(`${userPath}/:id`,  asynchandler(class_1), asynchandler(logincontroll
 routes.put(`${userPath}/recovery/:id`,  asynchandler(class_1), asynchandler(logincontroller.recovery));
 routes.put(`${userPath}/toggle-lock/:id`,  asynchandler(class_1), asynchandler(logincontroller.toggleLock));
 routes.put(`${userPath}/extend/:id`,  asynchandler(class_1), asynchandler(logincontroller.extend));
+routes.get(`${userPath}/find-by-name/:name`,  asynchandler(class_1), asynchandler(logincontroller.findbyname));
 
 /**
  * Rotas de Roles
@@ -92,6 +93,16 @@ routes.get(`${divisionPath}/:id`,  asynchandler(class_1), asynchandler(divisionC
 routes.put(`${divisionPath}/:id`,  asynchandler(class_1), asynchandler(divisionController.update));
 routes.put(`${divisionPath}/toggle-lock/:id`,  asynchandler(class_1), asynchandler(divisionController.toggleLock));
 routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(divisionController.extend));
+
+/**
+ * Rotas de Projects
+ */
+ const ProjectController = require('./src/controllers/project-controller');
+ const projectcontroller = new ProjectController();
+ 
+ const projectPath = '/api/v1/projects';
+ 
+ routes.post(`${projectPath}`, asynchandler(class_7), asynchandler(projectcontroller.create));
 
 
 routes.use((error, req, res, next)=>{

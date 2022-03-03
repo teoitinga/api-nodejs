@@ -10,7 +10,7 @@ const UserNotFoundException = class UserNotFoundException extends ApiErrors {
         super({
             name: 'Usuário não encontrado.',
             message: message,
-            httpStatusCode: httpStatusCode.UNAUTHORIZED,
+            httpStatusCode: httpStatusCode.NOT_FOUND,
             stack: (new Error()).stack
         }
         );

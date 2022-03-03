@@ -11,6 +11,8 @@ module.exports = {
       nickname: 'PRIMARY',
       maxDivision: 2,
       maxUsers: 10000,
+      maxProject: 100,
+      maxActionPerProject: 5,
       valueContract: 5400,
       vigencyMonths:12,
       created: '2022-02-16'
@@ -21,6 +23,8 @@ module.exports = {
       nickname: 'COMMON',
       maxDivision: 3,
       maxUsers: 10000,
+      maxProject: 1000,
+      maxActionPerProject: 15,
       valueContract: 14520.35,
       vigencyMonths:12,
       created: '2022-02-16'
@@ -31,6 +35,8 @@ module.exports = {
       nickname: 'INTELLIGENCE',
       maxDivision: 5,
       maxUsers: 10000,
+      maxProject: 1000,
+      maxActionPerProject: 30,
       valueContract: 21780,
       vigencyMonths:12,
       created: '2022-02-16'

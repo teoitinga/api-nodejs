@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Modes', {
+    await queryInterface.createTable('Actions', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -12,32 +12,37 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
-      nickname: {
+      referency: {
         type: Sequelize.STRING
       },
-      maxDivision: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+
+      project_id: {
+        type: Sequelize.STRING
       },
-      maxUsers: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+      objetivo: {
+        type: Sequelize.TEXT,
       },
-      maxProject: {
+      qtdAtendimentos: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
-      maxActionPerProject: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      valueContract: {
+      valorPorAtendimento: {
         type: Sequelize.DECIMAL(10,2),
-        allowNull: false,
       },
-      vigencyMonths: {
-        type: Sequelize.INTEGER,
+      start: {
+        allowNull: true,
+        type: Sequelize.DATE
+      },
+      end: {
+        allowNull: true,
+        type: Sequelize.DATE
+      },
+      createdby: {
         allowNull: false,
+        type: Sequelize.STRING
+      },
+      updatedby: {
+        allowNull: true,
+        type: Sequelize.STRING
       },
       created: {
         allowNull: true,
@@ -50,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Modes');
+    await queryInterface.dropTable('Actions');
   }
 };

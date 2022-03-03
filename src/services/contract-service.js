@@ -186,7 +186,6 @@ class ContractService {
 
         /**Registra o usuário no banco de dados */
         const created_user = await userService.storage(user);
-        console.log(created_user);
 
         /**Cria o contrato */
         const contract = {};

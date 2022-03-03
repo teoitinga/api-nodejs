@@ -6,8 +6,10 @@ class Mode extends Model {
     super.init({
       description: DataTypes.STRING,
       nickname: DataTypes.STRING,
-      maxDivision: DataTypes.INTEGER,
       maxUsers: DataTypes.INTEGER,
+      maxDivision: DataTypes.INTEGER,
+      maxProject: DataTypes.INTEGER,
+      maxActionPerProject: DataTypes.INTEGER,
       valueContract: DataTypes.NUMBER,
       vigencyMonths: DataTypes.INTEGER,
       created: DataTypes.DATE,

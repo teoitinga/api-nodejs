@@ -20,6 +20,12 @@ Partner.init(connection);
 const Division = require('../models/division');
 Division.init(connection);
 
+const Project = require('../models/project');
+Project.init(connection);
+
+const Action = require('../models/action');
+Action.init(connection);
+
 const Theme = require('../models/theme');
 Theme.init(connection);
 
