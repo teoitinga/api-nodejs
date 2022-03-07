@@ -57,6 +57,10 @@ async function class_7(req, res, next) {
     await _class_level_access(req, res, next, 7);
     next();
 }
+async function class_4(req, res, next) {
+    await _class_level_access(req, res, next, 4);
+    next();
+}
 async function class_1(req, res, next) {
     await _class_level_access(req, res, next, 1);
     next();
@@ -106,6 +110,7 @@ module.exports = {
     decode,
     class_10,
     class_7,
+    class_4,
     class_1,
     class_0
 };

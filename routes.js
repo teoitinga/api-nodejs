@@ -8,6 +8,7 @@ const {
     class_0,
     class_7,
     class_1,
+    class_4,
     class_10
 } = require('./src/services/token-service');
 
@@ -101,12 +102,14 @@ routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(di
  const projectcontroller = new ProjectController();
  
  const projectPath = '/api/v1/projects';
+ const citiePath = '/api/v1/cities';
  
- routes.post(`${projectPath}`, asynchandler(class_7), asynchandler(projectcontroller.create));
-
-
-routes.use((error, req, res, next)=>{
-    console.error(error);
+ routes.post(`${projectPath}`, asynchandler(class_4), asynchandler(projectcontroller.create));
+ routes.get(`${citiePath}/find-by-name/:name`,  asynchandler(class_1), asynchandler(projectcontroller.findbyname));
+ 
+ 
+ routes.use((error, req, res, next)=>{
+     console.error(error);
     res.status(error.status || 500).json(error || {message: 'Ocorreu um erro e não foi identificado, por favor entre em contato com o administrador do portal'});
 })
 

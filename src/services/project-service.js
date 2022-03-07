@@ -10,11 +10,28 @@ const ActionModel = require('../../models/action');
 const UserService = require('../services/user-service');
 const userService = new UserService();
 
+const CityModel  =require('../../models/city');
+
+
 const { Op } = require("sequelize");
 const { UserNotFoundException } = require('../exceptions/user-exception');
 
 class ProjectService {
+    async findByName(req) { 
+        /**
+         * Retorna todos os usuários que pertencam a empresa logada
+         */
+        const city = req.params['name'];
 
+        return await CityModel.findAll({
+            where: {
+                city: {
+                    [Op.like]: `%${city}%`
+                }
+            }
+        });
+
+    }
     async create(request) {
 
         const id_project = uuid.v4().toUpperCase();

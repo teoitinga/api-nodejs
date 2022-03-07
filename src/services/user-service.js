@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { Op } = require('sequelize');
 
 const moment = require('moment');
@@ -13,6 +15,8 @@ const mailService = new MailService();
 
 const UserModel = require('../../models/user');
 const UserDto = require('../../src/dtos/usuario-dto');
+
+const RoleModel = require('../../models/role');
 
 const RoleService = require('../services/role-service');
 const roleService = new RoleService();
@@ -514,25 +518,42 @@ class UserService {
 
         //Se classe >8, retorna todos
         if (role_class > 8) {
-            return await UserModel.findAll();
+            const query = `
+            SELECT * FROM smart.users 
+                left join roles 
+            `;
+            const user = await UserModel.sequelize.query(query);
+            console.log(user);
+            return user;
         }
         //Se classe >5 e <8 retorn os usuarios da empresa
         if ((role_class > 5) && (role_class <= 8)) {
-            return await UserModel.findAll({
-                where: {
-                    partner_id
-                }
-            });
+            const query = `
+            SELECT * FROM smart.users 
+                left join roles 
+                on roles.id = users.role_id
+                where roles.class<${role_class} 
+                and users.partner_id = '${partner_id}'
+            `;
+            const user = await UserModel.sequelize.query(query);
+            console.log(user);
+            return user;
         }
         //Se classe <5 e maio que 2 os usuario do departamento
         if ((role_class > 2) && (role_class <= 5)) {
-            return await UserModel.findAll({
-                where: {
-                    partner_id,
-                    division_id
-                }
-            });
-
+            const query = `
+            SELECT 
+            users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
+            FROM smart.users 
+                left join roles 
+                on users.role_id = roles.id
+                where roles.class<${role_class} 
+                and users.division_id='${division_id}'
+                and users.partner_id = '${partner_id}'
+            `
+            ;
+            const user = await UserModel.sequelize.query(query);
+            return user;
         }
         //Se classe <2 somente o proprie registro
         if (role_class <= 2) {

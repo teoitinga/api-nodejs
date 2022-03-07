@@ -32,4 +32,7 @@ Theme.init(connection);
 const Mode = require('../models/mode');
 Mode.init(connection);
 
+const City = require('../models/city');
+City.init(connection);
+
 module.exports = connection;
