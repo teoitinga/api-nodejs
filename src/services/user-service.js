@@ -436,23 +436,27 @@ class UserService {
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
 
-        return await UserModel.findAll({
-            where: {
-                name: {
-                    [Op.like]: `%${name}%`
-                },
-                [Op.and]: {
-                    partner_id
-                },
-                [Op.and]: {
-                    division_id
-                },
-                [Op.and]: {
-                    lockedDate: null
-                }
-            }
-        });
+        const query = `
+        SELECT
+            users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
+            FROM smart.users
+                left join roles
+                on users.role_id = roles.id
+                where 
+                (roles.class < ${role_class} or users.id = '${userId}')
+                and users.division_id = '${division_id}'
+                and users.partner_id = '${partner_id}'
+                and users.lockedDate is null
+                and users.expiresDate > now()
+                and users.name like('%${name}%')
+                ;
+        `;
+        const users = await UserModel.sequelize.query(query);
+
+        return users[0];
     }
     /**
      * Retorna a lista de todos os usuários do Departamento
@@ -522,12 +526,11 @@ class UserService {
             SELECT * FROM smart.users 
                 left join roles 
             `;
-            const user = await UserModel.sequelize.query(query);
-            console.log(user);
-            return user;
+            const users = await UserModel.sequelize.query(query);
+            return users[0];
         }
         //Se classe >5 e <8 retorn os usuarios da empresa
-        if ((role_class > 5) && (role_class <= 8)) {
+        if ((role_class >= 5) && (role_class <= 8)) {
             const query = `
             SELECT * FROM smart.users 
                 left join roles 
@@ -535,12 +538,13 @@ class UserService {
                 where roles.class<${role_class} 
                 and users.partner_id = '${partner_id}'
             `;
-            const user = await UserModel.sequelize.query(query);
-            console.log(user);
-            return user;
+            const users = await UserModel.sequelize.query(query);
+
+            return users[0];
         }
         //Se classe <5 e maio que 2 os usuario do departamento
-        if ((role_class > 2) && (role_class <= 5)) {
+        if ((role_class > 2) && (role_class < 5)) {
+
             const query = `
             SELECT 
             users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
@@ -552,8 +556,9 @@ class UserService {
                 and users.partner_id = '${partner_id}'
             `
             ;
-            const user = await UserModel.sequelize.query(query);
-            return user;
+            const users = await UserModel.sequelize.query(query);
+            
+            return users[0];
         }
         //Se classe <2 somente o proprie registro
         if (role_class <= 2) {

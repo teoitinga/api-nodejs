@@ -107,6 +107,15 @@ routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(di
  routes.post(`${projectPath}`, asynchandler(class_4), asynchandler(projectcontroller.create));
  routes.get(`${citiePath}/find-by-name/:name`,  asynchandler(class_1), asynchandler(projectcontroller.findbyname));
  
+ /**
+  * Rotas de Treatments
+  */
+ const TreatmentController = require('./src/controllers/treatment-controller');
+ const treatmentcontroller = new TreatmentController();
+ const treatmentPath = '/api/v1/treatments';
+
+ routes.get(`${treatmentPath}/find-by-action/:action`,  asynchandler(class_1), asynchandler(treatmentcontroller.findByAction));
+ 
  
  routes.use((error, req, res, next)=>{
      console.error(error);
