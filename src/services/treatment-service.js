@@ -19,9 +19,9 @@ class TreatmentService {
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
 
-        console.log(credendial)
         const query = `
-        SELECT * FROM smart.actions left join projects on actions.project_id = projects.id
+        SELECT actions.id, actions.description,  actions.referency, actions.qtdAtendimentos, actions.valorPorAtendimento
+        FROM smart.actions left join projects on actions.project_id = projects.id
         where referency like('%${action}%')
         and projects.lockedDate is null
         and now()>start
