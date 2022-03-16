@@ -35,4 +35,7 @@ Mode.init(connection);
 const City = require('../models/city');
 City.init(connection);
 
+const Schooling = require('../models/schooling');
+Schooling.init(connection);
+
 module.exports = connection;

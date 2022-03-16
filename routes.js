@@ -103,9 +103,11 @@ routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(di
  
  const projectPath = '/api/v1/projects';
  const citiePath = '/api/v1/cities';
+ const schoolingPath = '/api/v1/schooling';
  
  routes.post(`${projectPath}`, asynchandler(class_4), asynchandler(projectcontroller.create));
  routes.get(`${citiePath}/find-by-name/:name`,  asynchandler(class_1), asynchandler(projectcontroller.findbyname));
+ routes.get(`${schoolingPath}/find-by-schooling/:name`,  asynchandler(class_1), asynchandler(projectcontroller.findbyschooling));
  
  /**
   * Rotas de Treatments

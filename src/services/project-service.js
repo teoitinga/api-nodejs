@@ -11,7 +11,7 @@ const UserService = require('../services/user-service');
 const userService = new UserService();
 
 const CityModel  =require('../../models/city');
-
+const SchoolingModel  =require('../../models/schooling');
 
 const { Op } = require("sequelize");
 const { UserNotFoundException } = require('../exceptions/user-exception');
@@ -27,6 +27,21 @@ class ProjectService {
             where: {
                 city: {
                     [Op.like]: `%${city}%`
+                }
+            }
+        });
+
+    }
+    async findbySchooling(req) { 
+        /**
+         * Retorna todos as escolaridades
+         */
+        const schooling = req.params['name'];
+
+        return await SchoolingModel.findAll({
+            where: {
+                schooling: {
+                    [Op.like]: `%${schooling}%`
                 }
             }
         });
