@@ -117,6 +117,7 @@ routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(di
  const treatmentPath = '/api/v1/treatments';
 
  routes.get(`${treatmentPath}/find-by-action/:action`,  asynchandler(class_1), asynchandler(treatmentcontroller.findByAction));
+ routes.post(`${treatmentPath}/`,  asynchandler(class_1), asynchandler(treatmentcontroller.create));
  
  
  routes.use((error, req, res, next)=>{

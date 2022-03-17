@@ -38,4 +38,16 @@ City.init(connection);
 const Schooling = require('../models/schooling');
 Schooling.init(connection);
 
+const Treatment = require('../models/treatment');
+Treatment.init(connection);
+
+const Customer = require('../models/customer');
+Customer.init(connection);
+
+const Treatment_Customer = require('../models/treatment-customer');
+Treatment_Customer.init(connection);
+
+const Task = require('../models/task');
+Task.init(connection);
+
 module.exports = connection;
