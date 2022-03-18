@@ -11,7 +11,6 @@ module.exports = {
       }, 
       local: {
         type: Sequelize.STRING,
-        unique: true,
       },
       data: {
         allowNull: false,

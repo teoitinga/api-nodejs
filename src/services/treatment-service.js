@@ -7,7 +7,8 @@ const cache = new UserCache();
 
 const ActionModel = require('../../models/action');
 
-const { ServerErrorException } = require('../exceptions/server-exception');
+const { TreatmentException } = require('../exceptions/treatment-exception');
+
 const { Op } = require("sequelize");
 
 const treatmentModel = require('../../models/treatment');
@@ -43,6 +44,54 @@ class TreatmentService {
         const actions = await ActionModel.sequelize.query(query);
         return actions[0];
     }
+    async treatmentStoreCustomer(customer, treatmentId, credendial) {
+        const tc = {
+            id: uuid.v4().toUpperCase(),
+            treatment_id: treatmentId,
+            customer_id: customer.id,
+            createdby: credendial.userId,
+            created: moment()
+        }
+        try{
+            return await Treatment_Customer.create(tc);
+        }catch(e){
+            throw new TreatmentException('Error on a treatment customer registry.');
+
+        }
+    }
+    async analyzeCustomer(c, credendial, treatmentId) {
+        //verifica se já existe o beneficiario. 
+        let customer = await customerService.findbyCpf(c, credendial);
+
+        if (customer.length === 0) {
+            //Se não existir, faça o registro
+            customer = await customerService.create(c, credendial);
+            //await customersIds.push(customer[0].id);
+            await this.treatmentStoreCustomer(c, treatmentId, credendial);
+        }
+        if (customer.length === 1) {
+            //customer = await customerService.fincreate(c, credendial);
+            await this.treatmentStoreCustomer(customer[0], treatmentId, credendial);
+        }
+        if (customer.length > 1) {
+            //lança erro emissão pode regisrar este beneficiário
+            throw new TreatmentException('Não foi possível registrar este atendimento. Houve um erro nos registros.')
+        }
+        //return undefined;
+        //Caso exista não atualize. 
+    }
+    async validaCustomers(customers, credendial, treatmentId) {
+        const obj = this;
+        customers.forEach(async function (c) {
+            await obj.analyzeCustomer(c, credendial, treatmentId)
+        });
+    }
+
+    async store(treatment) {
+        
+        return await treatmentModel.create(treatment);
+    }
+
 
     async create(request) {
 
@@ -50,81 +99,55 @@ class TreatmentService {
 
         const activeUser = credendial.userId;
 
-        const treatment = request.body;
+        let treatment = request.body;
 
         /**Define variáveis auxiliares */
         treatment.id = uuid.v4().toUpperCase();
         treatment.createdby = credendial.userId;
         treatment.created = moment();
-        /**
-         * Registra a Treatment
-         */
-        //treatment = await store(treatment);
-        console.log(treatment);
+
         /**
          * Registra todos os beneficiários
          */
         const customers = treatment.customers;
 
-        //Array com ID's de beneficiários para registrar no banco de dados
-        
-        if (!customers) {
-            //lança erro de beneficiários não encontrado
-        }
-        
-        await validaCustomers(customers, credendial, treatment.id);
-
         /**
          * Registra todas as tasks
          */
-        const tasks = treatment.tasks;
+        const tasks = await treatment.actions;
         if (!tasks) {
             //lança erro de task não encontrada
+            throw new TreatmentException('Não existe nenhum serviço a se cadastrar.');
         }
+        
+        
+        /**
+         * Registra a treatment
+         */
+        try{
+            treatment = await this.store(treatment);
+        }catch(e){
+            throw new TreatmentException('Error on a treatment registry.');
+
+        }
+
+        //Array com ID's de beneficiários para registrar no banco de dados
+
+        if (!customers) {
+            //lança erro de beneficiários não encontrado
+            throw new TreatmentException('Não existe nenhum beneficiário a se registrar.');
+        }
+
+        await this.validaCustomers(customers, credendial, treatment.id);
+
+
         tasks.forEach(async function (t) {
             t.treatment_id = treatment.id;
-            customer = await taskService.create(c, credendial);
-
+            await taskService.create(t, credendial);
         })
 
-    }
-    
-    async validaCustomers(customers, credendial, treatmentId) {
 
-        customers.forEach(async function (c) {
-            //verifica se já existe o beneficiario. 
-            let customer = await customerService.findbyCpf(c, credendial);
-
-            if (customer.length === 0) {
-                //Se não existir, faça o registro
-                customer = await customerService.create(c, credendial);
-                //await customersIds.push(customer[0].id);
-                await treatmentStoreCustomer(customer, treatmentId);
-            }
-            if (customer.length === 1) {
-                await treatmentStoreCustomer(customer, treatmentId);
-            }
-            if (customer.length > 1) {
-                //lança erro emissão pode regisrar este beneficiário
-            }
-            //return undefined;
-            //Caso exista não atualize. 
-        });
     }
 
-    async store(treatment) {
-        return await treatmentModel.create(treatment);
-    }
-
-    async treatmentStoreCustomer(customer, treatmentId) {
-        const tc = {
-            id: uuid.v4().toUpperCase(),
-            treatment_id: treatmentId,
-            customer_id: customerId,
-            createdby: customer.createdby,
-            created: moment()
-        }
-        return await Treatment_Customer.create(tc);
-    }
 }
 module.exports = TreatmentService;

@@ -118,6 +118,16 @@ routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(di
 
  routes.get(`${treatmentPath}/find-by-action/:action`,  asynchandler(class_1), asynchandler(treatmentcontroller.findByAction));
  routes.post(`${treatmentPath}/`,  asynchandler(class_1), asynchandler(treatmentcontroller.create));
+
+
+ /**
+  * Rotas de Consultas de DAP's
+  */
+ const DapController = require('./src/controllers/dap-controller');
+ const dapcontroller = new DapController();
+ const dapPath = '/api/v1/dapweb';
+
+ routes.get(`${dapPath}/find-by-cpf/:cpf`,  asynchandler(dapcontroller.findByCpf));
  
  
  routes.use((error, req, res, next)=>{
