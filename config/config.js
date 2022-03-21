@@ -1,18 +1,7 @@
 require('dotenv').config();
 
 module.exports = {
-  development: {
-    username: "esloctaru",
-    password: "#H0864#@",
-    database: "smart",
-    host: "45.174.40.217",
-    dialect: "mysql",
-    define: {
-      timestamps: true,
-      underscored: false
-    }
-  }, 
-  local: {
+  production: {
     username: "esloctaru",
     password: "#H0864#@",
     database: "smart",
@@ -23,10 +12,21 @@ module.exports = {
       underscored: false
     }
   },
-  production: {
+  development: {
+    username: "esloctaru",
+    password: "#H0864#@",
+    database: "smart_dev",
+    host: "45.174.40.217",
+    dialect: "mysql",
+    define: {
+      timestamps: true,
+      underscored: false
+    }
+  },
+  local: {
     username: "3conn",
     password: "$2a$12$fDM90eiqN5gXQfJAAecPFOzplJnPnp5I9TgI174r2Rh3LYsoyJ4Hm",
-    database: "smart",
+    database: "smart_local",
     host: "localhost",
     dialect: "mysql",
     define: {
@@ -35,10 +35,10 @@ module.exports = {
     }
   },
   test: {
-    username: "root",
-    password: null,
-    database: "database_production",
-    host: "127.0.0.1",
+    username: "3conn",
+    password: "$2a$12$fDM90eiqN5gXQfJAAecPFOzplJnPnp5I9TgI174r2Rh3LYsoyJ4Hm",
+    database: "smart_test",
+    host: "localhost",
     dialect: "mysql",
     define: {
       timestamps: true,
