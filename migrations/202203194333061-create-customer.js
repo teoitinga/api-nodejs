@@ -18,7 +18,10 @@ module.exports = {
       cpf: {
         type: Sequelize.STRING(11),
       },
-
+      birth_date: {
+        defaultValue: null,
+        type: Sequelize.DATEONLY
+      },
       role_id: {
         type: Sequelize.STRING
       },

@@ -119,15 +119,26 @@ routes.put(`${divisionPath}/extend/:id`,  asynchandler(class_1), asynchandler(di
  routes.get(`${treatmentPath}/find-by-action/:action`,  asynchandler(class_1), asynchandler(treatmentcontroller.findByAction));
  routes.post(`${treatmentPath}/`,  asynchandler(class_1), asynchandler(treatmentcontroller.create));
 
+ /**
+  * Rotas de Customers
+  */
+ const CustomerController = require('./src/controllers/customer-controller');
+ const customercontroller = new CustomerController();
+ const customerPath = '/api/v1/customers';
+
+ routes.get(`${customerPath}/:cpf`, asynchandler(customercontroller.findByCpf));
+
 
  /**
   * Rotas de Consultas de DAP's
   */
  const DapController = require('./src/controllers/dap-controller');
+const CustomerService = require('./src/services/customer-service');
  const dapcontroller = new DapController();
  const dapPath = '/api/v1/dapweb';
 
  routes.get(`${dapPath}/find-by-cpf/:cpf`,  asynchandler(dapcontroller.findByCpf));
+ routes.get(`${dapPath}/query-acerbity/:cpf`,  asynchandler(dapcontroller.queryAcerbity));
  
  
  routes.use((error, req, res, next)=>{

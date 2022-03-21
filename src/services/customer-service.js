@@ -29,7 +29,36 @@ class CustomerService {
         customer.created = moment();
         customer.expiresDate = moment().add(process.env.CUSTOMER_EXPIRES, 'month');
 
-        return await CustomerModel.create(customer);
+        //Remove possíveis erros no registro
+        /**
+         * Corrige caracteres no CEP
+         */
+        customer.cep = customer.cep.replace('-', '').replace('.','');
+        
+        /**
+         * Correção de espaços em excesso no nome do beneficiário
+         */
+        customer.name = customer.name.trim();
+        
+        /**
+         * Correção em dados da data de nascimento para registro no banco de dados
+         */
+        if(customer.birth_date === ''){
+            customer.birth_date = undefined;
+        }
+
+        try{
+            return await CustomerModel.create(customer);
+        }catch(e){
+            throw new ServerErrorException(e);
+        }
+    }
+    async findCustomer(request){
+        const cpf = request.params['cpf'];
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        return await this.findbyCpf({cpf:cpf}, credendial);
     }
     async findbyCpf(customer, credendial) {
         /**

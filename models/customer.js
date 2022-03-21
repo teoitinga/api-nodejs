@@ -7,6 +7,7 @@ class Customer extends Model {
       name: DataTypes.STRING,
       nickname: DataTypes.STRING,
       cpf: DataTypes.STRING,
+      birth_date: DataTypes.DATE,
       role_id: DataTypes.STRING,
       partner_id: DataTypes.STRING,
       division_id: DataTypes.STRING,
