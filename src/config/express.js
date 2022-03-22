@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const routes = require('../../routes');
 const Sequelize = require('../../config/index');
+
 require('dotenv').config()
 
 module.exports = () => {
@@ -30,8 +31,10 @@ module.exports = () => {
   }));
 
   app.use(cors({
-    origin: '*'
-    //origin: ['https://www.section.io', 'https://www.google.com/']
+    //origin: '*',
+    credentials: true,
+    origin: ['http://45.174.40.217:4200'],
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }))
 
   //Routes

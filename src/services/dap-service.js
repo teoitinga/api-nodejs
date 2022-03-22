@@ -99,11 +99,11 @@ class DapService {
             emissao: await this.convertToDate(dap.dataEmissao),
             qtdmoradores: dap.NMembrosFamilia,
             qtdImoveis: dap.NImoveisExplorados,
-            nomeImovelPrincipal: dap.DenominacaoImovelPrincipal.trim(),
-            municipio: dap.MunicipioUF.trim(),
+            nomeImovelPrincipal: dap.DenominacaoImovelPrincipal? dap.DenominacaoImovelPrincipal.trim(): undefined,
+            municipio: dap.MunicipioUF? dap.MunicipioUF.trim(): undefined,
             areaDaPropriedade: dap.AreaEstabelecimento,
             areaImovelPrincipal: dap.AreaImovelPrincipal,
-            localizacaoImovelPrincipal: dap.LocalizacaoImovelPrincipal.trim(),
+            localizacaoImovelPrincipal: dap.LocalizacaoImovelPrincipal? dap.LocalizacaoImovelPrincipal.trim(): undefined,
             caracterizacao: dap.CaracterizacaoDAP.map(c => {
                 return c.CaracterizacaoDoBeneficiario.trim()
             }),

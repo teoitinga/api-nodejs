@@ -65,6 +65,11 @@ class ContractService {
 
         throw new ServerErrorException('Só é permitido parcelamentos em 12, 6, 4, 3 e parcela única.');
     }
+
+    async generatehashPassword() {
+        return await this.cache.generatehashPassword();
+    }
+
     async tender(request) {
 
         const tenderDto = await request.body;
@@ -172,7 +177,8 @@ class ContractService {
         user.uf = tenderDto.partner_uf;
 
         /**Define um password aleatório e envia no email posteriormente */
-        user.password = await this.generatehashPassword();
+        //user.password = await this.generatehashPassword();
+        user.password = await cache.generatehashPassword()
 
         user.partner_id = id;
         user.division_id = id;
@@ -210,9 +216,7 @@ class ContractService {
         return tenderDto;
     }
 
-    async generatehashPassword() {
-        return await this.cache.generatehashPassword();
-    }
+
 
     async findall() {
 
