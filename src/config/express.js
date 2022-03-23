@@ -31,9 +31,9 @@ module.exports = () => {
   }));
 
   app.use(cors({
-    //origin: '*',
+    origin: '*',
     credentials: true,
-    origin: ['http://45.174.40.217:4200'],
+    //origin: ['http://45.174.40.217:4200'],
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }))
 
