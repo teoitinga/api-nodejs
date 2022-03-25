@@ -97,7 +97,7 @@ class CustomerService {
     }
     async findByAdmin(customer, credendial) {
         const query = `
-        SELECT * FROM smart.customers 
+        SELECT * FROM customers 
             where 
             and customers.cpf = '${customer.cpf}'
         `;
@@ -105,7 +105,7 @@ class CustomerService {
     }
     async findByPartner(customer, credendial) {
         const query = `
-        SELECT * FROM smart.customers 
+        SELECT * FROM customers 
             where 
             customers.partner_id = '${credendial.partnerId}'
             and customers.cpf = '${customer.cpf}'
@@ -115,7 +115,7 @@ class CustomerService {
 
     async findByDivision(customer, credendial) {
         const query = `
-        SELECT * FROM smart.customers 
+        SELECT * FROM customers 
             where 
             customers.partner_id = '${credendial.partnerId}'
             and customers.division_id = '${credendial.divisionId}'
@@ -126,7 +126,7 @@ class CustomerService {
 
     async findByUser(customer, credendial) {
         const query = `
-        SELECT * FROM smart.customers 
+        SELECT * FROM customers 
             where 
             customers.partner_id = '${credendial.partnerId}'
             and customers.division_id = '${credendial.divisionId}'

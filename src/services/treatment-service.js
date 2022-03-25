@@ -31,7 +31,7 @@ class TreatmentService {
 
         const query = `
         SELECT actions.id, actions.description,  actions.referency, actions.qtdAtendimentos, actions.valorPorAtendimento
-        FROM smart.actions left join projects on actions.project_id = projects.id
+        FROM actions left join projects on actions.project_id = projects.id
         where referency like('%${action}%')
         and projects.lockedDate is null
         and now()>start

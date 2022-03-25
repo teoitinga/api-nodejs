@@ -9,7 +9,7 @@ class ThemeService {
         try {
 
             theme.id = uuid.v4().toUpperCase();
-            theme.createdby = 'sldakshdkajsd'
+            theme.createdby = 'none'
             theme.created = moment();
 
             await ThemeModel.create(theme);

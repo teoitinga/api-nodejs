@@ -442,7 +442,7 @@ class UserService {
         const query = `
         SELECT
             users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
-            FROM smart.users
+            FROM users
                 left join roles
                 on users.role_id = roles.id
                 where 
@@ -523,7 +523,7 @@ class UserService {
         //Se classe >8, retorna todos
         if (role_class > 8) {
             const query = `
-            SELECT * FROM smart.users 
+            SELECT * FROM users 
                 left join roles 
             `;
             const users = await UserModel.sequelize.query(query);
@@ -532,7 +532,7 @@ class UserService {
         //Se classe >5 e <8 retorn os usuarios da empresa
         if ((role_class >= 5) && (role_class <= 8)) {
             const query = `
-            SELECT * FROM smart.users 
+            SELECT * FROM users 
                 left join roles 
                 on roles.id = users.role_id
                 where roles.class<${role_class} 
@@ -548,7 +548,7 @@ class UserService {
             const query = `
             SELECT 
             users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
-            FROM smart.users 
+            FROM users 
                 left join roles 
                 on users.role_id = roles.id
                 where roles.class<${role_class} 
