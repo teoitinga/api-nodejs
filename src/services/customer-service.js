@@ -33,7 +33,7 @@ class CustomerService {
         /**
          * Corrige caracteres no CEP
          */
-        customer.cep = customer.cep.replace('-', '').replace('.','');
+        customer.cep = customer.cep? customer.cep.replace('-', '').replace('.',''): '';
         
         /**
          * Correção de espaços em excesso no nome do beneficiário

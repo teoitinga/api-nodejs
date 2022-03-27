@@ -4,6 +4,9 @@ const cors = require('cors');
 const routes = require('../../routes');
 const Sequelize = require('../../config/index');
 
+
+
+
 require('dotenv').config()
 
 module.exports = () => {
