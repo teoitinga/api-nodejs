@@ -9,6 +9,7 @@ class Treatment extends Model {
       situacao: DataTypes.STRING,
       orientacao: DataTypes.STRING,
       recomendacao: DataTypes.STRING,
+      pathFileName: DataTypes.STRING,
       createdby: DataTypes.STRING,
       updatedby: DataTypes.STRING,
       created: DataTypes.DATE,

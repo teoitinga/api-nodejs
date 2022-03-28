@@ -4,8 +4,10 @@ const service = new Service();
 class UploadController {
 
         async createRater(req, res) {
-                const stored = await service.createRater(req)
-                res.status(201).json(stored);
+                console.log(req);
+                //const stored = await service.createRater(req)
+                res.json({ message: "Successfully uploaded files" });
+                //res.status(201).json(stored);
         };
 }
 module.exports = UploadController;

@@ -4,11 +4,8 @@ const routes = express.Router();
 const jwt = require('jsonwebtoken');
 const asynchandler = require('express-async-handler');
 
-/**
- * Responsável por gravar os arquivos vindos por upload
- */
- const multer  = require('multer');
- const upload = multer({ dest: 'uploads/' })
+const multer = require('multer');
+const multerLocal = require('../ares-api/src/core/multer-config');
 
 const {
     class_0,
@@ -123,7 +120,7 @@ const treatmentcontroller = new TreatmentController();
 const treatmentPath = '/api/v1/treatments';
 
 routes.get(`${treatmentPath}/find-by-action/:action`, asynchandler(class_1), asynchandler(treatmentcontroller.findByAction));
-routes.post(`${treatmentPath}/`, asynchandler(class_1), asynchandler(treatmentcontroller.create));
+routes.post(`${treatmentPath}/`, asynchandler(class_1), multerLocal.single('rater'), asynchandler(treatmentcontroller.create));
 
 /**
  * Rotas de Customers
@@ -146,14 +143,10 @@ const dapPath = '/api/v1/dapweb';
 routes.get(`${dapPath}/find-by-cpf/:cpf`, asynchandler(dapcontroller.findByCpf));
 routes.get(`${dapPath}/query-acerbity/:cpf`, asynchandler(dapcontroller.queryAcerbity));
 
-/**
- * Rotas de upload de arquivos
- */
 const UploadController = require('./src/controllers/upload-controller');
-//const UploadService = require('./src/services/upload-service');
-//const uploadService = new UploadService();
+const uploadController = new UploadController();
 const uploadPath = '/api/v1/upload';
-routes.post(`${uploadPath}/rater`, upload.single('rater'), asynchandler(UploadController.findByCpf));
+routes.post(`${uploadPath}/rater`, asynchandler(class_10), multerLocal.single('rater'), asynchandler(uploadController.createRater));
 
 routes.use((error, req, res, next) => {
     console.error(error);

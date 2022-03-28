@@ -52,9 +52,9 @@ class TreatmentService {
             createdby: credendial.userId,
             created: moment()
         }
-        try{
+        try {
             return await Treatment_Customer.create(tc);
-        }catch(e){
+        } catch (e) {
             throw new TreatmentException('Error on a treatment customer registry.');
 
         }
@@ -88,7 +88,7 @@ class TreatmentService {
     }
 
     async store(treatment) {
-        
+
         return await treatmentModel.create(treatment);
     }
 
@@ -99,12 +99,13 @@ class TreatmentService {
 
         const activeUser = credendial.userId;
 
-        let treatment = request.body;
+        let treatment = JSON.parse(request.body.treatment);
 
         /**Define variáveis auxiliares */
-        treatment.id = uuid.v4().toUpperCase();
+        //treatment.id = uuid.v4().toUpperCase();
         treatment.createdby = credendial.userId;
         treatment.created = moment();
+        //treatment.pathFileName = treatment.pathFileName;
 
         /**
          * Registra todos os beneficiários
@@ -119,14 +120,14 @@ class TreatmentService {
             //lança erro de task não encontrada
             throw new TreatmentException('Não existe nenhum serviço a se cadastrar.');
         }
-        
-        
+
+
         /**
          * Registra a treatment
          */
-        try{
+        try {
             treatment = await this.store(treatment);
-        }catch(e){
+        } catch (e) {
             throw new TreatmentException('Error on a treatment registry.');
 
         }
