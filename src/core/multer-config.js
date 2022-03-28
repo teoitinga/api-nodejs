@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -19,7 +21,9 @@ module.exports = (multer({
 
             //const partner_id = 'PARTNERID';
             //const path = `./RATERS/${partner_id}/${division_id}/`
-            const path = `./RATERS/`
+            //const path = `./RATERS/`
+            const path = FOLDER_RATER_FILES;
+
             fs.mkdirSync(path, { recursive: true })
 
             return cb(null, path)

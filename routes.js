@@ -4,8 +4,9 @@ const routes = express.Router();
 const jwt = require('jsonwebtoken');
 const asynchandler = require('express-async-handler');
 
-const multer = require('multer');
-const multerLocal = require('../ares-api/src/core/multer-config');
+//const multer = require('multer');
+//const multerLocal = require('../ares-api/src/core/multer-config');
+const multerLocal = require('./src/core/multer-config');
 
 const {
     class_0,
