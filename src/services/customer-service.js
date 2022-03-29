@@ -100,7 +100,7 @@ class CustomerService {
         SELECT * FROM customers 
             where 
             and customers.cpf = '${customer.cpf}'
-        `;
+        `; 
         return await CustomerModel.sequelize.query(query, { type: CustomerModel.sequelize.QueryTypes.SELECT });
     }
     async findByPartner(customer, credendial) {

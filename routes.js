@@ -39,12 +39,14 @@ const userPath = '/api/v1/users';
 routes.post(`${userPath}/login`, asynchandler(logincontroller.login));
 routes.post(`${userPath}`, asynchandler(class_7), asynchandler(logincontroller.create));
 routes.get(`${userPath}`, asynchandler(class_1), asynchandler(logincontroller.findall));
-routes.get(`${userPath}/:id`, asynchandler(class_1), asynchandler(logincontroller.findbyid));
+routes.get(`${userPath}/find-by-id/:id`, asynchandler(class_1), asynchandler(logincontroller.findbyid));
 routes.put(`${userPath}/:id`, asynchandler(class_1), asynchandler(logincontroller.update));
 routes.put(`${userPath}/recovery/:id`, asynchandler(class_1), asynchandler(logincontroller.recovery));
 routes.put(`${userPath}/toggle-lock/:id`, asynchandler(class_1), asynchandler(logincontroller.toggleLock));
 routes.put(`${userPath}/extend/:id`, asynchandler(class_1), asynchandler(logincontroller.extend));
 routes.get(`${userPath}/find-by-name/:name`, asynchandler(class_1), asynchandler(logincontroller.findbyname));
+routes.get(`${userPath}/count-my-tasks`, asynchandler(class_1), asynchandler(logincontroller.countMyTasks));
+routes.get(`${userPath}/my-tasks`, asynchandler(class_1), asynchandler(logincontroller.findMyTasks));
 
 /**
  * Rotas de Roles

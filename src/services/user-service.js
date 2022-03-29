@@ -454,13 +454,12 @@ class UserService {
                 and users.name like('%${name}%')
                 ;
         `;
-        const users = await UserModel.sequelize.query(query);
+        const users = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
 
         return users[0];
     }
-    async findMyActions(request) {
+    async countMyActions(request) {
 
-        const name = request.params['name'];
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
@@ -468,23 +467,54 @@ class UserService {
         const userId = credendial.userId;
 
         const query = `
-        SELECT
-            users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
-            FROM users
-                left join roles
-                on users.role_id = roles.id
+        SELECT 
+        count(tasks.id) as tasks
+        FROM tasks
+        left join treatments on treatments.id = tasks.treatment_id
+        left join treatment_customers on treatment_customers.treatment_id = treatments.id
+        left join customers on customers.id = treatment_customers.customer_id
+        left join users on users.id = tasks.userDesigned_id
                 where 
-                (roles.class < ${role_class} or users.id = '${userId}')
-                and users.division_id = '${division_id}'
-                and users.partner_id = '${partner_id}'
-                and users.lockedDate is null
-                and users.expiresDate > now()
-                and users.name like('%${name}%')
+                users.id = '${userId}'
+                and tasks.status = 'INICIADA'
                 ;
         `;
-        const users = await UserModel.sequelize.query(query);
+        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
 
-        return users[0];
+        return tasks[0];
+    }
+    async findMyActions(request) {
+
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+
+        const query = `
+        SELECT 
+        customers.name as customername,
+        customers.id as customerid,
+        users.name as username,
+        users.id as userid,
+        users.division_id as division,
+        users.partner_id as partner,
+        tasks.id, tasks.status, tasks.created, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
+        tasks.userDesigned_id
+        FROM tasks
+        left join treatments on treatments.id = tasks.treatment_id
+        left join treatment_customers on treatment_customers.treatment_id = treatments.id
+        left join customers on customers.id = treatment_customers.customer_id
+        left join users on users.id = tasks.userDesigned_id
+                where 
+                users.id = '${userId}'
+                and tasks.status = 'INICIADA'
+        order by treatments.data desc
+                ;
+        `;
+        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+
+        return tasks;
     }
 
     /**
@@ -584,9 +614,9 @@ left join users on users.id = tasks.userDesigned_id
                 where roles.class<${role_class} 
                 and users.partner_id = '${partner_id}'
             `;
-            const users = await UserModel.sequelize.query(query);
+            const users = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
 
-            return users[0];
+            return users;
         }
         //Se classe <5 e maio que 2 os usuario do departamento
         if ((role_class > 2) && (role_class < 5)) {
@@ -602,9 +632,9 @@ left join users on users.id = tasks.userDesigned_id
                 and users.partner_id = '${partner_id}'
             `
             ;
-            const users = await UserModel.sequelize.query(query);
+            const users = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
             
-            return users[0];
+            return users;
         }
         //Se classe <2 somente o proprie registro
         if (role_class <= 2) {
