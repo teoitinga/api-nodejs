@@ -63,5 +63,26 @@ class LoginController {
         const stored = await service.extend(req, id);
         res.status(200).json(stored);
     };
+
+    async restartTasks(req, res) {
+        const id = req.params['id'];
+        const stored = await service.restartTasks(req, id);
+        res.status(200).json(stored);
+    };
+    async finalizeTasks(req, res) {
+        const id = req.params['id'];
+        const stored = await service.finalizeTasks(req, id);
+        res.status(200).json(stored);
+    };
+    async expireTasks(req, res) {
+        const id = req.params['id'];
+        const stored = await service.expireTasks(req, id);
+        res.status(200).json(stored);
+    };
+    async cancelTasks(req, res) {
+        const id = req.params['id'];
+        const stored = await service.cancelTasks(req, id);
+        res.status(200).json(stored);
+    };
 }
 module.exports = LoginController;

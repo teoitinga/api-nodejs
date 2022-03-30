@@ -30,6 +30,8 @@ const divisionService = new DivisionService();
 const ThemeService = require('../services/theme-service');
 const themeService = new ThemeService();
 
+const TaskModel = require('../../models/task');
+
 const {
     ServerErrorException,
     NotFoundErrorException
@@ -87,6 +89,126 @@ class UserService {
 
     }
 
+    async finalizeTasks(request, id){
+
+        const statusReq = 'FINALIZADA';
+
+        const credendial = await cache.getCredencial(request);
+
+        /**
+         * Diretores não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+
+
+        const updatedRows = await TaskModel.update(
+            {
+              status: `${statusReq}`,
+            },
+            {
+              where: { id },
+            }
+          );
+
+    }
+    async cancelTasks(request, id){
+
+        const statusReq = 'CANCELADA';
+
+        const credendial = await cache.getCredencial(request);
+
+        /**
+         * Diretores não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+
+
+        const updatedRows = await TaskModel.update(
+            {
+              status: `${statusReq}`,
+            },
+            {
+              where: { id },
+            }
+          );
+
+    }
+    async expireTasks(request, id){
+
+        const statusReq = 'EXPIRADA';
+
+        const credendial = await cache.getCredencial(request);
+
+        /**
+         * Diretores não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+
+
+        const updatedRows = await TaskModel.update(
+            {
+              status: `${statusReq}`,
+            },
+            {
+              where: { id },
+            }
+          );
+
+    }
+    async restartTasks(request, id){
+
+        const statusReq = 'INICIADA';
+
+        const credendial = await cache.getCredencial(request);
+
+        /**
+         * Diretores não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+
+
+        const updatedRows = await TaskModel.update(
+            {
+              status: `${statusReq}`,
+            },
+            {
+              where: { id },
+            }
+          );
+
+    }
+    async finalizeTasks(request, id){
+
+        const statusReq = 'FINALIZADA';
+
+        const credendial = await cache.getCredencial(request);
+
+        /**
+         * Diretores não  informam dados de departamento ou empresa
+         * O ID da empresa  e da divisão já são configurados de acordo com a empresa e departamento na qual o usuraio pertence
+         */
+        request.body.partner_id = credendial.partnerId;
+        request.body.division_id = credendial.divisionId;
+
+
+        const updatedRows = await TaskModel.update(
+            {
+              status: `${statusReq}`,
+            },
+            {
+              where: { id },
+            }
+          );
+
+    }
     async sendMail(obj) {
         await mailService.send({
             to: obj.email,
@@ -99,7 +221,7 @@ class UserService {
             <p><strong>Seu login:</strong> ${obj.registry}</p>
             <p><strong>Sua senha provisória:</strong> ${obj.password}</p>
             <br>
-            <p>clique neste link para acessar o portal: <a href="${process.env.APP_LINK_API}">JP-ARES</a></p>
+            <p>clique neste link para acessar o portal: <a href="${process.env.APP_FRONT_LINK}">JP-ARES</a></p>
             <p>"${process.env.TEXT_LGPG}"</p>
             <br>
             <p>Atenciosamente,</p>

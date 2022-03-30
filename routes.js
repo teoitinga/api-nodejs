@@ -47,6 +47,10 @@ routes.put(`${userPath}/extend/:id`, asynchandler(class_1), asynchandler(loginco
 routes.get(`${userPath}/find-by-name/:name`, asynchandler(class_1), asynchandler(logincontroller.findbyname));
 routes.get(`${userPath}/count-my-tasks`, asynchandler(class_1), asynchandler(logincontroller.countMyTasks));
 routes.get(`${userPath}/my-tasks`, asynchandler(class_1), asynchandler(logincontroller.findMyTasks));
+routes.put(`${userPath}/finalize/:id`, asynchandler(class_1), asynchandler(logincontroller.finalizeTasks));
+routes.put(`${userPath}/cancel/:id`, asynchandler(class_1), asynchandler(logincontroller.cancelTasks));
+routes.put(`${userPath}/expire/:id`, asynchandler(class_1), asynchandler(logincontroller.expireTasks));
+routes.put(`${userPath}/restart/:id`, asynchandler(class_1), asynchandler(logincontroller.restartTasks));
 
 /**
  * Rotas de Roles

@@ -36,7 +36,7 @@ module.exports = () => {
   app.use(cors({
     origin: '*',
     credentials: true,
-    //origin: ['http://45.174.40.217:4200'],
+    //origin: ['http://45.174.40.217:3000/'],
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
   }))
 
