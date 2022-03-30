@@ -467,15 +467,9 @@ class UserService {
         const userId = credendial.userId;
 
         const query = `
-        SELECT 
-        count(tasks.id) as tasks
-        FROM tasks
-        left join treatments on treatments.id = tasks.treatment_id
-        left join treatment_customers on treatment_customers.treatment_id = treatments.id
-        left join customers on customers.id = treatment_customers.customer_id
-        left join users on users.id = tasks.userDesigned_id
+        SELECT count(*) as tasks FROM tasks
                 where 
-                users.id = '${userId}'
+                tasks.userDesigned_id = '${userId}'
                 and tasks.status = 'INICIADA'
                 ;
         `;
@@ -501,16 +495,16 @@ class UserService {
         users.partner_id as partner,
         tasks.id, tasks.status, tasks.created, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
         tasks.userDesigned_id
-        FROM tasks
-        left join treatments on treatments.id = tasks.treatment_id
-        left join treatment_customers on treatment_customers.treatment_id = treatments.id
-        left join customers on customers.id = treatment_customers.customer_id
-        left join users on users.id = tasks.userDesigned_id
-                where 
-                users.id = '${userId}'
-                and tasks.status = 'INICIADA'
-        order by treatments.data desc
-                ;
+            FROM tasks
+            left join treatments on treatments.id= tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on customers.id = treatment_customers.customer_id
+            left join users on users.id = tasks.userDesigned_id
+            where tasks.userDesigned_id=  '${userId}'
+            and tasks.status = 'INICIADA'
+            group by tasks.treatment_id
+            order by treatments.data desc
+        ;
         `;
         const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
 
