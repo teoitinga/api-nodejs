@@ -41,8 +41,8 @@ class TreatmentService {
         ;
         `;
 
-        const actions = await ActionModel.sequelize.query(query);
-        return actions[0];
+        const actions = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
+        return actions;
     }
     async treatmentStoreCustomer(customer, treatmentId, credendial) {
         const tc = {

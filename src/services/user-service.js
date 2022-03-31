@@ -578,7 +578,7 @@ class UserService {
         `;
         const users = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
 
-        return users[0];
+        return users;
     }
     async countMyActions(request) {
 
