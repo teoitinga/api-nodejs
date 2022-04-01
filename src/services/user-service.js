@@ -16,7 +16,6 @@ const mailService = new MailService();
 const UserModel = require('../../models/user');
 const UserDto = require('../../src/dtos/usuario-dto');
 
-const RoleModel = require('../../models/role');
 
 const RoleService = require('../services/role-service');
 const roleService = new RoleService();
@@ -31,6 +30,7 @@ const ThemeService = require('../services/theme-service');
 const themeService = new ThemeService();
 
 const TaskModel = require('../../models/task');
+const ProjectModel = require('../../models/project');
 
 const {
     ServerErrorException,
@@ -51,6 +51,13 @@ const DivisionDto = require('../dtos/division-dto');
 require('dotenv').config();
 
 class UserService {
+    
+    ADMINISTRADOR_PORTAL = 8;
+    GESTOR_CONTRATO = 7;
+    DIRETOR_DIVISAO = 4;
+    FUNCIONARIO = 2;
+    ACESSO_PUBLICO = 1;
+
     constructor() { }
     async storage(user) {
 
@@ -159,6 +166,227 @@ class UserService {
               where: { id },
             }
           );
+
+    }
+    async countProjectsGestor(data){
+        const query = `
+            select * from projects
+            where
+            lockedDate is null 
+            and partner_id='${data.partner_id}'
+            and year(created)=${data.ano}
+            order by created desc
+                ;
+        `;
+        const projects = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return projects;
+    }
+    async countProjectsDiretor(data){
+        const query = `
+            select * from projects
+            where
+            lockedDate is null 
+            and partner_id='${data.partner_id}'
+            and division_id = '${data.division_id}'
+            and year(created)=${data.ano}
+            order by created desc
+                ;
+        `;
+        const projects = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return projects;
+    }
+
+    async countProjectsFuncionario(data){
+        return await this.countProjectsDiretor(data);
+    }
+
+    async allCustomers(request){
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+        
+        /**Define o ano atual */
+        const ano = moment().utc().format('yyyy');
+
+        const data = {
+            partner_id, division_id, userId, ano
+        }
+
+        if(role_class >= this.ADMINISTRADOR_PORTAL){
+            return {};
+        }
+        if(role_class >= this.GESTOR_CONTRATO){
+            return this.allCustomersGestor(data);
+        }
+        if(role_class >= this.DIRETOR_DIVISAO){
+            return this.allCustomersDiretor(data);
+        }
+        if(role_class >= this.FUNCIONARIO){
+            return this.allCustomersFuncionario(data);
+        }
+        if(role_class >= this.ACESSO_PUBLICO){
+            return {};
+        }
+    }
+    async allTreatments(request){
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+        
+        /**Define o ano atual */
+        const ano = moment().utc().format('yyyy');
+
+        const data = {
+            partner_id, division_id, userId, ano
+        }
+
+        if(role_class >= this.ADMINISTRADOR_PORTAL){
+            return {};
+        }
+        if(role_class >= this.GESTOR_CONTRATO){
+            return this.allTreatmensGestor(data);
+        }
+        if(role_class >= this.DIRETOR_DIVISAO){
+            return this.allTreatmensDiretor(data);
+        }
+        if(role_class >= this.FUNCIONARIO){
+            return this.allTreatmensFuncionario(data);
+        }
+        if(role_class >= this.ACESSO_PUBLICO){
+            return {};
+        }
+    }
+    async allCustomersGestor(data){
+        const query = `
+            select 
+            customers.name as beneficiario,
+            count(treatments.id) as atendimentos,
+            customers.id
+            from tasks
+            left join actions on tasks.action_id = actions.id
+            left join projects on actions.project_id = projects.id
+            left join treatments on treatments.id = tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on treatment_customers.customer_id = customers.id
+            where
+                tasks.status='FINALIZADA'
+                AND projects.partner_id='${data.partner_id}'
+                and year(treatments.data) = ${data.ano}
+                group by treatments.id
+        ;
+        `;
+        const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return treatments;
+    }
+    async allCustomersDiretor(data){
+        const query = `
+            select 
+            customers.name as beneficiario,
+            count(treatments.id) as atendimentos,
+            customers.id
+            from tasks
+            left join actions on tasks.action_id = actions.id
+            left join projects on actions.project_id = projects.id
+            left join treatments on treatments.id = tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on treatment_customers.customer_id = customers.id
+            where
+                tasks.status='FINALIZADA'
+                AND projects.partner_id='${data.partner_id}'
+                AND projects.division_id='${data.division_id}'
+                and year(treatments.data) = ${data.ano}
+                group by treatments.id
+        ;
+        `;
+        const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return treatments;
+    }
+    async allCustomersFuncionario(data){
+        return await this.allCustomersDiretor(data);
+    }
+    async allTreatmensGestor(data){
+        const query = `
+            select 
+            count(*) as atendimentos
+            from tasks
+            inner join actions on tasks.action_id = actions.id
+            inner join projects on actions.project_id = projects.id
+            left join treatments on treatments.id = tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on treatment_customers.customer_id = customers.id
+            where
+            tasks.status='FINALIZADA'
+            AND projects.partner_id='${data.partner_id}'
+            and year(treatments.data) = ${data.ano}
+        ;
+        `;
+        const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return treatments;
+    }
+    async allTreatmensDiretor(data){
+        const query = `
+            select 
+            count(*) as atendimentos
+            from tasks
+            inner join actions on tasks.action_id = actions.id
+            inner join projects on actions.project_id = projects.id
+            left join treatments on treatments.id = tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on treatment_customers.customer_id = customers.id
+            where
+            tasks.status='FINALIZADA'
+            AND projects.partner_id='${data.partner_id}'
+            and projects.division_id='${data.division_id}'
+            and year(treatments.data) = ${data.ano}
+        ;
+        `;
+        const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return treatments;
+    }
+    async allTreatmensFuncionario(data){
+        return this.allTreatmensDiretor(data);
+
+    }
+    async countProjects(request){
+
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+        
+        /**Define o ano atual */
+        const ano = moment().utc().format('yyyy');
+
+        const data = {
+            partner_id, division_id, userId, ano
+        }
+
+        if(role_class >= this.ADMINISTRADOR_PORTAL){
+            return {};
+        }
+        if(role_class >= this.GESTOR_CONTRATO){
+            return this.countProjectsGestor(data);
+        }
+        if(role_class >= this.DIRETOR_DIVISAO){
+            return this.countProjectsDiretor(data);
+        }
+        if(role_class >= this.FUNCIONARIO){
+            return this.countProjectsFuncionario(data);
+        }
+        if(role_class >= this.ACESSO_PUBLICO){
+            return {};
+        }
 
     }
     async restartTasks(request, id){

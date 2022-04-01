@@ -69,6 +69,19 @@ class LoginController {
         const stored = await service.restartTasks(req, id);
         res.status(200).json(stored);
     };
+    async allCustomers(req, res) {
+        const stored = await service.allCustomers(req);
+        res.status(200).json(stored);
+    };
+    
+    async allTreatments(req, res) {
+        const stored = await service.allTreatments(req);
+        res.status(200).json(stored);
+    };
+    async countProjects(req, res) {
+        const stored = await service.countProjects(req);
+        res.status(200).json(stored);
+    };
     async finalizeTasks(req, res) {
         const id = req.params['id'];
         const stored = await service.finalizeTasks(req, id);

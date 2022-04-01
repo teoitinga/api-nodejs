@@ -52,6 +52,12 @@ routes.put(`${userPath}/cancel/:id`, asynchandler(class_1), asynchandler(loginco
 routes.put(`${userPath}/expire/:id`, asynchandler(class_1), asynchandler(logincontroller.expireTasks));
 routes.put(`${userPath}/restart/:id`, asynchandler(class_1), asynchandler(logincontroller.restartTasks));
 
+/** GETs de dados para gestão */
+routes.get(`${userPath}/reports/all-projects`, asynchandler(class_1), asynchandler(logincontroller.countProjects));
+routes.get(`${userPath}/reports/all-treatments`, asynchandler(class_1), asynchandler(logincontroller.allTreatments));
+routes.get(`${userPath}/reports/all-customers`, asynchandler(class_1), asynchandler(logincontroller.allCustomers));
+
+/**Fim de gets para gestão */
 /**
  * Rotas de Roles
  */
