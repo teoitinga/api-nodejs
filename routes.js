@@ -56,6 +56,7 @@ routes.put(`${userPath}/restart/:id`, asynchandler(class_1), asynchandler(loginc
 routes.get(`${userPath}/reports/all-projects`, asynchandler(class_1), asynchandler(logincontroller.countProjects));
 routes.get(`${userPath}/reports/all-treatments`, asynchandler(class_1), asynchandler(logincontroller.allTreatments));
 routes.get(`${userPath}/reports/all-customers`, asynchandler(class_1), asynchandler(logincontroller.allCustomers));
+routes.get(`${userPath}/reports/all-treatments-by-date/:inicial/:final`, asynchandler(class_1), asynchandler(logincontroller.allTreatmentsByDate));
 
 /**Fim de gets para gestão */
 /**

@@ -51,7 +51,7 @@ const DivisionDto = require('../dtos/division-dto');
 require('dotenv').config();
 
 class UserService {
-    
+
     ADMINISTRADOR_PORTAL = 8;
     GESTOR_CONTRATO = 7;
     DIRETOR_DIVISAO = 4;
@@ -96,7 +96,7 @@ class UserService {
 
     }
 
-    async finalizeTasks(request, id){
+    async finalizeTasks(request, id) {
 
         const statusReq = 'FINALIZADA';
 
@@ -112,15 +112,15 @@ class UserService {
 
         const updatedRows = await TaskModel.update(
             {
-              status: `${statusReq}`,
+                status: `${statusReq}`,
             },
             {
-              where: { id },
+                where: { id },
             }
-          );
+        );
 
     }
-    async cancelTasks(request, id){
+    async cancelTasks(request, id) {
 
         const statusReq = 'CANCELADA';
 
@@ -136,15 +136,15 @@ class UserService {
 
         const updatedRows = await TaskModel.update(
             {
-              status: `${statusReq}`,
+                status: `${statusReq}`,
             },
             {
-              where: { id },
+                where: { id },
             }
-          );
+        );
 
     }
-    async expireTasks(request, id){
+    async expireTasks(request, id) {
 
         const statusReq = 'EXPIRADA';
 
@@ -160,15 +160,15 @@ class UserService {
 
         const updatedRows = await TaskModel.update(
             {
-              status: `${statusReq}`,
+                status: `${statusReq}`,
             },
             {
-              where: { id },
+                where: { id },
             }
-          );
+        );
 
     }
-    async countProjectsGestor(data){
+    async countProjectsGestor(data) {
         const query = `
             select * from projects
             where
@@ -182,7 +182,7 @@ class UserService {
 
         return projects;
     }
-    async countProjectsDiretor(data){
+    async countProjectsDiretor(data) {
         const query = `
             select * from projects
             where
@@ -198,17 +198,92 @@ class UserService {
         return projects;
     }
 
-    async countProjectsFuncionario(data){
+    async countProjectsFuncionario(data) {
         return await this.countProjectsDiretor(data);
     }
+    async allTreatmentsByDateGestor(data) {
+        const query = `
+            select 
+            treatments.id, treatments.data, customers.name, tasks.description, tasks.qtd, tasks.valor, tasks.status
+            from tasks
+            inner join actions on tasks.action_id = actions.id
+            inner join projects on actions.project_id = projects.id
+            left join treatments on treatments.id = tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on treatment_customers.customer_id = customers.id
+                where
+                projects.partner_id='${data.partner_id}'
+                and (treatments.data between date('${data.dtInicial}') and date('${data.dtFinal}'))
+                order by customers.name asc;
+        `;
+        const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
 
-    async allCustomers(request){
+        return treatments;
+    }
+    async allTreatmentsByDateDiretor(data) {
+        const query = `
+            select 
+            treatments.id, treatments.data, customers.name, tasks.description, tasks.qtd, tasks.valor, tasks.status
+            from tasks
+            inner join actions on tasks.action_id = actions.id
+            inner join projects on actions.project_id = projects.id
+            left join treatments on treatments.id = tasks.treatment_id
+            left join treatment_customers on treatment_customers.treatment_id = treatments.id
+            left join customers on treatment_customers.customer_id = customers.id
+                where
+                projects.partner_id='${data.partner_id}'
+                and projects.division_id='${data.division_id}'
+                and (treatments.data between date('${data.dtInicial}') and date('${data.dtFinal}'))
+                order by customers.name asc;
+        `;
+        const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
+
+        return treatments;
+    }
+    async allTreatmentsByDateFuncionario(data) {
+        return await this.allTreatmentsByDateDiretor(data);
+    }
+    async allTreatmentsByDate(request) {
+
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
         const role_class = credendial.role_class;
         const userId = credendial.userId;
-        
+
+        /**Define o ano atual */
+        const dtInicial = moment(request.params['inicial']).utc().format('yyyy-MM-DD');
+        const dtFinal = moment(request.params['final']).utc().format('yyyy-MM-DD');
+
+        const data = {
+            partner_id, division_id, userId, dtInicial, dtFinal
+        }
+
+        console.log(data);
+        if (role_class >= this.ADMINISTRADOR_PORTAL) {
+            return {};
+        }
+        if (role_class >= this.GESTOR_CONTRATO) {
+            return this.allTreatmentsByDateGestor(data);
+        }
+        if (role_class >= this.DIRETOR_DIVISAO) {
+            return this.allTreatmentsByDateDiretor(data);
+        }
+        if (role_class >= this.FUNCIONARIO) {
+            return this.allTreatmentsByDateFuncionario(data);
+        }
+        if (role_class >= this.ACESSO_PUBLICO) {
+            return {};
+        }
+    }
+
+    async allCustomers(request) {
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+
         /**Define o ano atual */
         const ano = moment().utc().format('yyyy');
 
@@ -216,29 +291,29 @@ class UserService {
             partner_id, division_id, userId, ano
         }
 
-        if(role_class >= this.ADMINISTRADOR_PORTAL){
+        if (role_class >= this.ADMINISTRADOR_PORTAL) {
             return {};
         }
-        if(role_class >= this.GESTOR_CONTRATO){
+        if (role_class >= this.GESTOR_CONTRATO) {
             return this.allCustomersGestor(data);
         }
-        if(role_class >= this.DIRETOR_DIVISAO){
+        if (role_class >= this.DIRETOR_DIVISAO) {
             return this.allCustomersDiretor(data);
         }
-        if(role_class >= this.FUNCIONARIO){
+        if (role_class >= this.FUNCIONARIO) {
             return this.allCustomersFuncionario(data);
         }
-        if(role_class >= this.ACESSO_PUBLICO){
+        if (role_class >= this.ACESSO_PUBLICO) {
             return {};
         }
     }
-    async allTreatments(request){
+    async allTreatments(request) {
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
         const role_class = credendial.role_class;
         const userId = credendial.userId;
-        
+
         /**Define o ano atual */
         const ano = moment().utc().format('yyyy');
 
@@ -246,23 +321,23 @@ class UserService {
             partner_id, division_id, userId, ano
         }
 
-        if(role_class >= this.ADMINISTRADOR_PORTAL){
+        if (role_class >= this.ADMINISTRADOR_PORTAL) {
             return {};
         }
-        if(role_class >= this.GESTOR_CONTRATO){
+        if (role_class >= this.GESTOR_CONTRATO) {
             return this.allTreatmensGestor(data);
         }
-        if(role_class >= this.DIRETOR_DIVISAO){
+        if (role_class >= this.DIRETOR_DIVISAO) {
             return this.allTreatmensDiretor(data);
         }
-        if(role_class >= this.FUNCIONARIO){
+        if (role_class >= this.FUNCIONARIO) {
             return this.allTreatmensFuncionario(data);
         }
-        if(role_class >= this.ACESSO_PUBLICO){
+        if (role_class >= this.ACESSO_PUBLICO) {
             return {};
         }
     }
-    async allCustomersGestor(data){
+    async allCustomersGestor(data) {
         const query = `
             select 
             customers.name as beneficiario,
@@ -285,7 +360,7 @@ class UserService {
 
         return treatments;
     }
-    async allCustomersDiretor(data){
+    async allCustomersDiretor(data) {
         const query = `
             select 
             customers.name as beneficiario,
@@ -309,10 +384,10 @@ class UserService {
 
         return treatments;
     }
-    async allCustomersFuncionario(data){
+    async allCustomersFuncionario(data) {
         return await this.allCustomersDiretor(data);
     }
-    async allTreatmensGestor(data){
+    async allTreatmensGestor(data) {
         const query = `
             select 
             count(*) as atendimentos
@@ -332,7 +407,7 @@ class UserService {
 
         return treatments[0];
     }
-    async allTreatmensDiretor(data){
+    async allTreatmensDiretor(data) {
         const query = `
             select 
             count(*) as atendimentos
@@ -353,18 +428,18 @@ class UserService {
 
         return treatments[0];
     }
-    async allTreatmensFuncionario(data){
+    async allTreatmensFuncionario(data) {
         return this.allTreatmensDiretor(data);
 
     }
-    async countProjects(request){
+    async countProjects(request) {
 
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
         const role_class = credendial.role_class;
         const userId = credendial.userId;
-        
+
         /**Define o ano atual */
         const ano = moment().utc().format('yyyy');
 
@@ -372,24 +447,24 @@ class UserService {
             partner_id, division_id, userId, ano
         }
 
-        if(role_class >= this.ADMINISTRADOR_PORTAL){
+        if (role_class >= this.ADMINISTRADOR_PORTAL) {
             return {};
         }
-        if(role_class >= this.GESTOR_CONTRATO){
+        if (role_class >= this.GESTOR_CONTRATO) {
             return this.countProjectsGestor(data);
         }
-        if(role_class >= this.DIRETOR_DIVISAO){
+        if (role_class >= this.DIRETOR_DIVISAO) {
             return this.countProjectsDiretor(data);
         }
-        if(role_class >= this.FUNCIONARIO){
+        if (role_class >= this.FUNCIONARIO) {
             return this.countProjectsFuncionario(data);
         }
-        if(role_class >= this.ACESSO_PUBLICO){
+        if (role_class >= this.ACESSO_PUBLICO) {
             return {};
         }
 
     }
-    async restartTasks(request, id){
+    async restartTasks(request, id) {
 
         const statusReq = 'INICIADA';
 
@@ -405,15 +480,15 @@ class UserService {
 
         const updatedRows = await TaskModel.update(
             {
-              status: `${statusReq}`,
+                status: `${statusReq}`,
             },
             {
-              where: { id },
+                where: { id },
             }
-          );
+        );
 
     }
-    async finalizeTasks(request, id){
+    async finalizeTasks(request, id) {
 
         const statusReq = 'FINALIZADA';
 
@@ -429,12 +504,12 @@ class UserService {
 
         const updatedRows = await TaskModel.update(
             {
-              status: `${statusReq}`,
+                status: `${statusReq}`,
             },
             {
-              where: { id },
+                where: { id },
             }
-          );
+        );
 
     }
     async sendMail(obj) {
@@ -975,9 +1050,9 @@ left join users on users.id = tasks.userDesigned_id
                 and users.division_id='${division_id}'
                 and users.partner_id = '${partner_id}'
             `
-            ;
+                ;
             const users = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
-            
+
             return users;
         }
         //Se classe <2 somente o proprie registro

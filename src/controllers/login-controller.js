@@ -73,7 +73,11 @@ class LoginController {
         const stored = await service.allCustomers(req);
         res.status(200).json(stored);
     };
-    
+    async allTreatmentsByDate(req, res) {
+        const stored = await service.allTreatmentsByDate(req);
+        res.status(200).json(stored);
+    };
+
     async allTreatments(req, res) {
         const stored = await service.allTreatments(req);
         res.status(200).json(stored);
