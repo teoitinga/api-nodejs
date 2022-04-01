@@ -330,7 +330,7 @@ class UserService {
         `;
         const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
 
-        return treatments;
+        return treatments[0];
     }
     async allTreatmensDiretor(data){
         const query = `
@@ -351,7 +351,7 @@ class UserService {
         `;
         const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
 
-        return treatments;
+        return treatments[0];
     }
     async allTreatmensFuncionario(data){
         return this.allTreatmensDiretor(data);
