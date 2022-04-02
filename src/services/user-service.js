@@ -203,18 +203,19 @@ class UserService {
     }
     async allTreatmentsByDateGestor(data) {
         const query = `
-            select 
-            treatments.id, treatments.data, customers.name, tasks.description, tasks.qtd, tasks.valor, tasks.status
-            from tasks
-            inner join actions on tasks.action_id = actions.id
-            inner join projects on actions.project_id = projects.id
-            left join treatments on treatments.id = tasks.treatment_id
-            left join treatment_customers on treatment_customers.treatment_id = treatments.id
-            left join customers on treatment_customers.customer_id = customers.id
+        select 
+        treatments.id as treatment_id, tasks.id as task_id,  treatments.data, customers.name as customer, treatments.local, tasks.description, tasks.qtd, tasks.valor, users.name as user, tasks.status
+        from tasks
+        inner join actions on tasks.action_id = actions.id
+        inner join projects on actions.project_id = projects.id
+        left join treatments on treatments.id = tasks.treatment_id
+        left join treatment_customers on treatment_customers.treatment_id = treatments.id
+        left join customers on treatment_customers.customer_id = customers.id
+        left join users on users.id = tasks.userDesigned_id
                 where
                 projects.partner_id='${data.partner_id}'
                 and (treatments.data between date('${data.dtInicial}') and date('${data.dtFinal}'))
-                order by customers.name asc;
+                order by treatments.data desc;
         `;
         const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
 
@@ -222,19 +223,20 @@ class UserService {
     }
     async allTreatmentsByDateDiretor(data) {
         const query = `
-            select 
-            treatments.id, treatments.data, customers.name, tasks.description, tasks.qtd, tasks.valor, tasks.status
-            from tasks
-            inner join actions on tasks.action_id = actions.id
-            inner join projects on actions.project_id = projects.id
-            left join treatments on treatments.id = tasks.treatment_id
-            left join treatment_customers on treatment_customers.treatment_id = treatments.id
-            left join customers on treatment_customers.customer_id = customers.id
+        select 
+        treatments.id as treatment_id, tasks.id as task_id,  treatments.data, customers.name as customer, treatments.local, tasks.description, tasks.qtd, tasks.valor, users.name as user, tasks.status
+        from tasks
+        inner join actions on tasks.action_id = actions.id
+        inner join projects on actions.project_id = projects.id
+        left join treatments on treatments.id = tasks.treatment_id
+        left join treatment_customers on treatment_customers.treatment_id = treatments.id
+        left join customers on treatment_customers.customer_id = customers.id
+        left join users on users.id = tasks.userDesigned_id
                 where
                 projects.partner_id='${data.partner_id}'
                 and projects.division_id='${data.division_id}'
                 and (treatments.data between date('${data.dtInicial}') and date('${data.dtFinal}'))
-                order by customers.name asc;
+                order by treatments.data desc;
         `;
         const treatments = await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
 
