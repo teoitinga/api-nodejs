@@ -11,5 +11,9 @@ class IndicatorController {
                 const stored = await service.cepeaBoi(req)
                 res.status(200).json(stored);
         };
+        async actualPrices(req, res) {
+                const stored = await service.actualPrices(req)
+                res.status(200).json(stored);
+        };
 }
 module.exports = IndicatorController;

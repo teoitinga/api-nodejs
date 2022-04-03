@@ -3,6 +3,16 @@ const uuid = require('uuid');
 
 
 class IndicatorService {
+    async actualPrices(){
+        return [
+            {data: '03/2022', producao: 'Leite MG', unidade: 'lt', valor:2.2403, coments: '*fonte CEPEA MG - link: https://www.cepea.esalq.usp.br/br/indicador/leite.aspx'},
+            {data: '01/04/2022', producao: 'Boi gordo', unidade: '@', valor:341.60, coments: '*fonte CEPEA - link: https://www.cepea.esalq.usp.br/br/indicador/boi-gordo.aspx'},
+            {data: '01/04/2022', producao: 'Bezerro', unidade: 'Cab-217.56Kg', valor:2880.50, coments: '*fonte CEPEA - link: https://www.cepea.esalq.usp.br/br/indicador/bezerro.aspx'},
+            {data: '01/04/2022', producao: 'Milho', unidade: 'Sc', valor:92.04, coments: '*fonte CEPEA - link: https://www.cepea.esalq.usp.br/br/indicador/milho.aspx'},
+            {data: '01/04/2022', producao: 'Café arábica', unidade: 'Sc', valor:1245.32, coments: '*fonte CEPEA - link: https://www.cepea.esalq.usp.br/br/indicador/cafe.aspx'},
+            {data: '01/04/2022', producao: 'Café robusta', unidade: 'Sc', valor:807.75, coments: '*fonte CEPEA - link: https://www.cepea.esalq.usp.br/br/indicador/cafe.aspx'}
+        ]
+    }
     async cepeaBoi() {
         return {
             dados: [
