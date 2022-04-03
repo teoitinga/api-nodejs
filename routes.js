@@ -58,6 +58,17 @@ routes.get(`${userPath}/reports/all-treatments`, asynchandler(class_1), asynchan
 routes.get(`${userPath}/reports/all-customers`, asynchandler(class_1), asynchandler(logincontroller.allCustomers));
 routes.get(`${userPath}/reports/all-treatments-by-date/:inicial/:final`, asynchandler(class_1), asynchandler(logincontroller.allTreatmentsByDate));
 
+
+/**
+ * Rotas de indicadores
+ */
+const IndicatorsController = require('./src/controllers/indicators-controller');
+const indicatorscontroller = new IndicatorsController();
+
+const indicatorPath = '/api/v1/users';
+routes.get(`${indicatorPath}/reports/indicators-last-10-leite`, asynchandler(class_1), asynchandler(indicatorscontroller.cepceaLeiteMG));
+routes.get(`${indicatorPath}/reports/indicators-last-10-boi`, asynchandler(class_1), asynchandler(indicatorscontroller.cepeaBoi));
+
 /**Fim de gets para gestão */
 /**
  * Rotas de Roles
