@@ -36,6 +36,10 @@ class CustomerService {
         customer.cep = customer.cep? customer.cep.replace('-', '').replace('.',''): '';
         
         /**
+         * Converter Array de cpf em string
+         */
+        customer.cpf = customer.cpf.join();
+        /**
          * Correção de espaços em excesso no nome do beneficiário
          */
         customer.name = customer.name.trim();
@@ -48,6 +52,8 @@ class CustomerService {
         }
 
         try{
+            //return await CustomerModel.create(JSON.stringify(customer));
+            console.log(customer);
             return await CustomerModel.create(customer);
         }catch(e){
             throw new ServerErrorException(e);

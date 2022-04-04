@@ -14,13 +14,12 @@ const cache = new UserCache();
 
 class TaskService {
 
-    async create(task, credendial) {
+    async create(task, credendial, transaction) {
 
         /**Define variáveis auxiliares */
         task.id = uuid.v4().toUpperCase();
         task.createdby = credendial.userId;
         task.created = moment();
-
         return await TaskModel.create(task);
     }
 
