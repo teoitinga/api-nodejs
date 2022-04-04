@@ -122,32 +122,34 @@ class TreatmentService {
         }
 
 
-        /**
-         * Registra a treatment
-         */
-        try {
-            treatment = await this.store(treatment);
-        } catch (e) {
-            throw new TreatmentException('Error on a treatment registry.');
+        const result = await treatmentModel.sequelize.transaction(async (t) => {
 
-        }
+            /**
+             * Registra a treatment
+             */
+            try {
+                treatment = await this.store(treatment);
+            } catch (e) {
+                throw new TreatmentException('Error on a treatment registry.');
 
-        //Array com ID's de beneficiários para registrar no banco de dados
+            }
 
-        if (!customers) {
-            //lança erro de beneficiários não encontrado
-            throw new TreatmentException('Não existe nenhum beneficiário a se registrar.');
-        }
+            //Array com ID's de beneficiários para registrar no banco de dados
 
-        await this.validaCustomers(customers, credendial, treatment.id);
+            if (!customers) {
+                //lança erro de beneficiários não encontrado
+                throw new TreatmentException('Não existe nenhum beneficiário a se registrar.');
+            }
 
-
-        tasks.forEach(async function (t) {
-            t.treatment_id = treatment.id;
-            await taskService.create(t, credendial);
-        })
+            await this.validaCustomers(customers, credendial, treatment.id);
 
 
+            tasks.forEach(async function (t) {
+                t.treatment_id = treatment.id;
+                await taskService.create(t, credendial);
+            })
+
+        });
     }
 
 }

@@ -22,7 +22,7 @@ module.exports = (multer({
             //const partner_id = 'PARTNERID';
             //const path = `./RATERS/${partner_id}/${division_id}/`
             //const path = `./RATERS/`
-            const path = FOLDER_RATER_FILES;
+            const path = process.env.FOLDER_RATER_FILES;
 
             fs.mkdirSync(path, { recursive: true })
 
