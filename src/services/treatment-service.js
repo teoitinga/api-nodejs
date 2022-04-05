@@ -111,7 +111,8 @@ class TreatmentService {
         //treatment.id = uuid.v4().toUpperCase();
         treatment.createdby = await credendial.userId;
         treatment.created = await moment();
-        //treatment.pathFileName = treatment.pathFileName;
+        treatment.partner_Id = await credendial.partnerId;
+        treatment.division_Id = await credendial.divisionId;
 
         /**
          * Registra todos os beneficiários
@@ -132,8 +133,9 @@ class TreatmentService {
          * Registra a treatment
          */
         try {
-            treatment = await this.store(treatment, t);
+            treatment = await this.store(treatment);
         } catch (e) {
+            console.log(e);
             throw new TreatmentException('Error on a treatment registry.');
 
         }

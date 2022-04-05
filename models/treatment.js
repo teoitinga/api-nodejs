@@ -11,6 +11,8 @@ class Treatment extends Model {
       recomendacao: DataTypes.STRING,
       pathFileName: DataTypes.STRING,
       city: DataTypes.STRING,
+      partnerId: DataTypes.STRING,
+      divisionId: DataTypes.STRING,
       createdby: DataTypes.STRING,
       updatedby: DataTypes.STRING,
       created: DataTypes.DATE,

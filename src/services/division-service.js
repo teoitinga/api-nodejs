@@ -4,6 +4,7 @@ const moment = require('moment');
 
 const uuid = require('uuid');
 
+const UserModel = require('../../models/user');
 const DivisionModel = require('../../models/division');
 const DivisionDto = require('../../src/dtos/division-dto');
 
@@ -20,6 +21,9 @@ const cache = new UserCache();
 
 const ThemeService = require('./theme-service');
 const themeService = new ThemeService();
+
+const RoleService = require('./role-service');
+const roleService = new RoleService();
 
 class DivisionService {
 
@@ -76,15 +80,41 @@ class DivisionService {
         if (!theme_exists)
             throw new ServerErrorException('Tema não suportado pela plataforma.');
 
+        /**
+         * Verifica e modifica as permissões do usuário designado como responsável
+         */
+        const CLASS_ROLE = 4;
+        const representatinveId = division.representative_id;
+        //const representative = await this.userService.findById(representatinveId);
+        const role_representative = await roleService.findByClass(CLASS_ROLE);
+        this.turnClass4(representatinveId, role_representative.id);
+        
         await DivisionModel.create(division);
-
+        
         division = await DivisionModel.findByPk(division.id);
-
+        
+        /**Redefine o departamento do usuario */
+        this.turnDivision(representatinveId, division.id);
+        
         let dto = await new DivisionDto(division)
         return dto.obj;
 
     }
 
+    async turnDivision(id, division_id){
+
+        const user = await UserModel.update(
+            { division_id }, { where: { id } }
+        );
+        return user;
+    }
+    async turnClass4(id, role_id){
+
+        const user = await UserModel.update(
+            { role_id }, { where: { id } }
+        );
+        return user;
+    }
     async extend(request, id) {
 
         /**
@@ -103,14 +133,14 @@ class DivisionService {
         /**
          * Atualiza o banco de dados, somente  expiresDate e updatedby
         */
-       let expiresDate = division.expiresDate;
-       
-       expiresDate = moment(division.expiresDate).utc().add(process.env.DIVISION_EXPIRES_EXTEND, 'days');
+        let expiresDate = division.expiresDate;
 
-       await DivisionModel.update({ expiresDate, updatedby }, { where: { id } });
+        expiresDate = moment(division.expiresDate).utc().add(process.env.DIVISION_EXPIRES_EXTEND, 'days');
+
+        await DivisionModel.update({ expiresDate, updatedby }, { where: { id } });
     }
     async toggleLock(request, id) {
-        
+
         /**
          * Obtem os dados do usuário ativo
          */
@@ -121,7 +151,7 @@ class DivisionService {
          * manipulação das informações caso seja necessário.
          */
         const division = await this.findById(id);
-        
+
         if (!division) {
             throw new DivisionNotFoundException(`Divisão com ID: ${id} não reconhecido nesta plataforma.`);
         }
