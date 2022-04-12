@@ -905,7 +905,6 @@ class UserService {
         return tasks[0];
     }
     async findMyActions(request) {
-
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
@@ -916,6 +915,7 @@ class UserService {
         SELECT 
         customers.name as customername,
         customers.id as customerid,
+        customers.cpf as cpf,
         users.name as username,
         users.id as userid,
         users.division_id as division,
@@ -960,6 +960,36 @@ left join users on users.id = tasks.userDesigned_id
      * @param {reques} request 
      * @returns 
      */
+    async findByFunc(request) {
+        const name = request.params['name'];
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+
+        const query = `
+        SELECT
+            users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
+            FROM users
+                left join roles
+                on users.role_id = roles.id
+                where 
+                roles.class <= 5
+                and users.division_id = '${division_id}'
+                and users.partner_id = '${partner_id}'
+                and users.lockedDate is null
+                and users.expiresDate > now()
+                and users.name like('%${name}%')
+                ;
+        `;
+        const users = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+
+        return users;
+    }
+    /**
+     * Retorna a lista de todos os usuários do Departamento
+     * @param {reques} request 
+     * @returns 
+     */
     async findByUser(request) {
         return await this.findByDivision(request);
     }
@@ -972,6 +1002,44 @@ left join users on users.id = tasks.userDesigned_id
         return {};
     }
 
+    async findByFuncionario(request) {
+        /**
+         * Retorna todos os usuários que pertencam a empresa logada
+         */
+        const credendial = await cache.getCredencial(request);
+        const c = credendial.role_class;
+        /**
+         * Caso classe for Administrador da plataforma (8-10)
+         */
+
+        if (c > 7)
+            return await this.findByAdmin(request);
+
+        /**
+         * Caso classe for Gestor (6-7)
+         */
+        if ((c > 5) && (c <= 7))
+            return await this.findByPartner(request);
+
+        /**
+         * Caso classe for Diretor (3-5)
+         */
+        if ((c > 2) && (c <= 5))
+            return await this.findByDivision(request);
+
+        /**
+         * Caso classe for Funcionario (1-3)
+         */
+        if ((c > 0) && (c <= 2))
+            //return await this.findByUser(request);
+            return await this.findByFunc(request);
+
+        /**
+         * Caso classe for publico (0 )
+         */
+        return await this.findByPublic(request);
+
+    }
     async findByName(request) {
         /**
          * Retorna todos os usuários que pertencam a empresa logada

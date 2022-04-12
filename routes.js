@@ -45,6 +45,7 @@ routes.put(`${userPath}/recovery/:id`, asynchandler(class_1), asynchandler(login
 routes.put(`${userPath}/toggle-lock/:id`, asynchandler(class_1), asynchandler(logincontroller.toggleLock));
 routes.put(`${userPath}/extend/:id`, asynchandler(class_1), asynchandler(logincontroller.extend));
 routes.get(`${userPath}/find-by-name/:name`, asynchandler(class_1), asynchandler(logincontroller.findbyname));
+routes.get(`${userPath}/find-by-func/:name`, asynchandler(class_1), asynchandler(logincontroller.findbyfunc));
 routes.get(`${userPath}/count-my-tasks`, asynchandler(class_1), asynchandler(logincontroller.countMyTasks));
 routes.get(`${userPath}/my-tasks`, asynchandler(class_1), asynchandler(logincontroller.findMyTasks));
 routes.put(`${userPath}/finalize/:id`, asynchandler(class_1), asynchandler(logincontroller.finalizeTasks));
