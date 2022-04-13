@@ -204,7 +204,7 @@ class UserService {
     async allTreatmentsByDateGestor(data) {
         const query = `
         select 
-        treatments.id as treatment_id, tasks.id as task_id,  treatments.data, customers.name as customer, treatments.local, tasks.description, tasks.qtd, tasks.valor, users.name as user, tasks.status
+        treatments.id as treatment_id, tasks.id as task_id,  treatments.data, customers.name as customer, customers.cpf as cpf, treatments.local, tasks.description, tasks.qtd, tasks.valor, users.name as user, tasks.status
         from tasks
         inner join actions on tasks.action_id = actions.id
         inner join projects on actions.project_id = projects.id
@@ -224,7 +224,7 @@ class UserService {
     async allTreatmentsByDateDiretor(data) {
         const query = `
         select 
-        treatments.id as treatment_id, tasks.id as task_id,  treatments.data, customers.name as customer, treatments.local, tasks.description, tasks.qtd, tasks.valor, users.name as user, tasks.status
+        treatments.id as treatment_id, tasks.id as task_id,  treatments.data, customers.name as customer, customers.cpf as cpf, treatments.local, tasks.description, tasks.qtd, tasks.valor, users.name as user, tasks.status
         from tasks
         inner join actions on tasks.action_id = actions.id
         inner join projects on actions.project_id = projects.id
