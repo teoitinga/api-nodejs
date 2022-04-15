@@ -158,6 +158,16 @@ const customerPath = '/api/v1/customers';
 
 routes.get(`${customerPath}/:cpf`, asynchandler(customercontroller.findByCpf));
 
+/**
+ * Rotas Python Server
+ */
+const PythonController = require('./src/controllers/python-controller');
+const pythoncontroller = new PythonController();
+const pythonPath = '/api/v1/ares-data';
+
+routes.get(`${pythonPath}/titulos`, asynchandler(pythoncontroller.queryFarms));
+routes.get(`${pythonPath}/ater`, asynchandler(pythoncontroller.generateRater));
+
 
 /**
  * Rotas de Consultas de DAP's
