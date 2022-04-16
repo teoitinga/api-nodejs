@@ -10,7 +10,9 @@ class PythonController {
     };
 
     async queryFarms(req, res) {
-        const prop = req.body['prop'];
+        const prop = req.body.prop;
+        let formdata = req;
+
         const stored = await service.getTitulos(prop);
         res.status(200).json(stored)
     };
