@@ -1,5 +1,14 @@
 const axios = require('axios');
 const moment = require('moment');
+const uuid = require('uuid');
+
+const UserCache = require('../core/cache-user');
+const cache = new UserCache();
+
+const DivisionService = require('../services/division-service');
+const divisionService = new DivisionService();
+
+const R_Aters = require('../../models/r_aters');
 
 const {
     ServerErrorException,
@@ -32,6 +41,43 @@ class PythonService {
         return response.data.data;
 
     }
+
+    async sendReportAter(request){
+        const credendial = await cache.getCredencial(request);
+
+        const activeUser = credendial.userId;
+ 
+        const situacao = request.body['situacao'];
+        const orientacao = request.body['orientacao'];
+        const recomendacao = request.body['recomendacao'];
+
+        let r_ater = {
+            situacao: situacao,
+            orientacao: orientacao,
+            recomendacao: recomendacao
+        }
+
+        try {
+
+            r_ater.id = uuid.v4().toUpperCase();
+            r_ater.createdby = activeUser;
+            r_ater.data = moment();
+            r_ater.local = (await divisionService.findById(credendial.divisionId)).city;
+            r_ater.created = moment();
+            r_ater.createdby = await credendial.userId;
+            r_ater.partnerId = await credendial.partnerId;
+            r_ater.divisionId = await credendial.divisionId;
+            
+            await R_Aters.create(r_ater);
+
+            return {sucess: 'Registrado com sucesso'};
+
+        } catch (e) {
+            console.log(e);
+            return new ServerErrorException(e.errors);
+        }
+    }
+
     async generateRater(mapa) {
 
         const payload = mapa;
@@ -46,11 +92,12 @@ class PythonService {
             }
         );
 
-        const data = response.data.data[0];
+        const data = response.data.data;
+        
         if(data.length==0)
             throw new NotFoundErrorException('Não encontramos nenhum modelo parecido com a sua solicitação.')  ;
 
-        return data.data[0]
+        return data
 
     }
 

@@ -44,10 +44,13 @@ Treatment.init(connection);
 const Customer = require('../models/customer');
 Customer.init(connection);
 
-const Treatment_Customer = require('../models/treatment-customer');
+const Treatment_Customer = require('../models/treatment-customers');
 Treatment_Customer.init(connection);
 
 const Task = require('../models/task');
 Task.init(connection);
+
+const R_Ater = require('../models/r_aters');
+R_Ater.init(connection);
 
 module.exports = connection;

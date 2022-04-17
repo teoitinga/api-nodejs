@@ -12,7 +12,7 @@ const { TreatmentException } = require('../exceptions/treatment-exception');
 const { Op } = require("sequelize");
 
 const treatmentModel = require('../../models/treatment');
-const Treatment_Customer = require('../../models/treatment-customer');
+const Treatment_Customer = require('../../models/treatment-customers');
 
 const CustomerService = require('../services/customer-service');
 const customerService = new CustomerService();
