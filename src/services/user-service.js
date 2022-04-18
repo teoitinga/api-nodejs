@@ -518,7 +518,7 @@ class UserService {
         await mailService.send({
             to: obj.email,
             subject: `Cadastro de usuário na plataforma JP-Ares`,
-            text: `Você acaba de ser registrado na plataforma JP-AREs, nosso portal de gestão e acompanhamento de projetos. Segue abaixo os dados para acesso`,
+            text: `Você foi registrado na plataforma JP-AREs, nosso portal de gestão e acompanhamento de projetos. Segue abaixo os dados para acesso`,
             html: `
             <h1>Olá <strong>${obj.name},</strong></h1>
             <h3 style="color: black">
@@ -526,11 +526,11 @@ class UserService {
             <p><strong>Seu login:</strong> ${obj.registry}</p>
             <p><strong>Sua senha provisória:</strong> ${obj.password}</p>
             <br>
-            <p>clique neste link para acessar o portal: <a href="${process.env.APP_FRONT_LINK}">JP-ARES</a></p>
+            <p>clique neste link para acessar o portal: http://www.connect-ares.com.br</p>
             <p>"${process.env.TEXT_LGPG}"</p>
             <br>
             <p>Atenciosamente,</p>
-            <strong>
+            <strong> 
             <p>${process.env.DESENVOLVEDOR_NAME}</p>
             <p>${process.env.DESENVOLVEDOR_COMPANY}</p>
             </strong>
@@ -1078,6 +1078,8 @@ left join users on users.id = tasks.userDesigned_id
 
     }
     async findall(request) {
+        
+        const fields = `users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated`;
         const credencial = await cache.getCredencial(request);
 
         const partner_id = credencial.partnerId;
@@ -1088,16 +1090,16 @@ left join users on users.id = tasks.userDesigned_id
         //Se classe >8, retorna todos
         if (role_class > 8) {
             const query = `
-            SELECT * FROM users 
+            SELECT ${fields} FROM users 
                 left join roles 
             `;
             const users = await UserModel.sequelize.query(query);
-            return users[0];
+            return users;
         }
         //Se classe >5 e <8 retorn os usuarios da empresa
         if ((role_class >= 5) && (role_class <= 8)) {
             const query = `
-            SELECT * FROM users 
+            SELECT ${fields} FROM users 
                 left join roles 
                 on roles.id = users.role_id
                 where roles.class<${role_class} 
@@ -1112,7 +1114,7 @@ left join users on users.id = tasks.userDesigned_id
 
             const query = `
             SELECT 
-            users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated
+             ${fields} 
             FROM users 
                 left join roles 
                 on users.role_id = roles.id

@@ -2,8 +2,9 @@ const axios = require('axios');
 const moment = require('moment');
 
 const {
-    ServerErrorException,
-    NotFoundErrorException } = require('../exceptions/server-exception');
+    ApiDapException,
+    DapNotFoundException
+} = require('../exceptions/dap-exception');
 
 class DapService {
 
@@ -34,13 +35,14 @@ class DapService {
             data: payload
         }).catch(
             function (err) {
-                throw new NotFoundErrorException('Houve um erro com a conexão e não foi possivel conectar. Tente novamente mais tarde.');
+                throw new ApiDapException('Houve um erro com a conexão e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
         return response.data.listaIrregularidade;
 
     }
     async findByCpf(cpf) {
+
         const dapHead = {
             cpf: cpf,
             numeroControleExterno: ''
@@ -52,15 +54,19 @@ class DapService {
             url: `${this.DAP_API_PATH}`,
             data: dapHead
         }).catch(
-            function (err) {
-                throw new NotFoundErrorException('Houve um erro com a conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            (err)=> {
+                throw new ApiDapException('Houve um erro e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
+
         if (response.data.DAP == null) {
-            throw new ServerErrorException('Documento não encontrado.');
+            if(response.data.DescMensagem){
+                throw new ApiDapException(response.data.DescMensagem);
+            }else{
+                throw new DapNotFoundException('Este produtor não possui DAP.');
+            }
         }
 
-        //return response.data.DAP;
         const dap = response.data.DAP[0];
 
         return {
@@ -99,11 +105,11 @@ class DapService {
             emissao: await this.convertToDate(dap.dataEmissao),
             qtdmoradores: dap.NMembrosFamilia,
             qtdImoveis: dap.NImoveisExplorados,
-            nomeImovelPrincipal: dap.DenominacaoImovelPrincipal? dap.DenominacaoImovelPrincipal.trim(): undefined,
-            municipio: dap.MunicipioUF? dap.MunicipioUF.trim(): undefined,
+            nomeImovelPrincipal: dap.DenominacaoImovelPrincipal ? dap.DenominacaoImovelPrincipal.trim() : undefined,
+            municipio: dap.MunicipioUF ? dap.MunicipioUF.trim() : undefined,
             areaDaPropriedade: dap.AreaEstabelecimento,
             areaImovelPrincipal: dap.AreaImovelPrincipal,
-            localizacaoImovelPrincipal: dap.LocalizacaoImovelPrincipal? dap.LocalizacaoImovelPrincipal.trim(): undefined,
+            localizacaoImovelPrincipal: dap.LocalizacaoImovelPrincipal ? dap.LocalizacaoImovelPrincipal.trim() : undefined,
             caracterizacao: dap.CaracterizacaoDAP.map(c => {
                 return c.CaracterizacaoDoBeneficiario.trim()
             }),

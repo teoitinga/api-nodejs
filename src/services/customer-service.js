@@ -52,8 +52,6 @@ class CustomerService {
         }
 
         try{
-            //return await CustomerModel.create(JSON.stringify(customer));
-            console.log(customer);
             return await CustomerModel.create(customer);
         }catch(e){
             throw new ServerErrorException(e);
