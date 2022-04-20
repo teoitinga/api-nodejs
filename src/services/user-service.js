@@ -16,6 +16,8 @@ const mailService = new MailService();
 const UserModel = require('../../models/user');
 const UserDto = require('../../src/dtos/usuario-dto');
 
+const routeModel = require('../../models/route');
+
 
 const RoleService = require('../services/role-service');
 const roleService = new RoleService();
@@ -541,7 +543,6 @@ class UserService {
     }
 
     async createByAdmin(request) {
-        console.log('Usuário Admin');
 
         const credendial = await cache.getCredencial(request);
         const data = request.body;
@@ -570,8 +571,6 @@ class UserService {
 
     }
     async createByPartner(request) {
-
-        console.log('Usuário Gestor');
 
         const credendial = await cache.getCredencial(request);
         const data = request.body;
@@ -645,6 +644,24 @@ class UserService {
             return await this.createByUser(request);
     }
 
+    async regroute(request) {
+
+        const credendial = await cache.getCredencial(request);
+
+        const route = {};
+        route.route = (request.body['route']);
+
+        route.id = uuid.v4().toUpperCase();
+        route.createdby = credendial.userId;
+        route.created = moment().utc();
+
+        try {
+            return await routeModel.create(route);
+        } catch (e) {
+            throw new ServerErrorException(e.message);
+        }
+
+    }
     async _create(request) {
 
         const credendial = await cache.getCredencial(request);
@@ -939,23 +956,6 @@ class UserService {
     }
 
     /**
-SELECT 
-customers.name as customername,
-users.name as username,
-users.id as userid,
-users.division_id as division,
-users.partner_id as partner,
-tasks.id, tasks.status, tasks.created, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
-tasks.userDesigned_id
-FROM smart_dev.tasks
-left join treatments on treatments.id = tasks.treatment_id
-left join treatment_customers on treatment_customers.treatment_id = treatments.id
-left join customers on customers.id = treatment_customers.customer_id
-left join users on users.id = tasks.userDesigned_id
-;
-     */
-
-    /**
      * Retorna a lista de todos os usuários do Departamento
      * @param {reques} request 
      * @returns 
@@ -1078,7 +1078,7 @@ left join users on users.id = tasks.userDesigned_id
 
     }
     async findall(request) {
-        
+
         const fields = `users.id, users.name, users.registry, users.email, users.role_id, users.partner_id, users.division_id, users.password, users.address, users.num, users.district, users.complement, users.cep, users.phone, users.city, users.uf, users.expiresDate, users.lockedDate, users.createdby, users.updatedby, users.created, users.updated`;
         const credencial = await cache.getCredencial(request);
 

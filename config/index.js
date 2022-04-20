@@ -53,4 +53,7 @@ Task.init(connection);
 const R_Ater = require('../models/r_aters');
 R_Ater.init(connection);
 
+const route = require('../models/route');
+route.init(connection);
+
 module.exports = connection;

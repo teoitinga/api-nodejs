@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('axios');
 const moment = require('moment');
 const uuid = require('uuid');
@@ -16,7 +17,8 @@ const {
 
 class PythonService {
 
-    API_PATH = 'http://localhost:5000/';
+    //API_PATH = 'http://localhost:5000/'; 
+    API_PATH = process.env.API_PATH_PYTHON; 
     API_QUERY_TITULOS = 'titulos';
     API_QUERY_ATER = 'ater';
 

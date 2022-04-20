@@ -7,6 +7,11 @@ const service = new Service();
 
 class LoginController {
 
+    async regroute(req, res) {
+        const stored = await service.regroute(req)
+        res.status(httpStatusCode.OK).json(stored);
+    };
+
     async login(req, res) {
         const stored = await service.login(req.body)
         res.status(httpStatusCode.OK).json(stored);

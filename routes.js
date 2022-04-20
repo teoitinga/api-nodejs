@@ -36,6 +36,7 @@ const logincontroller = new LoginController();
 
 const userPath = '/api/v1/users';
 
+routes.post(`${userPath}/reg-route`, asynchandler(logincontroller.regroute));
 routes.post(`${userPath}/login`, asynchandler(logincontroller.login));
 routes.post(`${userPath}`, asynchandler(class_7), asynchandler(logincontroller.create));
 routes.get(`${userPath}`, asynchandler(class_1), asynchandler(logincontroller.findall));
