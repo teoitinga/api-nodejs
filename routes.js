@@ -137,6 +137,9 @@ const citiePath = '/api/v1/cities';
 const schoolingPath = '/api/v1/schooling';
 
 routes.post(`${projectPath}`, asynchandler(class_4), asynchandler(projectcontroller.create));
+routes.get(`${projectPath}/find-all`, asynchandler(class_1), asynchandler(projectcontroller.findAll));
+routes.get(`${projectPath}/find-by-id/:projectId`, asynchandler(class_1), asynchandler(projectcontroller.findById));
+routes.get(`${projectPath}/find-all-actions/:projectId`, asynchandler(class_1), asynchandler(projectcontroller.findAllActions));
 routes.get(`${citiePath}/find-by-name/:name`, asynchandler(class_1), asynchandler(projectcontroller.findbyname));
 routes.get(`${schoolingPath}/find-by-schooling/:name`, asynchandler(class_1), asynchandler(projectcontroller.findbyschooling));
 

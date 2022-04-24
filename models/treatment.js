@@ -13,6 +13,7 @@ class Treatment extends Model {
       city: DataTypes.STRING,
       partnerId: DataTypes.STRING,
       divisionId: DataTypes.STRING,
+      point: DataTypes.GEOMETRY('POINT'),
       createdby: DataTypes.STRING,
       updatedby: DataTypes.STRING,
       created: DataTypes.DATE,
