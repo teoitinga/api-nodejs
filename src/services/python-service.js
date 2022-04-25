@@ -16,7 +16,7 @@ const {
     NotFoundErrorException } = require('../exceptions/server-exception');
 
 class PythonService {
-
+ 
     //API_PATH = 'http://localhost:5000/'; 
     API_PATH = process.env.API_PATH_PYTHON; 
     API_QUERY_TITULOS = 'titulos';
