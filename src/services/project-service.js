@@ -35,7 +35,7 @@ class ProjectService {
     async findProjectByDivision(credendial) {
         const query = `SELECT 
         projects.id, sum(actions.qtdAtendimentos) as prev_atd, projects.description, count(actions.id) as qtd_acoes, min(actions.start) as inicio, max(actions.end) as fim
-        FROM actions right join smart_dev.projects on actions.project_id = projects.id
+        FROM actions right join projects on actions.project_id = projects.id
             where 
             projects.partner_id = '${credendial.partnerId}'
             and projects.division_id = '${credendial.divisionId}'
@@ -46,7 +46,7 @@ class ProjectService {
     async findProjectByPartner(credendial) {
         const query = `SELECT 
         projects.id, sum(actions.qtdAtendimentos) as prev_atd, projects.description, count(actions.id) as qtd_acoes, min(actions.start) as inicio, max(actions.end) as fim
-        FROM actions right join smart_dev.projects on actions.project_id = projects.id
+        FROM actions right join projects on actions.project_id = projects.id
             where 
             projects.partner_id = '${credendial.partnerId}'
             group by projects.id
@@ -56,7 +56,7 @@ class ProjectService {
     async findProjectByAdmin(credendial) {
         const query = `SELECT 
         projects.id, sum(actions.qtdAtendimentos) as prev_atd, projects.description, count(actions.id) as qtd_acoes, min(actions.start) as inicio, max(actions.end) as fim
-        FROM actions right join smart_dev.projects on actions.project_id = projects.id
+        FROM actions right join projects on actions.project_id = projects.id
         group by projects.id
         `;
         return await ProjectModel.sequelize.query(query, { type: ProjectModel.sequelize.QueryTypes.SELECT });
