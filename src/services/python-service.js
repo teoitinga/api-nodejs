@@ -17,11 +17,147 @@ const {
 
 class PythonService {
 
-    //API_PATH = 'http://localhost:5000/'; 
-    API_PATH = process.env.API_PATH_PYTHON; 
+    API_PATH = 'http://localhost:5000/'; 
+    //API_PATH = process.env.API_PATH_PYTHON; 
     API_QUERY_TITULOS = 'titulos';
     API_QUERY_ATER = 'ater';
 
+    API_QUERY_CEPEA_DATA = 'cepea-update';//Atualiza as tabelas dom o CEPEA
+    API_QUERY_CEPEA_RELOAD_DATA = 'cepea-reload-data';//Recarrega os dados
+    API_QUERY_CEPEA_DATA_PRICES = 'cepea-atual-prices';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_MEDIA_ANUAL_LEITE = 'media-anual-leite';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_MEDIA_ANUAL_BOI = 'media-anual-boi';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_MEDIA_ANUAL_BEZERRO = 'media-anual-bezerro';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_MEDIA_ANUAL_MILHO = 'media-anual-milho';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ARABICA = 'media-anual-cafe-arabica';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ROBUSTA = 'media-anual-cafe-robusta';//Obtem os principais precos atualizados
+
+    async getMediaAnualCafeRobusta() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ROBUSTA}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
+    async getMediaAnualCafeArabica() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ARABICA}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
+    async getMediaAnualMilho() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_MILHO}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
+    async getMediaAnualBezerro() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_BEZERRO}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
+    async getMediaAnualBoi() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_BOI}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
+    async getMediaAnualLeite() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_LEITE}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
+    async getActualPrices() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_DATA_PRICES}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        const data = response.data;
+        if(data.length==0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+
+        return response.data.data;
+
+    }
     async getTitulos(prop) {
 
         const payload = prop;

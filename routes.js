@@ -68,9 +68,13 @@ const IndicatorsController = require('./src/controllers/indicators-controller');
 const indicatorscontroller = new IndicatorsController();
 
 const indicatorPath = '/api/v1/users';
-routes.get(`${indicatorPath}/reports/indicators-last-10-leite`, asynchandler(class_1), asynchandler(indicatorscontroller.cepceaLeiteMG));
-routes.get(`${indicatorPath}/reports/indicators-last-10-boi`, asynchandler(class_1), asynchandler(indicatorscontroller.cepeaBoi));
-routes.get(`${indicatorPath}/reports/indicators-actual-prices`, asynchandler(class_1), asynchandler(indicatorscontroller.actualPrices));
+routes.get(`${indicatorPath}/reports/indicators-last-10-leite`, asynchandler(class_0), asynchandler(indicatorscontroller.cepceaLeiteMG));
+routes.get(`${indicatorPath}/reports/indicators-last-10-boi`, asynchandler(class_0), asynchandler(indicatorscontroller.cepeaBoi));
+routes.get(`${indicatorPath}/reports/indicators-last-10-bezerro`, asynchandler(class_0), asynchandler(indicatorscontroller.cepeaBezerro));
+routes.get(`${indicatorPath}/reports/indicators-last-10-milho`, asynchandler(class_0), asynchandler(indicatorscontroller.cepeaMilho));
+routes.get(`${indicatorPath}/reports/indicators-last-10-cafe-arabica`, asynchandler(class_0), asynchandler(indicatorscontroller.cepeaCafeArabica));
+routes.get(`${indicatorPath}/reports/indicators-last-10-cafe-robusta`, asynchandler(class_0), asynchandler(indicatorscontroller.cepeaCafeRobusta));
+routes.get(`${indicatorPath}/reports/indicators-actual-prices`, asynchandler(class_0), asynchandler(indicatorscontroller.actualPrices));
 
 /**Fim de gets para gestão */
 /**
