@@ -139,7 +139,7 @@ class PythonService {
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_LEITE}`
         }).catch(
             function (err) {
-                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
 
@@ -153,7 +153,7 @@ class PythonService {
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_DATA_PRICES}`
         }).catch(
             function (err) {
-                throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
 

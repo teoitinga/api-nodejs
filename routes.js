@@ -75,8 +75,8 @@ routes.get(`${indicatorPath}/reports/indicators-last-10-milho`, asynchandler(cla
 routes.get(`${indicatorPath}/reports/indicators-last-10-cafe-arabica`, asynchandler(class_1), asynchandler(indicatorscontroller.cepeaCafeArabica));
 routes.get(`${indicatorPath}/reports/indicators-last-10-cafe-robusta`, asynchandler(class_1), asynchandler(indicatorscontroller.cepeaCafeRobusta));
 routes.get(`${indicatorPath}/reports/indicators-actual-prices`, asynchandler(class_1), asynchandler(indicatorscontroller.actualPrices));
-routes.get(`${indicatorPath}/reports/reload-cepea`, asynchandler(class_7), asynchandler(indicatorscontroller.reloadCepea));
-routes.get(`${indicatorPath}/reports/update-cepea`, asynchandler(class_7), asynchandler(indicatorscontroller.updateCepea));
+routes.get(`${indicatorPath}/reports/reload-cepea`, asynchandler(class_1), asynchandler(indicatorscontroller.reloadCepea));
+routes.get(`${indicatorPath}/reports/update-cepea`, asynchandler(class_1), asynchandler(indicatorscontroller.updateCepea));
 
 /**Fim de gets para gestão */
 /**
