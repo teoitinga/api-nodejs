@@ -32,8 +32,16 @@ class IndicatorController {
         };
         async actualPrices(req, res) {
                 const stored = await service.actualPrices(req)
-                console.log(stored);
                 res.status(200).json(stored);
+        };
+        async reloadCepea(req, res) {
+                const stored = await service.reloadCepea(req)
+                console.log(stored.data);
+                res.status(200).send(stored.data);
+        };
+        async updateCepea(req, res) {
+                const stored = await service.updateCepea(req)
+                res.status(200).send(stored.data);
         };
 }
 module.exports = IndicatorController;

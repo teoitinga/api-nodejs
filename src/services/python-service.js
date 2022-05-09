@@ -16,15 +16,9 @@ const {
     NotFoundErrorException } = require('../exceptions/server-exception');
 
 class PythonService {
-<<<<<<< HEAD
-
-    API_PATH = 'http://localhost:5000/'; 
-    //API_PATH = process.env.API_PATH_PYTHON; 
-=======
- 
     //API_PATH = 'http://localhost:5000/'; 
     API_PATH = process.env.API_PATH_PYTHON; 
->>>>>>> d972778efdc2e7276c0794ee72dbe6387b1af7d5
+
     API_QUERY_TITULOS = 'titulos';
     API_QUERY_ATER = 'ater';
 
@@ -37,7 +31,37 @@ class PythonService {
     API_QUERY_CEPEA_MEDIA_ANUAL_MILHO = 'media-anual-milho';//Obtem os principais precos atualizados
     API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ARABICA = 'media-anual-cafe-arabica';//Obtem os principais precos atualizados
     API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ROBUSTA = 'media-anual-cafe-robusta';//Obtem os principais precos atualizados
+    API_QUERY_CEPEA_RELOAD_DATA = 'cepea-reload-data';//Recarrega os dados das planilhas
+    API_QUERY_CEPEA_UPDATE = 'cepea-update';//Sicroniza as planilhas do portal Ares com os dados do CEPEA
 
+    async reloadCepea() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_RELOAD_DATA}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        return response;
+
+    }
+    async updateCepea() {
+
+         const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CEPEA_UPDATE}`
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com o servidor de dados e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        return response;
+
+    }
     async getMediaAnualCafeRobusta() {
 
          const response = await axios({
@@ -48,10 +72,6 @@ class PythonService {
                 throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
-
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
 
         return response.data.data;
 
@@ -67,10 +87,6 @@ class PythonService {
             }
         );
 
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
-
         return response.data.data;
 
     }
@@ -84,10 +100,6 @@ class PythonService {
                 throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
-
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
 
         return response.data.data;
 
@@ -103,10 +115,6 @@ class PythonService {
             }
         );
 
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
-
         return response.data.data;
 
     }
@@ -120,10 +128,6 @@ class PythonService {
                 throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
-
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
 
         return response.data.data;
 
@@ -139,10 +143,6 @@ class PythonService {
             }
         );
 
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
-
         return response.data.data;
 
     }
@@ -156,10 +156,6 @@ class PythonService {
                 throw new NotFoundErrorException('Houve um erro com o servidor de dados conexão e não foi possivel conectar. Tente novamente mais tarde.');
             }
         );
-
-        const data = response.data;
-        if(data.length==0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
 
         return response.data.data;
 

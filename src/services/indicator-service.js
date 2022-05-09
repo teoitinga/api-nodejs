@@ -5,6 +5,14 @@ const PythonService = require('../services/python-service');
 const pythonService = new PythonService();
 
 class IndicatorService {
+    async updateCepea(){
+        const response = await pythonService.updateCepea();
+        return response;
+    }
+    async reloadCepea(){
+        const response = await pythonService.reloadCepea();
+        return response;
+    }
     async actualPrices(){
         const response = await pythonService.getActualPrices();
         return response;
@@ -28,12 +36,20 @@ class IndicatorService {
     }
     async cepeaCafeArabica() {
         const response = await pythonService.getMediaAnualCafeArabica();
-        return response;
+        return {
+            dados: response,
+            titulo: 'Evolução dos precos da saca de Café Arábica',
+            fonte: 'CEPEA'
+        }
     }
-
+    
     async cepeaCafeRobusta() {
         const response = await pythonService.getMediaAnualCafeRobusta();
-        return response;
+        return {
+            dados: response,
+            titulo: 'Evolução dos precos da saca de Café Robusta',
+            fonte: 'CEPEA'
+        }
     }
 
     async cepeaBoi() {
