@@ -196,6 +196,19 @@ const uploadController = new UploadController();
 const uploadPath = '/api/v1/upload';
 routes.post(`${uploadPath}/rater`, asynchandler(class_10), multerLocal.single('rater'), asynchandler(uploadController.createRater));
 
+
+/**
+ * Roatas para tasks
+ */
+const TaskController = require('./src/controllers/task-controller');
+const taskController = new TaskController();
+const taskPath = '/api/v1/tasks'
+routes.post(`${taskPath}/add-comment`, asynchandler(class_1), asynchandler(taskController.addComment));
+
+
+/**
+ * 
+ */
 routes.use((error, req, res, next) => {
     console.error(error);
     res.status(error.status || 500).json(error || { message: 'Ocorreu um erro e não foi identificado, por favor entre em contato com o administrador do portal' });

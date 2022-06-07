@@ -24,5 +24,8 @@ Project.init(connection);
 const Theme = require('../../models/theme');
 Theme.init(connection);
 
+const Comment = require('../../models/comment');
+Comment.init(connection);
+
 
 module.exports = connection;

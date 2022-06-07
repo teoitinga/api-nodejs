@@ -56,4 +56,7 @@ R_Ater.init(connection);
 const route = require('../models/route');
 route.init(connection);
 
+const comment = require('../models/comment');
+comment.init(connection);
+
 module.exports = connection;
