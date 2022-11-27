@@ -27,5 +27,7 @@ Theme.init(connection);
 const Comment = require('../../models/comment');
 Comment.init(connection);
 
+const prodLeite = require('../models/prodleite');
+prodLeite.init(connection);
 
 module.exports = connection;

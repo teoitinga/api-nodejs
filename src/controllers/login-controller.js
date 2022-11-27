@@ -33,6 +33,10 @@ class LoginController {
         const stored = await service.findById(id);
         res.status(200).json(stored);
     };
+    async recoverypassword(req, res) {
+        const stored = await service.recoverypassword(req);
+        res.status(200).json(stored);
+    };
     async findbyname(req, res) {
         const stored = await service.findByName(req);
         res.status(200).json(stored);

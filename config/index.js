@@ -59,4 +59,7 @@ route.init(connection);
 const comment = require('../models/comment');
 comment.init(connection);
 
+const prodLeite = require('../models/prodleite');
+prodLeite.init(connection);
+
 module.exports = connection;

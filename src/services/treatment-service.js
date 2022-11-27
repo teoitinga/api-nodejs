@@ -20,6 +20,9 @@ const customerService = new CustomerService();
 const TaskService = require('../services/task-service');
 const taskService = new TaskService();
 
+const RegProducao = require('../services/producao-register-service')
+const regProducao = new RegProducao();
+
 class TreatmentService {
 
     async findByAction(request) {
@@ -70,8 +73,6 @@ class TreatmentService {
             /**Elimina outros caraceres do CPF */
             c.cpf = c.cpf.match(numberPattern);
             customer = await customerService.create(c, credendial);
-            console.log('>>>>>>>>>>>>>>>Created new customer');
-            console.log(customer);
             //await customersIds.push(customer[0].id);
             return await this.treatmentStoreCustomer(c, treatmentId, credendial);
         }
@@ -79,8 +80,6 @@ class TreatmentService {
             //customer = await customerService.fincreate(c, credendial);
             /**Elimina outros caraceres do CPF */
             customer[0].cpf = c.cpf.match(numberPattern);
-            console.log('>>>>>>>>>>>>>>>Exists a customer');
-            console.log(customer);
             return await this.treatmentStoreCustomer(customer[0], treatmentId, credendial);
         }
         return undefined;
@@ -106,6 +105,12 @@ class TreatmentService {
         const activeUser = credendial.userId;
 
         let treatment = await JSON.parse(request.body.treatment);
+
+
+
+
+
+
 
         /**Define variáveis auxiliares */
         //treatment.id = uuid.v4().toUpperCase();
@@ -135,7 +140,6 @@ class TreatmentService {
         try {
             treatment = await this.store(treatment);
         } catch (e) {
-            console.log(e);
             throw new TreatmentException('Error on a treatment registry.');
 
         }
@@ -164,6 +168,17 @@ class TreatmentService {
         } catch (e) {
             throw new TreatmentException('Error on a treatment registry.');
 
+        }
+
+        /**
+         * Recupera dados de produção de leite através do fluxo json e faz o registro
+         */
+         if(treatment.prodLeite){
+            let prodLeite = treatment.prodLeite
+            prodLeite.id = treatment.id;
+            prodLeite.createdby = await credendial.userId;
+            prodLeite.created = await moment();
+            prodLeite = await regProducao.regProdLeite(prodLeite);
         }
 
     }

@@ -97,6 +97,17 @@ class UserService {
         return dto.obj;
 
     }
+    async recoverypassword(req) {
+        const registry = req.params['registry'];
+        const newpassword = req.params['password'];
+        
+        /**Codifica o password */
+        const salt = process.env.BRCRYPT_SECRET;
+        const password = await brcrypt.hash(newpassword, salt);
+
+        const updatedpass = await UserModel.update({password}, {where: {registry}})
+        return updatedpass
+    }
 
     async finalizeTasks(request, id) {
 
@@ -1168,6 +1179,7 @@ class UserService {
         const registry = user.login
         const password = user.password;
 
+
         //Rotina de verificações do usuário
         let usuario = await UserModel.findOne({
             where: {
@@ -1176,10 +1188,23 @@ class UserService {
         });
 
         //Verifica se a senha é válida
+        
+        /*
+        const modelo = {usuario.password, password};
+        const modelo = usuario;
+
+        console.log('#########################################');
+        console.log('Recuperação de senha');
+        const salt = process.env.BRCRYPT_SECRET;
+        const passHashed = await brcrypt.hash('jacare', salt);
+        user.password = passHashed; 
+        console.log(passHashed);
+        */
 
         if (!usuario) {
             throw new UserErrorException('Usuários/Senha não existe ou está incorreto.')
         }
+
 
         if (!(await this._passworValid(password, usuario.password))) {
             throw new UserErrorException('Usuários/Senha incorreta.')

@@ -68,6 +68,7 @@ const IndicatorsController = require('./src/controllers/indicators-controller');
 const indicatorscontroller = new IndicatorsController();
 
 const indicatorPath = '/api/v1/users';
+routes.get(`${indicatorPath}/recoverypassword/:registry/:password`, asynchandler(class_1), asynchandler(logincontroller.recoverypassword));
 routes.get(`${indicatorPath}/reports/indicators-last-10-leite`, asynchandler(class_1), asynchandler(indicatorscontroller.cepceaLeiteMG));
 routes.get(`${indicatorPath}/reports/indicators-last-10-boi`, asynchandler(class_1), asynchandler(indicatorscontroller.cepeaBoi));
 routes.get(`${indicatorPath}/reports/indicators-last-10-bezerro`, asynchandler(class_1), asynchandler(indicatorscontroller.cepeaBezerro));
