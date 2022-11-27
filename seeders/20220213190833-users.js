@@ -1,7 +1,7 @@
 'use strict';
 
 const moment = require("moment");
-
+const password = '$2a$12$wXGo6ht7MsctgO5Okk.TZOCg2fPRmf6O/BYA4RKRMtEh8agisewJy';//jacare
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert('Users', [
@@ -13,7 +13,7 @@ module.exports = {
         role_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D401',
         partner_id: '',
         division_id: '',
-        password: '$2b$10$xgztY3N/fmRp36BRv7bwfePv6Lg4a1Wwlc3TJHPWynjZ.b9Jv5BLO',
+        password: password,
         address: 'Trv. Augusto de lima',
         num: '22',
         district: 'Centro',
@@ -37,7 +37,7 @@ module.exports = {
         role_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
         partner_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
         division_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
-        password: '$2b$10$xgztY3N/fmRp36BRv7bwfePv6Lg4a1Wwlc3TJHPWynjZ.b9Jv5BLO',
+        password: password,
         address: 'Trv. Augusto de lima',
         num: '22',
         district: 'Centro',
@@ -61,7 +61,7 @@ module.exports = {
         role_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D394',
         partner_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
         division_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
-        password: '$2b$10$xgztY3N/fmRp36BRv7bwfePv6Lg4a1Wwlc3TJHPWynjZ.b9Jv5BLO',
+        password: password,
         address: 'Trv. Augusto de lima',
         num: '22',
         district: 'Centro',
@@ -84,7 +84,7 @@ module.exports = {
         role_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D392',
         partner_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
         division_id: 'FF19491D-B9A4-417A-8D70-CFFCB1D7D398',
-        password: '$2b$10$xgztY3N/fmRp36BRv7bwfePv6Lg4a1Wwlc3TJHPWynjZ.b9Jv5BLO',
+        password: password,
         address: 'Trv. Augusto de lima',
         num: '22',
         district: 'Centro',
