@@ -16,7 +16,7 @@ module.exports = {
     username: "esloctaru",
     password: "#H0864#@",
     database: "smart_dev",
-    host: "45.174.40.217",
+    host: "192.168.0.102",
     dialect: "mysql",
     define: {
       timestamps: true,

@@ -24,7 +24,7 @@ class ProdLeite extends Model {
       createdAt: 'created',
       updatedAt: 'updated',
       sequelize: connection,
-      modelName: 'LeiteProds',
+      modelName: 'leiteprods',
     })
   } 
 }; 
