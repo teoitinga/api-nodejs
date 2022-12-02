@@ -8,10 +8,10 @@ const {
 
 class DapService {
 
-    //DAP_API_PATH = 'http://smap14.mda.gov.br/extratodap/PesquisarDAP/CarregarExtratoDap/CarregaExtratoDAP?Token=Y3BmPTY4NzAxOTE4NjcyJk51bWVyb0RBUD0mdGlwbz1GaXNpY2E=';
-    DAP_API_PATH = 'https://smap14.mda.gov.br/extratodap/PesquisarDAP/CarregarExtratoDAP';
-    //DAP_API_PATH = 'https://smap14.mda.gov.br/extratodap/PesquisarDAP/ExtratoDapPF?Token=Y3BmPTg4MDMyMDYwNjAwJk51bWVyb0RBUD0mdGlwbz1GaXNpY2E=';
+    DAP_API_PATH = 'http://smap14.mda.gov.br/extratodap/PesquisarDAP/CarregarExtratoDAP';
+
     DAP_API_QUERY_PATH = 'http://dap.mda.gov.br/ConsultaPublicaIrregularidade/Home/Consulta';
+
 
     async convertToDate(date) {
         const regex = new RegExp(/^\/Date\((.*)\)\//);
