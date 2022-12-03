@@ -26,7 +26,7 @@ module.exports = {
   local: {
     username: "3conn",
     password: "$2a$12$fDM90eiqN5gXQfJAAecPFOzplJnPnp5I9TgI174r2Rh3LYsoyJ4Hm",
-    database: "smart_local",
+    database: "smart",
     host: "localhost",
     dialect: "mysql",
     define: {

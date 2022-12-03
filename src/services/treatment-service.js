@@ -106,10 +106,19 @@ class TreatmentService {
 
         let treatment = await JSON.parse(request.body.treatment);
 
+        /*
+            Inicia objetos auxiliares que poderão vir a ser incluidos
+            posteriormente nas visitas
 
-
-
-
+            Após a instanciação e registro da visita, é necessário configurar o ID
+            e outras variáveis do objeto criado
+        */
+        let producaoLeite = treatment.prodLeite;
+        let plnCredRural = {};
+ 
+        /**
+         * Fim das objetos auxilliares
+         */
 
 
         /**Define variáveis auxiliares */
@@ -173,12 +182,17 @@ class TreatmentService {
         /**
          * Recupera dados de produção de leite através do fluxo json e faz o registro
          */
-         if(treatment.prodLeite){
-            let prodLeite = treatment.prodLeite
+         if(producaoLeite){
+            let prodLeite = producaoLeite
             prodLeite.id = treatment.id;
             prodLeite.createdby = await credendial.userId;
             prodLeite.created = await moment();
-            prodLeite = await regProducao.regProdLeite(prodLeite);
+
+            try{
+                prodLeite = await regProducao.regProdLeite(prodLeite);
+            }catch(e){
+                throw new TreatmentException(e);
+            }
         }
 
     }
