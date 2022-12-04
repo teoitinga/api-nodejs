@@ -23,6 +23,9 @@ const taskService = new TaskService();
 const RegProducao = require('../services/producao-register-service')
 const regProducao = new RegProducao();
 
+const RegCredRural = require('../services/credrural-register-service')
+const regCredRural = new RegCredRural();
+
 class TreatmentService {
 
     async findByAction(request) {
@@ -114,7 +117,7 @@ class TreatmentService {
             e outras variáveis do objeto criado
         */
         let producaoLeite = treatment.prodLeite;
-        let plnCredRural = {};
+        let plnCredRural = treatment.plnCredRural;
  
         /**
          * Fim das objetos auxilliares
@@ -192,6 +195,24 @@ class TreatmentService {
                 prodLeite = await regProducao.regProdLeite(prodLeite);
             }catch(e){
                 throw new TreatmentException(e);
+            }
+        }
+        if(plnCredRural){
+            let credrural = plnCredRural
+
+            /**
+             * Somente segue com o registro se houver discriminação dos itens financiados
+             */
+            if(credrural.itens){
+                credrural.id = treatment.id;
+                credrural.createdby = await credendial.userId;
+                credrural.created = await moment();
+    
+                try{
+                    credrural = await regCredRural.regCredRural(credrural);
+                }catch(e){
+                    throw new TreatmentException(e);
+                }
             }
         }
 

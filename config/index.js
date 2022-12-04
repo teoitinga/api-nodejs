@@ -62,4 +62,10 @@ comment.init(connection);
 const prodLeite = require('../models/prodleite');
 prodLeite.init(connection);
 
+const crpropostas = require('../models/credrural');
+crpropostas.init(connection);
+
+const itensfinanciados = require('../models/itensfinanciados');
+itensfinanciados.init(connection);
+
 module.exports = connection;
