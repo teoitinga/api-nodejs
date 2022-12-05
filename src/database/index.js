@@ -30,4 +30,14 @@ Comment.init(connection);
 const prodLeite = require('../models/prodleite');
 prodLeite.init(connection);
 
+
+const credruralproposta = require('../models/crPropostaModel');
+credruralproposta.init(connection);
+
+const critemfinanciado = require('../models/ItemFinanciadoModel');
+critemfinanciado.init(connection);
+
+const agroindustria = require('../models/agroindustriaModel');
+agroindustria.init(connection);
+
 module.exports = connection;

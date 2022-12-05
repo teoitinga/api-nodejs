@@ -9,7 +9,7 @@ const ActionModel = require('../../models/action');
 
 const { TreatmentException } = require('../exceptions/treatment-exception');
 
-const { Op } = require("sequelize");
+const { Op, EmptyResultError } = require("sequelize");
 
 const treatmentModel = require('../../models/treatment');
 const Treatment_Customer = require('../../models/treatment-customers');
@@ -25,6 +25,9 @@ const regProducao = new RegProducao();
 
 const RegCredRural = require('../services/credrural-register-service')
 const regCredRural = new RegCredRural();
+
+const RegAgroindustria = require('../services/agroindustria-register-service')
+const regAgroindustria = new RegAgroindustria();
 
 class TreatmentService {
 
@@ -118,7 +121,8 @@ class TreatmentService {
         */
         let producaoLeite = treatment.prodLeite;
         let plnCredRural = treatment.plnCredRural;
- 
+        let agroindustria = treatment.producaoAgroindustria;
+
         /**
          * Fim das objetos auxilliares
          */
@@ -197,6 +201,7 @@ class TreatmentService {
                 throw new TreatmentException(e);
             }
         }
+
         if(plnCredRural){
             let credrural = plnCredRural
 
@@ -214,6 +219,30 @@ class TreatmentService {
                     throw new TreatmentException(e);
                 }
             }
+        }
+
+        if(agroindustria){
+
+            let registros = await agroindustria.map(i => {
+                let reg = i;
+                i.id = uuid.v4().toUpperCase()
+                i.treatmentId = treatment.id;
+                i.createdby = treatment.createdby;
+                i.updatedby = treatment.updatedby;
+                i.created = treatment.created;
+                i.updated = treatment.updated;
+
+                /**
+                 * Registra no banco de dados
+                 */
+                 try{
+                    reg = regAgroindustria.register(i);
+                    return reg
+                }catch(e){
+                    throw new TreatmentException(e);
+                }
+            })
+            return registros;
         }
 
     }

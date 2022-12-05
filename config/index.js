@@ -68,4 +68,7 @@ crpropostas.init(connection);
 const itensfinanciados = require('../models/itensfinanciados');
 itensfinanciados.init(connection);
 
+const agroindustria = require('../models/agroindustria');
+agroindustria.init(connection);
+
 module.exports = connection;

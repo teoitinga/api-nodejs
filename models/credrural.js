@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 
 class CredRural extends Model {
- 
+  
   static init(connection) {
     super.init({
       banco: DataTypes.STRING(30),//banco que concedeu a proposta de financiamento
