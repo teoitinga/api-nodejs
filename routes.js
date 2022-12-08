@@ -183,6 +183,7 @@ const pythonPath = '/api/v1/ares-data';
 routes.post(`${pythonPath}/titulos`, asynchandler(pythoncontroller.queryFarms));
 routes.post(`${pythonPath}/ater`, asynchandler(pythoncontroller.generateRater));
 routes.post(`${pythonPath}/send-ater`, asynchandler(pythoncontroller.sendReportAter));
+routes.post(`${pythonPath}/car/find-car/:data`, asynchandler(pythoncontroller.findCar));
 
 
 /**

@@ -7,6 +7,11 @@ class PythonController {
         const stored = await service.sendReportAter(req);
         res.status(200).json(stored)
     };
+
+    async findCar(req, res) {
+        const stored = await service.findCar(req);
+        res.status(200).json(stored)
+    };
     async generateRater(req, res) {
         const mapa = req.body['mapa'];
         const stored = await service.generateRater(mapa);

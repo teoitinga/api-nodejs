@@ -5,8 +5,8 @@ class CredRuralItens extends Model {
   static init(connection) {
     super.init({
       finalidade: DataTypes.STRING(30),//banco que concedeu a proposta de financiamento
-      atividade: DataTypes.STRING(50),//banco que concedeu a proposta de financiamento
-      descricao: DataTypes.STRING(20),//linha de crédito
+      atividade: DataTypes.STRING(50),//
+      descricao: DataTypes.STRING(20),//
       unidade: DataTypes.STRING(10),//custeio, investimento
       qtditemfinanc: DataTypes.DECIMAL(4,2),//ano do primeiro pagamento
       valorunit: DataTypes.DECIMAL(4,2),//taxa de juros ao ano

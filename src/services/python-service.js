@@ -17,9 +17,10 @@ const {
 
 class PythonService {
     //API_PATH = 'http://localhost:5000/'; 
-    API_PATH = process.env.API_PATH_PYTHON; 
+    API_PATH = process.env.API_PATH_PYTHON;
 
     API_QUERY_TITULOS = 'titulos';
+    API_QUERY_CAR = 'cars';
     API_QUERY_ATER = 'ater';
 
     API_QUERY_CEPEA_DATA = 'cepea-update';//Atualiza as tabelas dom o CEPEA
@@ -36,7 +37,7 @@ class PythonService {
 
     async reloadCepea() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_RELOAD_DATA}`
         }).catch(
@@ -50,7 +51,7 @@ class PythonService {
     }
     async updateCepea() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_UPDATE}`
         }).catch(
@@ -64,7 +65,7 @@ class PythonService {
     }
     async getMediaAnualCafeRobusta() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ROBUSTA}`
         }).catch(
@@ -78,7 +79,7 @@ class PythonService {
     }
     async getMediaAnualCafeArabica() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_CAFE_ARABICA}`
         }).catch(
@@ -92,7 +93,7 @@ class PythonService {
     }
     async getMediaAnualMilho() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_MILHO}`
         }).catch(
@@ -106,7 +107,7 @@ class PythonService {
     }
     async getMediaAnualBezerro() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_BEZERRO}`
         }).catch(
@@ -120,7 +121,7 @@ class PythonService {
     }
     async getMediaAnualBoi() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_BOI}`
         }).catch(
@@ -134,7 +135,7 @@ class PythonService {
     }
     async getMediaAnualLeite() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_MEDIA_ANUAL_LEITE}`
         }).catch(
@@ -148,7 +149,7 @@ class PythonService {
     }
     async getActualPrices() {
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_CEPEA_DATA_PRICES}`
         }).catch(
@@ -164,7 +165,7 @@ class PythonService {
 
         const payload = prop;
 
-         const response = await axios({
+        const response = await axios({
             method: 'get',
             url: `${this.API_PATH}${this.API_QUERY_TITULOS}?prop=${payload}`,
             data: payload
@@ -175,18 +176,42 @@ class PythonService {
         );
 
         const data = response.data;
-        if(data.length==0)
+        if (data.length == 0)
             throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
 
         return response.data.data;
 
     }
 
-    async sendReportAter(request){
+    async findCar(request) {
+        /**
+         * 
+        const data = request.body.data;
+        
+        const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CAR}?prop=${data}`,
+            data: data
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com a conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+            );
+            
+            //const data = response.data;
+            if (data.length == 0)
+            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+            
+            */
+            return { car: 'Não implementado ainda' }
+            return response.data.data;
+
+    }
+    async sendReportAter(request) {
         const credendial = await cache.getCredencial(request);
 
         const activeUser = credendial.userId;
- 
+
         const situacao = request.body['situacao'];
         const orientacao = request.body['orientacao'];
         const recomendacao = request.body['recomendacao'];
@@ -207,13 +232,12 @@ class PythonService {
             r_ater.createdby = await credendial.userId;
             r_ater.partnerId = await credendial.partnerId;
             r_ater.divisionId = await credendial.divisionId;
-            
+
             await R_Aters.create(r_ater);
 
-            return {sucess: 'Registrado com sucesso'};
+            return { sucess: 'Registrado com sucesso' };
 
         } catch (e) {
-            console.log(e);
             return new ServerErrorException(e.errors);
         }
     }
@@ -233,9 +257,9 @@ class PythonService {
         );
 
         const data = response.data.data;
-        
-        if(data.length==0)
-            throw new NotFoundErrorException('Não encontramos nenhum modelo parecido com a sua solicitação.')  ;
+
+        if (data.length == 0)
+            throw new NotFoundErrorException('Não encontramos nenhum modelo parecido com a sua solicitação.');
 
         return data
 
