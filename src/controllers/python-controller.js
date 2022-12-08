@@ -8,10 +8,7 @@ class PythonController {
         res.status(200).json(stored)
     };
 
-    async findCar(req, res) {
-        const stored = await service.findCar(req);
-        res.status(200).json(stored)
-    };
+
     async generateRater(req, res) {
         const mapa = req.body['mapa'];
         const stored = await service.generateRater(mapa);
@@ -23,6 +20,10 @@ class PythonController {
         const stored = await service.getTitulos(prop);
         res.status(200).json(stored)
     };
-
+    async findCar(req, res) {
+        const data = req.body['data'];
+        const stored = await service.findCar(data);
+        res.status(200).json(stored)
+    };
 }
 module.exports = PythonController;

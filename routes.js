@@ -183,7 +183,7 @@ const pythonPath = '/api/v1/ares-data';
 routes.post(`${pythonPath}/titulos`, asynchandler(pythoncontroller.queryFarms));
 routes.post(`${pythonPath}/ater`, asynchandler(pythoncontroller.generateRater));
 routes.post(`${pythonPath}/send-ater`, asynchandler(pythoncontroller.sendReportAter));
-routes.post(`${pythonPath}/car/find-car/:data`, asynchandler(pythoncontroller.findCar));
+routes.post(`${pythonPath}/car/find-car`, asynchandler(pythoncontroller.findCar));
 
 
 /**
@@ -204,7 +204,7 @@ routes.post(`${uploadPath}/rater`, asynchandler(class_10), multerLocal.single('r
 
 
 /**
- * Roatas para tasks
+ * Rotas para tasks
  */
 const TaskController = require('./src/controllers/task-controller');
 const taskController = new TaskController();

@@ -183,15 +183,13 @@ class PythonService {
 
     }
 
-    async findCar(request) {
-        /**
-         * 
-        const data = request.body.data;
-        
+    async findCar(value) {
+        const payload = value;
+
         const response = await axios({
             method: 'get',
-            url: `${this.API_PATH}${this.API_QUERY_CAR}?prop=${data}`,
-            data: data
+            url: `${this.API_PATH}${this.API_QUERY_CAR}?data=${payload}`,
+            data: payload
         }).catch(
             function (err) {
                 throw new NotFoundErrorException('Houve um erro com a conexão e não foi possivel conectar. Tente novamente mais tarde.');
@@ -199,11 +197,10 @@ class PythonService {
             );
             
             //const data = response.data;
-            if (data.length == 0)
-            throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
+            //if (data == '')
+            //    throw new NotFoundErrorException(`Não localizamos nenhuma propriedade para ${prop}`);
             
-            */
-            return { car: 'Não implementado ainda' }
+            //return { car: `Função de busca para [${data}] não implementada!`}
             return response.data.data;
 
     }
