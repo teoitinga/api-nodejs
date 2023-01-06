@@ -7,7 +7,6 @@ const ItemFinanciaoDto = require('../../src/dtos/itemfinanciado-dto');
 const ItemFinanciadoModel = require('../../models/itensfinanciados');
 const crPropostaModel = require('../../models/credrural');
 
-
 class CredRuralRegister {
 
     async regCredRural(cr) {

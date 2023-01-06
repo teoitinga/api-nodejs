@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-
+/*
     await queryInterface.addColumn(
       'itensfinanciados',
       'atividade',
@@ -10,9 +10,10 @@ module.exports = {
         allowNull: true,
       },
       )
-      
+  */    
     },
     async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('itensfinanciados', 'atividade')
+    /*
+      await queryInterface.removeColumn('itensfinanciados', 'atividade')*/
   }
 };
