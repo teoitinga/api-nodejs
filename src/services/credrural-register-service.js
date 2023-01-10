@@ -33,7 +33,13 @@ class CredRuralRegister {
             nitem.updated = proposta.updated;
 
             try{
-                return ItemFinanciadoModel.create(nitem);
+                const newitem  = ItemFinanciadoModel.create(nitem);
+                nitem = undefined;
+                console.log('Registered item');
+                console.log('#################################');
+                console.log(newitem);
+                return newitem;
+
             }catch(e){
                 throw new ServerErrorException(e);
             }
