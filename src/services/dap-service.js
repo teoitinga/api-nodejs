@@ -8,7 +8,8 @@ const {
 
 class DapService {
 
-    DAP_API_PATH = 'http://smap14.mda.gov.br/extratodap/PesquisarDAP/CarregarExtratoDAP';
+    //DAP_API_PATH = 'http://smap14.mda.gov.br/extratodap/PesquisarDAP/CarregarExtratoDAP';
+    DAP_API_PATH = 'https://smap14.mda.gov.br/extratodap/PesquisarDAP/CarregarExtratoDAP';
 
     DAP_API_QUERY_PATH = 'http://dap.mda.gov.br/ConsultaPublicaIrregularidade/Home/Consulta';
 
