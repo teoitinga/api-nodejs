@@ -185,6 +185,9 @@ routes.post(`${pythonPath}/ater`, asynchandler(pythoncontroller.generateRater));
 routes.post(`${pythonPath}/send-ater`, asynchandler(pythoncontroller.sendReportAter));
 routes.post(`${pythonPath}/car/find-car`, asynchandler(pythoncontroller.findCar));
 
+routes.post(`${pythonPath}/simula`, asynchandler(pythoncontroller.simula));
+routes.get(`${pythonPath}/niveis`, asynchandler(pythoncontroller.niveis));
+
 
 /**
  * Rotas de Consultas de DAP's

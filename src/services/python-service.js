@@ -183,6 +183,35 @@ class PythonService {
 
     }
 
+    async simula(value) {
+        const payload = value;
+
+        const response = await axios({
+            method: 'post',
+            url: `${this.API_PATH}${this.API_QUERY_CAR}`,
+            data: payload
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com e não foi possivel fazer a simulação. Tente novamente mais tarde.');
+            }
+            );
+
+            return response.data.data;
+
+    }
+    async niveis() {
+        const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_CAR}`,
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com e não foi possivel obter os registros.');
+            }
+            );
+
+            return response.data.data;
+
+    }
     async findCar(value) {
         const payload = value;
 
