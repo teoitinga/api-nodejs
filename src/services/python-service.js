@@ -23,6 +23,9 @@ class PythonService {
     API_QUERY_CAR = 'cars';
     API_QUERY_ATER = 'ater';
 
+    API_QUERY_SIMULA = 'simula';
+    API_QUERY_NIVEIS = 'niveis';
+
     API_QUERY_CEPEA_DATA = 'cepea-update';//Atualiza as tabelas dom o CEPEA
     API_QUERY_CEPEA_RELOAD_DATA = 'cepea-reload-data';//Recarrega os dados
     API_QUERY_CEPEA_DATA_PRICES = 'cepea-atual-prices';//Obtem os principais precos atualizados
@@ -188,7 +191,7 @@ class PythonService {
 
         const response = await axios({
             method: 'post',
-            url: `${this.API_PATH}${this.API_QUERY_CAR}`,
+            url: `${this.API_PATH}${this.API_QUERY_SIMULA}`,
             data: payload
         }).catch(
             function (err) {
@@ -202,15 +205,14 @@ class PythonService {
     async niveis() {
         const response = await axios({
             method: 'get',
-            url: `${this.API_PATH}${this.API_QUERY_CAR}`,
+            url: `${this.API_PATH}${this.API_QUERY_NIVEIS}`,
         }).catch(
             function (err) {
                 throw new NotFoundErrorException('Houve um erro com e não foi possivel obter os registros.');
             }
             );
 
-            return response.data.data;
-
+            return response.data;
     }
     async findCar(value) {
         const payload = value;
