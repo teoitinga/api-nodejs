@@ -187,7 +187,7 @@ class PythonService {
     }
 
     async simula(value) {
-        const payload = value;
+        const payload = value.body;
 
         const response = await axios({
             method: 'post',
@@ -199,7 +199,6 @@ class PythonService {
             }
             );
 
-            console.log(response)
             return response.data.data;
 
     }
