@@ -199,6 +199,7 @@ class PythonService {
             }
             );
 
+            console.log(response)
             return response.data.data;
 
     }
