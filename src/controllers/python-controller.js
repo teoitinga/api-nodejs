@@ -9,10 +9,21 @@ class PythonController {
     };
 
 
+    async rateRater(req, res) {
+        const mapa = req.body['mapa'];
+        const stored = await service.rateRater(mapa);
+        res.status(200).json(stored)
+    };
+
     async generateRater(req, res) {
         const mapa = req.body['mapa'];
         const stored = await service.generateRater(mapa);
-        res.status(200).json(stored)
+        try{
+            res.status(200).json(stored)
+        }catch(e){
+            res.status(404).json(e.message)
+
+        }
     };
 
     async queryFarms(req, res) {

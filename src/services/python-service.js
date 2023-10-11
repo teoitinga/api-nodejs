@@ -243,11 +243,13 @@ class PythonService {
         const situacao = request.body['situacao'];
         const orientacao = request.body['orientacao'];
         const recomendacao = request.body['recomendacao'];
+        const origin = request.body['origin'];
 
         let r_ater = {
             situacao: situacao,
             orientacao: orientacao,
-            recomendacao: recomendacao
+            recomendacao: recomendacao,
+            origin_id: origin
         }
 
         try {
@@ -271,7 +273,42 @@ class PythonService {
     }
 
     async generateRater(mapa) {
+        
+        const payload = mapa;
 
+        const response = await axios({
+            method: 'get',
+            url: `${this.API_PATH}${this.API_QUERY_ATER}?mapa=${payload}`,
+            data: payload
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException('Houve um erro com a conexão e não foi possivel conectar. Tente novamente mais tarde.');
+            }
+        );
+
+        
+        const data = response.data.data;
+
+        if (data.length == 0)
+            throw new NotFoundErrorException('Não encontramos nenhum modelo parecido com a sua solicitação.');
+
+        return data
+
+    }
+    async rateRater(mapa) {
+        
+        //Recebe o id e a nota de 1 a 5 do relatório
+        const dados = {id: mapa['id'], rate: mapa['rate']}
+
+        //testa se a nota está entre 1 e 5
+
+        //recupera o registro do relatorio com o id informado
+
+        //incrementa a nota (rate) especificada
+
+        //retorna sucesso
+
+        
         const payload = mapa;
 
         const response = await axios({

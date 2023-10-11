@@ -11,6 +11,14 @@ class Rater extends Model {
       recomendacao: DataTypes.STRING,
       partnerId: DataTypes.STRING,
       divisionId: DataTypes.STRING,
+      
+      origin_id: DataTypes.STRING,
+      rate1: DataTypes.INTEGER,
+      rate2: DataTypes.INTEGER,
+      rate3: DataTypes.INTEGER,
+      rate4: DataTypes.INTEGER,
+      rate5: DataTypes.INTEGER,
+
       createdby: DataTypes.STRING,
       updatedby: DataTypes.STRING,
       created: DataTypes.DATE,
