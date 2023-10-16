@@ -42,10 +42,17 @@ class PythonController {
         const stored = await service.simula(data);
         res.status(200).json(stored)
     };
-
+    
     async niveis(req, res) {
-
+        
         const stored = await service.niveis();
+        res.status(200).json(stored)
+    };
+    
+    async hasmammultas(req, res) {
+        const data = req.body.data ? req.body.data : req.body;
+
+        const stored = await service.hasmammultas(data);
         res.status(200).json(stored)
     };
 }

@@ -25,6 +25,7 @@ class PythonService {
 
     API_QUERY_SIMULA = 'simula';
     API_QUERY_NIVEIS = 'niveis';
+    API_QUERY_MULTAS_MA = 'consulta-infracao';
 
     API_QUERY_CEPEA_DATA = 'cepea-update';//Atualiza as tabelas dom o CEPEA
     API_QUERY_CEPEA_RELOAD_DATA = 'cepea-reload-data';//Recarrega os dados
@@ -201,6 +202,19 @@ class PythonService {
 
             return response.data.data;
 
+    }
+    async hasmammultas(payload) {
+        const response = await axios({
+            method: 'post',
+            url: `${this.API_PATH}${this.API_QUERY_MULTAS_MA}`,
+            data: payload
+        }).catch(
+            function (err) {
+                throw new NotFoundErrorException(err);
+            }
+            );
+
+            return response.data;
     }
     async niveis() {
         const response = await axios({

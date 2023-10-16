@@ -189,6 +189,8 @@ routes.post(`${pythonPath}/car/find-car`, asynchandler(pythoncontroller.findCar)
 routes.post(`${pythonPath}/simula`, asynchandler(pythoncontroller.simula));
 routes.get(`${pythonPath}/niveis`, asynchandler(pythoncontroller.niveis));
 
+//Consulta multas SUPRAM
+routes.post(`${pythonPath}/consulta-infracao`, asynchandler(pythoncontroller.hasmammultas));
 
 /**
  * Rotas de Consultas de DAP's
