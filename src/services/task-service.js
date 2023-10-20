@@ -33,7 +33,7 @@ class TaskService {
         const comment = request.body;
 
         comment.id = uuid.v4().toUpperCase();
-        comment.from = activeUser
+        comment.fromuser = activeUser
         comment.createdby = activeUser
         comment.created = moment();
 
