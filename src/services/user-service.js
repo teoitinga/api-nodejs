@@ -949,18 +949,22 @@ class UserService {
         users.division_id as division,
         users.partner_id as partner,
         tasks.id, tasks.status, tasks.created, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
-        tasks.userDesigned_id
+        tasks.userDesigned_id,
+        comments.comments as comments,
+        crpropostas.id as hasprojectid
             FROM tasks
             left join treatments on treatments.id= tasks.treatment_id
             left join treatment_customers on treatment_customers.treatment_id = treatments.id
             left join customers on customers.id = treatment_customers.customer_id
             left join users on users.id = tasks.userDesigned_id
+            left join comments on comments.taskid = tasks.id
+            left join crpropostas on crpropostas.id = treatments.id
             where tasks.userDesigned_id=  '${userId}'
             and tasks.status = 'INICIADA'
-            group by tasks.treatment_id
             order by treatments.data desc
-        ;
-        `;
+            ;
+            `;
+        // group by tasks.treatment_id
         const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
 
         return tasks;
