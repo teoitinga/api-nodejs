@@ -966,7 +966,7 @@ class UserService {
                 
                     where 
                     tasks.status = 'INICIADA'
-                    and tasks.userDesigned_id=  '${userId}'
+                    and users.id =  '${userId}'
 
                     group by tasks.id
                     order by treatments.data desc
