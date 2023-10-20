@@ -43,7 +43,7 @@ class TaskService {
         //Ajusta a task para a responsabilidade do funcionário a quem se destina a mensagem
         let task = await TaskModel.findByPk(comment.taskid);
         
-        await TaskModel.update({userDesigned_id: comment.to}, {where: {id: comment.taskid}});
+        await TaskModel.update({userDesigned_id: comment.touser}, {where: {id: comment.taskid}});
         
         await CommentModel.create(comment);
 
