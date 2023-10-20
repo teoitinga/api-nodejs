@@ -968,7 +968,7 @@ class UserService {
                     tasks.status = 'INICIADA'
                     and users.id =  '${userId}'
 
-                    group by tasks.id
+                    group by tasks.id, comments.id
                     order by treatments.data desc
                 ;
             `;
