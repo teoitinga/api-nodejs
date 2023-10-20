@@ -940,12 +940,12 @@ class UserService {
         const userId = credendial.userId;
 
         const query = `
-            SELECT 
+        SELECT 
             customers.name as customername,
             customers.id as customerid,
             customers.cpf as cpf,
             users.name as username,
-            users1.name as emissor_username,
+            emissor.name as emissor_username,
             users.id as userid,
             users.division_id as division,
             users.partner_id as partner,
@@ -953,22 +953,23 @@ class UserService {
             tasks.userDesigned_id,
             max(comments.comments) as comments,
             crpropostas.id as hasprojectid
-                
-            FROM tasks
+                    
+                FROM tasks
                 left join treatments on treatments.id= tasks.treatment_id
                 left join treatment_customers on treatment_customers.treatment_id = treatments.id
                 left join customers on customers.id = treatment_customers.customer_id
                 left join users on users.id = tasks.userDesigned_id
-                left join users as users1 on users.id = comments.from
+                
                 left join comments on comments.taskid = tasks.id
                 left join crpropostas on crpropostas.id = treatments.id
-            
-                where 
-                tasks.status = 'INICIADA'
-                and tasks.userDesigned_id=  '${userId}'
+                left join users as emissor on emissor.id = comments.fromuser
+                
+                    where 
+                    tasks.status = 'INICIADA'
+                    and tasks.userDesigned_id=  '${userId}'
 
-                group by tasks.id
-                order by treatments.data desc
+                    group by tasks.id
+                    order by treatments.data desc
                 ;
             `;
         // group by tasks.treatment_id
