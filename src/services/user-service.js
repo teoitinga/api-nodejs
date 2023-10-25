@@ -949,9 +949,10 @@ class UserService {
             users.id as userid,
             users.division_id as division,
             users.partner_id as partner,
-            tasks.id, tasks.status, tasks.created, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
+            tasks.id, tasks.status, tasks.created as taskcreated, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
             tasks.userDesigned_id,
-            max(comments.comments) as comments,
+            comments.comments as comments,
+            comments.created as created,
             crpropostas.id as hasprojectid
                     
                 FROM tasks
@@ -960,7 +961,11 @@ class UserService {
                 left join customers on customers.id = treatment_customers.customer_id
                 left join users on users.id = tasks.userDesigned_id
                 
-                left join comments on comments.taskid = tasks.id
+                
+                left join (select comments.* from comments
+                right join (SELECT MAX(comments.created) as ultimo, comments.taskid FROM comments GROUP BY comments.taskid) as ultimoregistro
+                on comments.taskid = ultimoregistro.taskid and comments.created = ultimoregistro.ultimo) as comments on comments.taskid = tasks.id
+
                 left join crpropostas on crpropostas.id = treatments.id
                 left join users as emissor on emissor.id = comments.fromuser
                 
@@ -968,14 +973,16 @@ class UserService {
                     tasks.status = 'INICIADA'
                     and users.id =  '${userId}'
 
-                    group by tasks.id, comments.id
+                    group by tasks.id
                     order by treatments.data desc
                 ;
             `;
-        // group by tasks.treatment_id
-        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+            // wGltz6I2
 
+        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
         return tasks;
+
+
     }
 
     /**

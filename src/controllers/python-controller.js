@@ -50,8 +50,7 @@ class PythonController {
     };
     
     async hasmammultas(req, res) {
-        console.log('req.body')
-        console.log(req.body)
+
         const data = req.body.data ? req.body.data : req.body;
 
         const stored = await service.hasmammultas(data);
