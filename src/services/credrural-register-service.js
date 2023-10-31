@@ -35,9 +35,9 @@ class CredRuralRegister {
             try{
                 const newitem  = ItemFinanciadoModel.create(nitem);
                 nitem = undefined;
-                console.log('Registered item');
-                console.log('#################################');
-                console.log(newitem);
+                // console.log('Registered item');
+                // console.log('#################################');
+                // console.log(newitem);
                 return newitem;
 
             }catch(e){

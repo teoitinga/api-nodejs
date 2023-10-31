@@ -77,11 +77,25 @@ class LoginController {
         res.status(200).json(stored);
     };
 
+    // Retorna os ações registradas referentes ao id da visita informada
+    async tasksByTreatment(req, res) {
+        const id = req.params['id'];
+        const stored = await service.tasksByTreatment(req, id);
+        res.status(200).json(stored);
+    };
+
+    // Retorna os itens do projeto referentes ao id da visita informada
+    async projectsCrByTreatment(req, res) {
+        const id = req.params['id'];
+        const stored = await service.projectsCrByTreatment(id);
+        res.status(200).json(stored);
+    };
     async restartTasks(req, res) {
         const id = req.params['id'];
         const stored = await service.restartTasks(req, id);
         res.status(200).json(stored);
     };
+
     async allCustomers(req, res) {
         const stored = await service.allCustomers(req);
         res.status(200).json(stored);

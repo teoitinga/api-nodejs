@@ -479,6 +479,58 @@ class UserService {
         }
 
     }
+    
+    async projectsCrByTreatment( id ) {
+        const query = `
+            SELECT 
+                treatments.id as idvisita,
+                treatments.local,
+                treatments.data,
+                customers.name,
+                customers.cpf,
+                crpropostas.id as idproposta,
+                crpropostas.banco as banco,
+                crpropostas.linha as linha,
+                crpropostas.rdaok as pgmrda,
+                crpropostas.trtok as pgmtrt,
+                crpropostas.rda as valorrda,
+                crpropostas.trt as valortrt,
+                crpropostas.obs as observacoes,
+                itensfinanciados.id as iditemfinanciado,
+                itensfinanciados.descricao as descricao,
+                itensfinanciados.unidade as unidade,
+                itensfinanciados.qtditemfinanc as qtditemfinanc,
+                itensfinanciados.valorunit as valorunit,
+                ( qtditemfinanc * valorunit) as valorTotalItem
+                FROM smart.itensfinanciados
+                    left join crpropostas on itensfinanciados.idproposta = crpropostas.id
+                    left join treatments on crpropostas.id= treatments.id
+                    left join treatment_customers on treatment_customers.treatment_id= treatments.id
+                    left join customers on treatment_customers.customer_id = customers.id
+
+            WHERE
+                idvisita = '${id}'
+            ;
+        `;
+
+        const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
+        return response;
+
+    }
+
+    async tasksByTreatment( id ) {
+        const query = `
+            SELECT * FROM tasks
+  
+            WHERE
+                tasks.treatment_id = '${id}'
+            ;
+        `;
+
+        const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
+        return response;
+
+    }
     async restartTasks(request, id) {
 
         const statusReq = 'INICIADA';
@@ -949,11 +1001,17 @@ class UserService {
             users.id as userid,
             users.division_id as division,
             users.partner_id as partner,
-            tasks.id, tasks.status, tasks.created as taskcreated, treatments.data, tasks.description, tasks.qtd, treatments.pathFileName,
+            tasks.id, tasks.status, 
+            tasks.created as taskcreated, 
+            treatments.data, 
+            tasks.description, 
+            tasks.qtd, 
+            treatments.pathFileName,
             tasks.userDesigned_id,
             comments.comments as comments,
             comments.created as created,
-            crpropostas.id as hasprojectid
+            crpropostas.id as hasprojectid,
+            treatments.id as idvisita
                     
                 FROM tasks
                 left join treatments on treatments.id= tasks.treatment_id
