@@ -13,6 +13,7 @@ const cache = new UserCache();
 const MailService = require('../core/mail-service');
 const mailService = new MailService();
 
+const ActionModel = require('../../models/action');
 const UserModel = require('../../models/user');
 const UserDto = require('../../src/dtos/usuario-dto');
 
@@ -477,10 +478,11 @@ class UserService {
         if (role_class >= this.ACESSO_PUBLICO) {
             return {};
         }
-
+        
     }
     
     async projectsCrByTreatment( id ) {
+        console.log(`Projetos de visita ID ${id}`);
         const query = `
             SELECT 
                 treatments.id as idvisita,
@@ -509,25 +511,29 @@ class UserService {
                     left join customers on treatment_customers.customer_id = customers.id
 
             WHERE
-                idvisita = '${id}'
+                treatments.id = '${id}'
             ;
         `;
 
         const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
         return response;
-
+        
     }
 
     async tasksByTreatment( id ) {
+
         const query = `
-            SELECT * FROM tasks
-  
+        SELECT treatments.data, tasks.*, users.name FROM tasks
+            left join treatments on treatments.id = tasks.treatment_id
+            left join users on users.id = tasks.userDesigned_id
+            
             WHERE
                 tasks.treatment_id = '${id}'
             ;
         `;
-
+        
         const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
+        console.log(response);
         return response;
 
     }
