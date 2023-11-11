@@ -55,6 +55,7 @@ routes.put(`${userPath}/expire/:id`, asynchandler(class_1), asynchandler(loginco
 routes.put(`${userPath}/restart/:id`, asynchandler(class_1), asynchandler(logincontroller.restartTasks));
 routes.get(`${userPath}/tasks-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.tasksByTreatment));
 routes.get(`${userPath}/projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.projectsCrByTreatment));
+routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 
 /** GETs de dados para gestão */
 routes.get(`${userPath}/reports/all-projects`, asynchandler(class_1), asynchandler(logincontroller.countProjects));

@@ -90,6 +90,62 @@ class LoginController {
         const stored = await service.projectsCrByTreatment( id );
         res.status(200).json(stored);
     };
+
+    // Retorna a Visita com os dados de tasks e projetos referentes ao id da visita informada
+    async taksAndProjectsCrByTreatment (req, res) {
+        const id = req.params['id'];
+        
+        let projects = await service.projectsCrByTreatment( id );
+        let tasks = await service.projectsCrByTreatment( id );
+
+        tasks = tasks.map(t=>{
+            return {
+                id: t.taskId,
+                description: t.description,
+                qtd: t.qtd,
+                valor: t.valor,
+                status: t.status,
+                user: t.user,
+            }
+        });
+
+        const stored = {
+            id: projects[0].idvisita,
+            local: projects[0].local,
+            data: projects[0].data,
+            produtor: projects[0].name,
+            cpfProdutor: projects[0].cpf,
+            tasks: tasks,
+            // projects: projects,
+        }
+
+        projects = projects.map(p=>{
+            return {
+                id: p.visitaId,
+                local: p.local,
+                data: p.data,
+                nome: p.nome,
+                cpf: p.cpf,
+                banco: p.banco,
+                banco: p.banco,
+                linha: p.linha,
+                pgmrda: p.pgmrda,
+                pgmtrt: p.pgmtrt,
+                valorrda: p.valorrda,
+                valortrt: p.valortrt,
+                observacoes: p.observacoes,
+                iditemfinanciado: p.iditemfinanciado,
+                descricao: p.descricao,
+                unidade: p.unidade,
+                qtditemfinanc: p.qtditemfinanc,
+                valorunit: p.valorunit,
+                valorTotalItem: p.valorTotalItem
+            }
+        })
+        stored.projects = projects;
+
+        res.status(200).json(stored);
+    };
     async restartTasks(req, res) {
         const id = req.params['id'];
         const stored = await service.restartTasks(req, id);

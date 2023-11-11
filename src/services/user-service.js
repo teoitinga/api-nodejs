@@ -485,11 +485,11 @@ class UserService {
         console.log(`Projetos de visita ID ${id}`);
         const query = `
             SELECT 
-                treatments.id as idvisita,
-                treatments.local,
-                treatments.data,
-                customers.name,
-                customers.cpf,
+                treatments.id as visitaId,
+                treatments.local as local,
+                treatments.data as data,
+                customers.name as nome,
+                customers.cpf as cpf,
                 crpropostas.id as idproposta,
                 crpropostas.banco as banco,
                 crpropostas.linha as linha,
@@ -523,9 +523,18 @@ class UserService {
     async tasksByTreatment( id ) {
 
         const query = `
-        SELECT treatments.data, tasks.*, users.name FROM tasks
-            left join treatments on treatments.id = tasks.treatment_id
-            left join users on users.id = tasks.userDesigned_id
+        SELECT 
+            treatments.data as dataVisita, 
+            treatments.id as visitaId, 
+            tasks.id as taskId,
+            tasks.description as description, 
+            tasks.qtd as qtd, 
+            tasks.valor as valor, 
+            tasks.status as status, 
+            users.name as user 
+            FROM tasks
+                left join treatments on treatments.id = tasks.treatment_id
+                left join users on users.id = tasks.userDesigned_id
             
             WHERE
                 tasks.treatment_id = '${id}'
