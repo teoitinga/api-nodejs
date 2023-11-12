@@ -789,7 +789,8 @@ class UserService {
         */
         let expiresDate = user.expiresDate;
 
-        expiresDate = moment(user.expiresDate).utc().add(process.env.USER_EXPIRES_EXTEND, 'days');
+        // expiresDate = moment(user.expiresDate).utc().add(process.env.USER_EXPIRES_EXTEND, 'days');
+        expiresDate = moment().utc().add(process.env.USER_EXPIRES_EXTEND, 'days');
         /*
         if (!expiresDate) {
             expiresDate = moment(user.expiresDate).utc().add(process.env.USER_EXPIRES_EXTEND, 'days');
@@ -797,6 +798,29 @@ class UserService {
             expiresDate = null;
         }*/
         await UserModel.update({ expiresDate, updatedby }, { where: { id } });
+    }
+
+    async taksUpdateValor(request, id) {
+
+        /**
+         * Obtem os dados do usuário ativo
+         */
+        const credendial = await cache.getCredencial(request);
+        const updatedby = credendial.userId;
+        /**
+        * Recupera o ID do usuário para verificar se existe e também uma possível
+        * manipulação das informações caso seja necessário.
+        */
+        const user = await this.findById(id);
+
+        if (!user) {
+            throw new UserNotFoundException(`Usuário com ID: ${id} não foi encontrado.`);
+        }
+
+        // TODO: Ajustar a definição desta variável
+        const valor = req.body.valor;
+
+        await TaskModel.update({ valor, updatedby }, { where: { id } });
     }
     async toggleLock(request, id) {
 

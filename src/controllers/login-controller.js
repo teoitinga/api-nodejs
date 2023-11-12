@@ -76,6 +76,11 @@ class LoginController {
         const stored = await service.extend(req, id);
         res.status(200).json(stored);
     };
+    async taksUpdateValor(req, res) {
+        const id = req.params['id'];
+        const stored = await service.taksUpdateValor(req, id);
+        res.status(200).json(stored);
+    };
 
     // Retorna os ações registradas referentes ao id da visita informada
     async tasksByTreatment(req, res) {

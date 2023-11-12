@@ -59,6 +59,9 @@ routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1
 // TODO: Implementar estes endpoints
 routes.post(`${userPath}/add-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 routes.delete(`${userPath}/rm-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
+routes.patch(`${userPath}/rm-tasks-on-treatment/:id/update-value`, asynchandler(class_1), asynchandler(logincontroller.taksUpdateValor));
+routes.patch(`${userPath}/rm-tasks-on-treatment/:id/update-dae`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
+routes.patch(`${userPath}/rm-tasks-on-treatment/:id/update-art`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 
 /** GETs de dados para gestão */
 routes.get(`${userPath}/reports/all-projects`, asynchandler(class_1), asynchandler(logincontroller.countProjects));
