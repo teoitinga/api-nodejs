@@ -124,6 +124,7 @@ class LoginController {
         }
 
         projects = projects.map(p=>{
+
             return {
                 id: p.visitaId,
                 local: p.local,
@@ -145,6 +146,7 @@ class LoginController {
                 valorTotalItem: p.valorTotalItem
             }
         })
+        
         stored.projects = projects;
 
         res.status(200).json(stored);
