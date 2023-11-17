@@ -101,7 +101,7 @@ class LoginController {
         const id = req.params['id'];
         
         let projects = await service.projectsCrByTreatment( id );
-        let tasks = await service.projectsCrByTreatment( id );
+        let tasks = await service.tasksByTreatment( id );
 
         tasks = tasks.map(t=>{
             return {
@@ -131,7 +131,6 @@ class LoginController {
                 data: p.data,
                 nome: p.nome,
                 cpf: p.cpf,
-                banco: p.banco,
                 banco: p.banco,
                 linha: p.linha,
                 pgmrda: p.pgmrda,
