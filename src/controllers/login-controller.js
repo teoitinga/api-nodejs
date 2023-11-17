@@ -115,13 +115,12 @@ class LoginController {
         });
 
         const stored = {
-            id: projects[0].idvisita,
+            id: projects[0].visitaId,
             local: projects[0].local,
             data: projects[0].data,
-            produtor: projects[0].name,
-            cpfProdutor: projects[0].cpf,
+            produtor: projects[0].nome,
+            cpf: projects[0].cpf,
             tasks: tasks,
-            // projects: projects,
         }
 
         projects = projects.map(p=>{
