@@ -23,6 +23,14 @@ class LoginController {
         res.status(httpStatusCode.CREATED).json(stored);
     };
 
+    async addtaskOnTreatment(req, res) {
+        console.log('>>>>>>>>>>>>>>>>>>--------<<<<<<<<<<<<<<<<<<<<<<');
+        console.log(req.body);
+        console.log(req.params.id);
+        const stored = await service.addtaskOnTreatment(req);
+        res.status(httpStatusCode.CREATED).json(stored);
+
+    }
     async findall(req, res) {
         const stored = await service.findall(req)
         res.status(200).json(stored);
@@ -58,14 +66,14 @@ class LoginController {
         const stored = await service.recovery(req, id);
         res.status(200).json(stored);
     };
-    
+
     async update(req, res) {
         const id = req.params['id'];
         const body = req.body;
         const stored = await service.update(req, id);
         res.status(200).json(stored);
     };
-    
+
     async toggleLock(req, res) {
         const id = req.params['id'];
         const stored = await service.toggleLock(req, id);
@@ -85,25 +93,25 @@ class LoginController {
     // Retorna os ações registradas referentes ao id da visita informada
     async tasksByTreatment(req, res) {
         const id = req.params['id'];
-        const stored = await service.tasksByTreatment( id );
+        const stored = await service.tasksByTreatment(id);
         res.status(200).json(stored);
     };
 
     // Retorna os itens do projeto referentes ao id da visita informada
     async projectsCrByTreatment(req, res) {
         const id = req.params['id'];
-        const stored = await service.projectsCrByTreatment( id );
+        const stored = await service.projectsCrByTreatment(id);
         res.status(200).json(stored);
     };
 
     // Retorna a Visita com os dados de tasks e projetos referentes ao id da visita informada
-    async taksAndProjectsCrByTreatment (req, res) {
+    async taksAndProjectsCrByTreatment(req, res) {
         const id = req.params['id'];
-        
-        let projects = await service.projectsCrByTreatment( id );
-        let tasks = await service.tasksByTreatment( id );
 
-        tasks = tasks.map(t=>{
+        let projects = await service.projectsCrByTreatment(id);
+        let tasks = await service.tasksByTreatment(id);
+
+        tasks = tasks.map(t => {
             return {
                 id: t.taskId,
                 description: t.description,
@@ -123,7 +131,7 @@ class LoginController {
             tasks: tasks,
         }
 
-        projects = projects.map(p=>{
+        projects = projects.map(p => {
 
             return {
                 id: p.visitaId,
@@ -146,7 +154,7 @@ class LoginController {
                 valorTotalItem: p.valorTotalItem
             }
         })
-        
+
         stored.projects = projects;
 
         res.status(200).json(stored);

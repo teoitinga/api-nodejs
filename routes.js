@@ -57,7 +57,7 @@ routes.get(`${userPath}/tasks-by-treatment/:id`, asynchandler(class_1), asynchan
 routes.get(`${userPath}/projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.projectsCrByTreatment));
 routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 // TODO: Implementar estes endpoints
-routes.post(`${userPath}/add-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
+routes.post(`${userPath}/add-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.addtaskOnTreatment));
 routes.delete(`${userPath}/rm-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 routes.patch(`${userPath}/rm-tasks-on-treatment/:id/update-value`, asynchandler(class_1), asynchandler(logincontroller.taksUpdateValor));
 routes.patch(`${userPath}/rm-tasks-on-treatment/:id/update-dae`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
