@@ -35,6 +35,9 @@ const themeService = new ThemeService();
 const TaskService = require('../services/task-service');
 const taskService = new TaskService();
 
+const ProjetcCRService = require('../services/credrural-register-service');
+const projetcCRService = new ProjetcCRService();
+
 const TaskModel = require('../../models/task');
 const ProjectModel = require('../../models/project');
 
@@ -101,16 +104,26 @@ class UserService {
         return dto.obj;
 
     }
+    async addItemOnProject(request) {
+
+        const credendial = await cache.getCredencial(request);
+        
+        let item = request.body;
+
+        item.createdby = credendial.userId;
+        item.created = moment();
+        const addRow = await projetcCRService.regItem(item, item.idproposta);
+
+        return addRow;        
+    }
     async addtaskOnTreatment(request) {
 
         const credendial = await cache.getCredencial(request);
         
         let task = request.body;
-        console.log(task);
-        console.log(credendial);
         const addRow = await taskService.create(task, credendial);
-        console.log(addRow);
         return addRow;        
+
     }
     async recoverypassword(req) {
         const registry = req.params['registry'];

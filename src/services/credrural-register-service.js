@@ -9,13 +9,31 @@ const crPropostaModel = require('../../models/credrural');
 
 class CredRuralRegister {
 
+    async regItem(i, id) {
+
+        const proposta = await crPropostaModel.findOne({ where: { id } });
+        let nitem = new ItemFinanciaoDto(i);
+
+        nitem.id = uuid.v4().toUpperCase()
+        nitem.idproposta = proposta.id;
+
+        try {
+            const newitem = ItemFinanciadoModel.create(nitem);
+            nitem = undefined;
+            return newitem;
+
+        } catch (e) {
+            throw new ServerErrorException(e);
+        }
+    };
+
     async regCredRural(cr) {
 
         let proposta = await new CrPropostaDto(cr);
-        
-        try{
+
+        try {
             proposta = await crPropostaModel.create(proposta);
-        }catch(e){
+        } catch (e) {
             throw new ServerErrorException(e);
         }
 
@@ -32,15 +50,15 @@ class CredRuralRegister {
             nitem.created = proposta.created;
             nitem.updated = proposta.updated;
 
-            try{
-                const newitem  = ItemFinanciadoModel.create(nitem);
+            try {
+                const newitem = ItemFinanciadoModel.create(nitem);
                 nitem = undefined;
                 // console.log('Registered item');
                 // console.log('#################################');
                 // console.log(newitem);
                 return newitem;
 
-            }catch(e){
+            } catch (e) {
                 throw new ServerErrorException(e);
             }
         })

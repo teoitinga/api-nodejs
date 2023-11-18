@@ -23,10 +23,15 @@ class LoginController {
         res.status(httpStatusCode.CREATED).json(stored);
     };
 
-    async addtaskOnTreatment(req, res) {
+    async addItemOnProject(req, res) {
         console.log('>>>>>>>>>>>>>>>>>>--------<<<<<<<<<<<<<<<<<<<<<<');
         console.log(req.body);
         console.log(req.params.id);
+        const stored = await service.addItemOnProject(req);
+        res.status(httpStatusCode.CREATED).json(stored);
+
+    }
+    async addtaskOnTreatment(req, res) {
         const stored = await service.addtaskOnTreatment(req);
         res.status(httpStatusCode.CREATED).json(stored);
 
