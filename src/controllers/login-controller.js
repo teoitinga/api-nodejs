@@ -129,23 +129,22 @@ class LoginController {
             produtor: projects[0].nome,
             cpf: projects[0].cpf,
             tasks: tasks,
+            project: {
+                idprojeto: projects[0].visitaId,
+                banco: projects[0].banco,
+                linha: projects[0].linha,
+                pgmrda: projects[0].pgmrda,
+                pgmtrt: projects[0].pgmtrt,
+                valorrda: projects[0].valorrda,
+                valortrt: projects[0].valortrt,
+                observacoes: projects[0].observacoes,
+            },
+
         }
 
         projects = projects.map(p => {
 
             return {
-                id: p.visitaId,
-                local: p.local,
-                data: p.data,
-                nome: p.nome,
-                cpf: p.cpf,
-                banco: p.banco,
-                linha: p.linha,
-                pgmrda: p.pgmrda,
-                pgmtrt: p.pgmtrt,
-                valorrda: p.valorrda,
-                valortrt: p.valortrt,
-                observacoes: p.observacoes,
                 iditemfinanciado: p.iditemfinanciado,
                 descricao: p.descricao,
                 unidade: p.unidade,
@@ -155,7 +154,8 @@ class LoginController {
             }
         })
 
-        stored.projects = projects;
+        console.log(projects);
+        stored.project.itensfinanciados = projects;
 
         res.status(200).json(stored);
     };

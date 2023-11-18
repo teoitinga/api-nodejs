@@ -32,6 +32,9 @@ const divisionService = new DivisionService();
 const ThemeService = require('../services/theme-service');
 const themeService = new ThemeService();
 
+const TaskService = require('../services/task-service');
+const taskService = new TaskService();
+
 const TaskModel = require('../../models/task');
 const ProjectModel = require('../../models/project');
 
@@ -97,6 +100,17 @@ class UserService {
 
         return dto.obj;
 
+    }
+    async addtaskOnTreatment(request) {
+
+        const credendial = await cache.getCredencial(request);
+        
+        let task = request.body;
+        console.log(task);
+        console.log(credendial);
+        const addRow = await taskService.create(task, credendial);
+        console.log(addRow);
+        return addRow;        
     }
     async recoverypassword(req) {
         const registry = req.params['registry'];
