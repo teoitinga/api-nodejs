@@ -1,6 +1,7 @@
 const { ServerErrorException } = require('../exceptions/server-exception');
 const { request } = require('express');
 const uuid = require('uuid');
+const moment = require('moment');
 
 const CrPropostaDto = require('../../src/dtos/crproposta-dto');
 const ItemFinanciaoDto = require('../../src/dtos/itemfinanciado-dto');
@@ -8,7 +9,36 @@ const ItemFinanciadoModel = require('../../models/itensfinanciados');
 const crPropostaModel = require('../../models/credrural');
 
 class CredRuralRegister {
+    async quitDaeOnProject(id, credendial) {
+        const proposta = await crPropostaModel.findOne({ where: { id } });
 
+        await crPropostaModel.update({
+            rdaok: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updated: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updatedby: credendial.userId
+        }, {
+            where: {
+                id
+            },
+        });
+
+        return proposta.rda;
+    }
+    async quitArtOnProject(id, credendial) {
+        const proposta = await crPropostaModel.findOne({ where: { id } });
+
+        await crPropostaModel.update({
+            trtok: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updated: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updatedby: credendial.userId
+        }, {
+            where: {
+                id
+            },
+        });
+
+        return proposta.rda;
+    }
     async regItem(i, id) {
 
         const proposta = await crPropostaModel.findOne({ where: { id } });

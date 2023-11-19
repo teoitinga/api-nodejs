@@ -31,6 +31,16 @@ class LoginController {
         res.status(httpStatusCode.CREATED).json(stored);
 
     }
+    async quitDaeOnProject(req, res) {
+        const stored = await service.quitDaeOnProject(req);
+        res.status(httpStatusCode.CREATED).json(stored);
+
+    }
+    async quitArtOnProject(req, res) {
+        const stored = await service.quitArtOnProject(req);
+        res.status(httpStatusCode.CREATED).json(stored);
+
+    }
     async addtaskOnTreatment(req, res) {
         const stored = await service.addtaskOnTreatment(req);
         res.status(httpStatusCode.CREATED).json(stored);
@@ -115,6 +125,15 @@ class LoginController {
 
         let projects = await service.projectsCrByTreatment(id);
         let tasks = await service.tasksByTreatment(id);
+        console.log(tasks[0]);
+        const datavis = {
+            id: tasks[0].visitaId,
+            local: tasks[0].local,
+            data: tasks[0].data,
+            produtor: tasks[0].nome,
+            cpf: tasks[0].cpf,
+        }
+        console.log(datavis);
 
         tasks = tasks.map(t => {
             return {
@@ -128,13 +147,17 @@ class LoginController {
         });
 
         const stored = {
-            id: projects[0].visitaId,
-            local: projects[0].local,
-            data: projects[0].data,
-            produtor: projects[0].nome,
-            cpf: projects[0].cpf,
+            id: datavis.id,
+            local: datavis.local,
+            data: datavis.data,
+            produtor: datavis.produtor,
+            cpf: datavis.cpf,
             tasks: tasks,
-            project: {
+            project: undefined
+        }
+
+        if (projects.length > 0) {
+            stored.project = {
                 idprojeto: projects[0].visitaId,
                 banco: projects[0].banco,
                 linha: projects[0].linha,
@@ -143,24 +166,25 @@ class LoginController {
                 valorrda: projects[0].valorrda,
                 valortrt: projects[0].valortrt,
                 observacoes: projects[0].observacoes,
-            },
+            }
 
+            projects = projects.map(p => {
+
+                return {
+                    iditemfinanciado: p.iditemfinanciado,
+                    descricao: p.descricao,
+                    unidade: p.unidade,
+                    qtditemfinanc: p.qtditemfinanc,
+                    valorunit: p.valorunit,
+                    valorTotalItem: p.valorTotalItem
+                }
+            })
+            stored.project.itensfinanciados = projects;
         }
 
-        projects = projects.map(p => {
 
-            return {
-                iditemfinanciado: p.iditemfinanciado,
-                descricao: p.descricao,
-                unidade: p.unidade,
-                qtditemfinanc: p.qtditemfinanc,
-                valorunit: p.valorunit,
-                valorTotalItem: p.valorTotalItem
-            }
-        })
-
-        console.log(projects);
-        stored.project.itensfinanciados = projects;
+        console.log('stored');
+        console.log(stored);
 
         res.status(200).json(stored);
     };

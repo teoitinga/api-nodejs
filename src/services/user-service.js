@@ -116,6 +116,20 @@ class UserService {
 
         return addRow;        
     }
+    async quitArtOnProject(request) {
+
+        const credendial = await cache.getCredencial(request);
+        
+        const addRow = await projetcCRService.quitArtOnProject(request.params.id, credendial);
+        return addRow;        
+    }
+    async quitDaeOnProject(request) {
+
+        const credendial = await cache.getCredencial(request);
+        
+        const addRow = await projetcCRService.quitDaeOnProject(request.params.id, credendial);
+        return addRow;        
+    }
     async addtaskOnTreatment(request) {
 
         const credendial = await cache.getCredencial(request);
@@ -533,8 +547,8 @@ class UserService {
                 ( qtditemfinanc * valorunit) as valorTotalItem
                 FROM smart.itensfinanciados
                     left join crpropostas on itensfinanciados.idproposta = crpropostas.id
-                    left join treatments on crpropostas.id= treatments.id
-                    left join treatment_customers on treatment_customers.treatment_id= treatments.id
+                    left join treatments on crpropostas.id = treatments.id
+                    left join treatment_customers on treatment_customers.treatment_id = treatments.id
                     left join customers on treatment_customers.customer_id = customers.id
 
             WHERE
@@ -552,7 +566,11 @@ class UserService {
         const query = `
         SELECT 
             treatments.data as dataVisita, 
-            treatments.id as visitaId, 
+            treatments.id as visitaId,
+            treatments.local as local,
+            treatments.data as data,
+            customers.name as nome,
+            customers.cpf as cpf,
             tasks.id as taskId,
             tasks.description as description, 
             tasks.qtd as qtd, 
@@ -562,7 +580,8 @@ class UserService {
             FROM tasks
                 left join treatments on treatments.id = tasks.treatment_id
                 left join users on users.id = tasks.userDesigned_id
-            
+                left join treatment_customers on treatment_customers.treatment_id = treatments.id
+                left join customers on treatment_customers.customer_id = customers.id
             WHERE
                 tasks.treatment_id = '${id}'
             ;
