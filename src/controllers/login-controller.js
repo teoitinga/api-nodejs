@@ -23,22 +23,25 @@ class LoginController {
         res.status(httpStatusCode.CREATED).json(stored);
     };
 
+    async riskItemOnProject(req, res) {
+        const stored = await service.riskItemOnProject(req);
+        res.status(httpStatusCode.OK).json(stored);
+
+    };
+
     async addItemOnProject(req, res) {
-        console.log('>>>>>>>>>>>>>>>>>>--------<<<<<<<<<<<<<<<<<<<<<<');
-        console.log(req.body);
-        console.log(req.params.id);
         const stored = await service.addItemOnProject(req);
         res.status(httpStatusCode.CREATED).json(stored);
 
     }
     async quitDaeOnProject(req, res) {
         const stored = await service.quitDaeOnProject(req);
-        res.status(httpStatusCode.CREATED).json(stored);
+        res.status(httpStatusCode.OK).json(stored);
 
     }
     async quitArtOnProject(req, res) {
         const stored = await service.quitArtOnProject(req);
-        res.status(httpStatusCode.CREATED).json(stored);
+        res.status(httpStatusCode.OK).json(stored);
 
     }
     async addtaskOnTreatment(req, res) {
@@ -60,6 +63,12 @@ class LoginController {
         const stored = await service.recoverypassword(req);
         res.status(200).json(stored);
     };
+
+    async findByItensDescription(req, res) {
+        const stored = await service.findByItensDescription(req);
+        res.status(200).json(stored);
+    };
+    
     async findbyname(req, res) {
         const stored = await service.findByName(req);
         res.status(200).json(stored);
@@ -125,7 +134,7 @@ class LoginController {
 
         let projects = await service.projectsCrByTreatment(id);
         let tasks = await service.tasksByTreatment(id);
-        console.log(tasks[0]);
+
         const datavis = {
             id: tasks[0].visitaId,
             local: tasks[0].local,
@@ -133,7 +142,6 @@ class LoginController {
             produtor: tasks[0].nome,
             cpf: tasks[0].cpf,
         }
-        console.log(datavis);
 
         tasks = tasks.map(t => {
             return {
@@ -176,15 +184,13 @@ class LoginController {
                     unidade: p.unidade,
                     qtditemfinanc: p.qtditemfinanc,
                     valorunit: p.valorunit,
-                    valorTotalItem: p.valorTotalItem
+                    valorTotalItem: p.valorTotalItem,
+                    risked: p.risked
                 }
             })
             stored.project.itensfinanciados = projects;
         }
 
-
-        console.log('stored');
-        console.log(stored);
 
         res.status(200).json(stored);
     };

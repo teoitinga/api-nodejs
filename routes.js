@@ -56,8 +56,10 @@ routes.put(`${userPath}/restart/:id`, asynchandler(class_1), asynchandler(loginc
 routes.get(`${userPath}/tasks-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.tasksByTreatment));
 routes.get(`${userPath}/projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.projectsCrByTreatment));
 routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
+routes.get(`${userPath}/find-by-itens-description/:description`, asynchandler(class_1), asynchandler(logincontroller.findByItensDescription));
 // TODO: Implementar estes endpoints
 routes.post(`${userPath}/add-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.addtaskOnTreatment));
+routes.put(`${userPath}/risk-item-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.riskItemOnProject));
 routes.post(`${userPath}/add-item-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.addItemOnProject));
 routes.post(`${userPath}/quit-dae-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.quitDaeOnProject));
 routes.post(`${userPath}/quit-art-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.quitArtOnProject));

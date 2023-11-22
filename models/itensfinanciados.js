@@ -14,7 +14,8 @@ class CredRuralItens extends Model {
       createdby: DataTypes.STRING, 
       updatedby: DataTypes.STRING,
       created: DataTypes.DATE,
-      updated: DataTypes.DATE
+      updated: DataTypes.DATE,
+      risked: DataTypes.DATE,
     }, {
       createdAt: 'created',
       updatedAt: 'updated',

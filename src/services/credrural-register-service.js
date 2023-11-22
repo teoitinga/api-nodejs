@@ -24,6 +24,25 @@ class CredRuralRegister {
 
         return proposta.rda;
     }
+    async riskItemOnProject(id, credendial, toRisked) {
+        
+        let risked = moment().format('YYYY-MM-DD HH:mm:ss');
+        
+        if(!toRisked) risked = null;
+
+        await ItemFinanciadoModel.update({
+            risked,
+            updated: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updatedby: credendial.userId
+        }, {
+            where: {
+                id
+            },
+        });
+        const itemfinanciado = await ItemFinanciadoModel.findOne({ where: { id } });
+        
+        return itemfinanciado.risked;
+    }
     async quitArtOnProject(id, credendial) {
         const proposta = await crPropostaModel.findOne({ where: { id } });
 

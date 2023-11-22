@@ -41,6 +41,8 @@ const projetcCRService = new ProjetcCRService();
 const TaskModel = require('../../models/task');
 const ProjectModel = require('../../models/project');
 
+const credRuralItensFinanciaveis = require('../../models/itensFinanciaveis');
+
 const {
     ServerErrorException,
     NotFoundErrorException
@@ -107,47 +109,57 @@ class UserService {
     async addItemOnProject(request) {
 
         const credendial = await cache.getCredencial(request);
-        
+
         let item = request.body;
 
         item.createdby = credendial.userId;
         item.created = moment();
         const addRow = await projetcCRService.regItem(item, item.idproposta);
 
-        return addRow;        
+        return addRow;
     }
+
+    async riskItemOnProject(request) {
+
+        const credendial = await cache.getCredencial(request);
+        const toRisked = request.body.toRisked;
+        const addRow = await projetcCRService.riskItemOnProject(request.params.id, credendial, toRisked);
+
+        return addRow;
+    }
+
     async quitArtOnProject(request) {
 
         const credendial = await cache.getCredencial(request);
-        
+
         const addRow = await projetcCRService.quitArtOnProject(request.params.id, credendial);
-        return addRow;        
+        return addRow;
     }
     async quitDaeOnProject(request) {
 
         const credendial = await cache.getCredencial(request);
-        
+
         const addRow = await projetcCRService.quitDaeOnProject(request.params.id, credendial);
-        return addRow;        
+        return addRow;
     }
     async addtaskOnTreatment(request) {
 
         const credendial = await cache.getCredencial(request);
-        
+
         let task = request.body;
         const addRow = await taskService.create(task, credendial);
-        return addRow;        
+        return addRow;
 
     }
     async recoverypassword(req) {
         const registry = req.params['registry'];
         const newpassword = req.params['password'];
-        
+
         /**Codifica o password */
         const salt = process.env.BRCRYPT_SECRET;
         const password = await brcrypt.hash(newpassword, salt);
 
-        const updatedpass = await UserModel.update({password}, {where: {registry}})
+        const updatedpass = await UserModel.update({ password }, { where: { registry } })
         return updatedpass
     }
 
@@ -519,10 +531,10 @@ class UserService {
         if (role_class >= this.ACESSO_PUBLICO) {
             return {};
         }
-        
+
     }
-    
-    async projectsCrByTreatment( id ) {
+
+    async projectsCrByTreatment(id) {
         console.log(`Projetos de visita ID ${id}`);
         const query = `
             SELECT 
@@ -544,6 +556,7 @@ class UserService {
                 itensfinanciados.unidade as unidade,
                 itensfinanciados.qtditemfinanc as qtditemfinanc,
                 itensfinanciados.valorunit as valorunit,
+                itensfinanciados.risked as risked,
                 ( qtditemfinanc * valorunit) as valorTotalItem
                 FROM smart.itensfinanciados
                     left join crpropostas on itensfinanciados.idproposta = crpropostas.id
@@ -558,10 +571,10 @@ class UserService {
 
         const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
         return response;
-        
+
     }
 
-    async tasksByTreatment( id ) {
+    async tasksByTreatment(id) {
 
         const query = `
         SELECT 
@@ -586,9 +599,9 @@ class UserService {
                 tasks.treatment_id = '${id}'
             ;
         `;
-        
+
         const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
-        console.log(response);
+
         return response;
 
     }
@@ -1120,7 +1133,7 @@ class UserService {
                     order by treatments.data desc
                 ;
             `;
-            // wGltz6I2
+        // wGltz6I2
 
         const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
         return tasks;
@@ -1213,6 +1226,19 @@ class UserService {
         return await this.findByPublic(request);
 
     }
+    async findByItensDescription(request){
+        
+        const query = `
+        SELECT * FROM itensfinanciaveis 
+        WHERE 
+        descricao like('%${request.params.description}%')
+        `;
+        
+        const response = await credRuralItensFinanciaveis.sequelize.query(query);
+
+        return response[0];
+    }
+
     async findByName(request) {
         /**
          * Retorna todos os usuários que pertencam a empresa logada
@@ -1350,7 +1376,7 @@ class UserService {
         });
 
         //Verifica se a senha é válida
-        
+
         /*
         const modelo = {usuario.password, password};
         const modelo = usuario;
