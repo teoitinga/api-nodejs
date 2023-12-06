@@ -81,6 +81,10 @@ class LoginController {
         const stored = await service.countMyActions(req);
         res.status(200).json(stored);
     };
+    async findMyProjects(req, res) {
+        const stored = await service.findMyProjects(req);
+        res.status(200).json(stored);
+    };
     async findMyTasks(req, res) {
         const stored = await service.findMyActions(req);
         res.status(200).json(stored);

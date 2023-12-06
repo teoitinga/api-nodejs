@@ -57,6 +57,7 @@ routes.get(`${userPath}/tasks-by-treatment/:id`, asynchandler(class_1), asynchan
 routes.get(`${userPath}/projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.projectsCrByTreatment));
 routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 routes.get(`${userPath}/find-by-itens-description/:description`, asynchandler(class_1), asynchandler(logincontroller.findByItensDescription));
+routes.get(`${userPath}/my-projects`, asynchandler(class_1), asynchandler(logincontroller.findMyProjects));
 // TODO: Implementar estes endpoints
 routes.post(`${userPath}/add-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.addtaskOnTreatment));
 routes.put(`${userPath}/risk-item-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.riskItemOnProject));
