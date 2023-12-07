@@ -12,8 +12,12 @@ class CredRuralRegister {
     async quitDaeOnProject(id, credendial) {
         const proposta = await crPropostaModel.findOne({ where: { id } });
 
+        let pgm = null;
+
+        if(!proposta.rdaok) pgm = moment().format('YYYY-MM-DD HH:mm:ss');
+
         await crPropostaModel.update({
-            rdaok: moment().format('YYYY-MM-DD HH:mm:ss'),
+            rdaok: pgm,
             updated: moment().format('YYYY-MM-DD HH:mm:ss'),
             updatedby: credendial.userId
         }, {
@@ -46,8 +50,12 @@ class CredRuralRegister {
     async quitArtOnProject(id, credendial) {
         const proposta = await crPropostaModel.findOne({ where: { id } });
 
+        let pgm = null;
+
+        if(!proposta.rdaok) pgm = moment().format('YYYY-MM-DD HH:mm:ss');
+
         await crPropostaModel.update({
-            trtok: moment().format('YYYY-MM-DD HH:mm:ss'),
+            trtok: pgm,
             updated: moment().format('YYYY-MM-DD HH:mm:ss'),
             updatedby: credendial.userId
         }, {

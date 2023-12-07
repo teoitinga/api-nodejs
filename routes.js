@@ -57,8 +57,14 @@ routes.get(`${userPath}/tasks-by-treatment/:id`, asynchandler(class_1), asynchan
 routes.get(`${userPath}/projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.projectsCrByTreatment));
 routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 routes.get(`${userPath}/find-by-itens-description/:description`, asynchandler(class_1), asynchandler(logincontroller.findByItensDescription));
+// TODO: Acesso restrito para usuários Gestores do Escritório
 routes.get(`${userPath}/my-projects`, asynchandler(class_1), asynchandler(logincontroller.findMyProjects));
-// TODO: Implementar estes endpoints
+routes.get(`${userPath}/my-projects-acomp`, asynchandler(class_1), asynchandler(logincontroller.acompMyProjects));
+routes.get(`${userPath}/my-projects-actions`, asynchandler(class_1), asynchandler(logincontroller.myProjectsWithActions));
+routes.get(`${userPath}/manager-routes`, asynchandler(class_1), asynchandler(logincontroller.managerRoutes));
+
+
+
 routes.post(`${userPath}/add-tasks-on-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.addtaskOnTreatment));
 routes.put(`${userPath}/risk-item-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.riskItemOnProject));
 routes.post(`${userPath}/add-item-on-project/:id`, asynchandler(class_1), asynchandler(logincontroller.addItemOnProject));

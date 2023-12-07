@@ -81,6 +81,18 @@ class LoginController {
         const stored = await service.countMyActions(req);
         res.status(200).json(stored);
     };
+    async acompMyProjects(req, res) {
+        const stored = await service.acompMyProjects(req);
+        res.status(200).json(stored);
+    };
+    async managerRoutes(req, res) {
+        const stored = await service.managerRoutes(req);
+        res.status(200).json(stored);
+    };
+    async myProjectsWithActions(req, res) {
+        const stored = await service.myProjectsWithActions(req);
+        res.status(200).json(stored);
+    };
     async findMyProjects(req, res) {
         const stored = await service.findMyProjects(req);
         res.status(200).json(stored);

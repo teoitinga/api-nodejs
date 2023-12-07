@@ -1083,6 +1083,111 @@ class UserService {
         return tasks[0];
     }
 
+    async managerRoutes(request) {
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+
+        const query = `
+        SELECT 
+            routes.id,
+            routes.route,
+            routes.created,
+            users.name
+        FROM smart.routes
+        
+        left join users on routes.createdby = users.id
+        
+        where 
+            routes.createdby is not null
+        
+            order by routes.created desc
+        ;
+            `;
+
+        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+        return tasks;
+    }
+    async myProjectsWithActions(request) {
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+
+        const query = `
+        SELECT 
+            actions.id as acaoId,
+            actions.description as acaoDescricao,
+            actions.qtdAtendimentos as acaoPrevisaoDeAtendimentos,
+            actions.valorPorAtendimento as acaoValorPorAtendimento,
+            actions.start as acaoDataInicial,
+            actions.end as acaoDataConclusao,
+            projects.id as projetoId,
+            projects.description as projetoDescricao,
+            projects.resultado as projetoResultadoEsperado,
+            projects.objetivo as projetoObjetivo,
+            users.name as responsavel
+            FROM smart.actions
+            left join projects on projects.id = actions.project_id
+            left join users on projects.representative_id = users.id
+                
+        WHERE
+            actions.start <= NOW()
+            and actions.end >= NOW()
+
+            and projects.division_id =  '${division_id}'
+
+        group by actions.id
+        order by atendimentos desc
+                ;
+            `;
+
+        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+        return tasks;
+    }
+    async acompMyProjects(request) {
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+
+        const query = `
+        SELECT 
+        actions.description,
+        count(*) as atendimentos,
+        actions.id as actionId,
+        actions.qtdAtendimentos as actionsAtdPrevisto,
+        (count(*)-actions.qtdAtendimentos) as atendimentosXexecutado,
+        (actions.valorPorAtendimento * actions.qtdAtendimentos) as actionsValorPrevisto,
+        (actions.valorPorAtendimento * count(*)) as actionsValorExecutado,
+        projects.id as projectId,
+        projects.description
+        
+        FROM smart.tasks
+            inner join actions on actions.id = tasks.action_id
+            left join projects on actions.project_id = projects.id
+                
+        where 
+                    tasks.status='FINALIZADA'
+                    and actions.start <= NOW()
+                    and actions.end >= NOW() 
+
+                    and projects.division_id =  '${division_id}'
+
+                    group by actions.id
+                    order by atendimentos desc
+                ;
+            `;
+        // wGltz6I2
+
+        const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+        return tasks;
+    }
+
     async findMyProjects(request) {
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
