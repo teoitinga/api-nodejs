@@ -132,14 +132,18 @@ class UserService {
 
         const credendial = await cache.getCredencial(request);
 
-        const addRow = await projetcCRService.quitArtOnProject(request.params.id, credendial);
+        const valor = request.body?.valor ? request.body?.valor : null;
+        
+        const addRow = await projetcCRService.quitArtOnProject(request.params.id, valor, credendial);
+        
         return addRow;
     }
     async quitDaeOnProject(request) {
-
+        
         const credendial = await cache.getCredencial(request);
+        const valor = request.body?.valor ? request.body?.valor : null;
 
-        const addRow = await projetcCRService.quitDaeOnProject(request.params.id, credendial);
+        const addRow = await projetcCRService.quitDaeOnProject(request.params.id, valor, credendial);
         return addRow;
     }
     async addtaskOnTreatment(request) {

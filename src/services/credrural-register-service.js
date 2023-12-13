@@ -9,15 +9,24 @@ const ItemFinanciadoModel = require('../../models/itensfinanciados');
 const crPropostaModel = require('../../models/credrural');
 
 class CredRuralRegister {
-    async quitDaeOnProject(id, credendial) {
-        const proposta = await crPropostaModel.findOne({ where: { id } });
+    async quitDaeOnProject(id, valor, credendial) {
 
-        let pgm = null;
+        let proposta = await crPropostaModel.findOne({ where: { id } });
 
-        if(!proposta.rdaok) pgm = moment().format('YYYY-MM-DD HH:mm:ss');
+        let dtpgm = valor ? valor : 0;
+
+        if(!proposta.rdaok) {
+            dtpgm = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        } else{
+            dtpgm = null;
+            valor = 0;
+
+        }
 
         await crPropostaModel.update({
-            rdaok: pgm,
+            rdaok: dtpgm,
+            rda: valor,
             updated: moment().format('YYYY-MM-DD HH:mm:ss'),
             updatedby: credendial.userId
         }, {
@@ -25,8 +34,11 @@ class CredRuralRegister {
                 id
             },
         });
+        
+        proposta = await crPropostaModel.findOne({ where: { id } });
 
-        return proposta.rda;
+        return {proposta: proposta.id, valor: proposta.rda, rdaok: proposta.rdaok };
+
     }
     async riskItemOnProject(id, credendial, toRisked) {
         
@@ -47,15 +59,24 @@ class CredRuralRegister {
         
         return itemfinanciado.risked;
     }
-    async quitArtOnProject(id, credendial) {
-        const proposta = await crPropostaModel.findOne({ where: { id } });
+    async quitArtOnProject(id, valor, credendial) {
 
-        let pgm = null;
+        let proposta = await crPropostaModel.findOne({ where: { id } });
 
-        if(!proposta.rdaok) pgm = moment().format('YYYY-MM-DD HH:mm:ss');
+        let dtpgm = valor ? valor : 0;
+
+        if(!proposta.trtok) {
+            dtpgm = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        } else{
+            dtpgm = null;
+            valor = 0;
+
+        }
 
         await crPropostaModel.update({
-            trtok: pgm,
+            trtok: dtpgm,
+            trt: valor,
             updated: moment().format('YYYY-MM-DD HH:mm:ss'),
             updatedby: credendial.userId
         }, {
@@ -63,8 +84,10 @@ class CredRuralRegister {
                 id
             },
         });
+        
+        proposta = await crPropostaModel.findOne({ where: { id } });
 
-        return proposta.rda;
+        return {proposta: proposta.id, valor: proposta.trt, trtok: proposta.trtok };
     }
     async regItem(i, id) {
 
