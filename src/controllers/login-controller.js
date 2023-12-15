@@ -93,6 +93,10 @@ class LoginController {
         const stored = await service.myProjectsWithActions(req);
         res.status(200).json(stored);
     };
+    async addProject(req, res) {
+        const stored = await service.addProject(req);
+        res.status(200).json(stored);
+    };
     async findMyProjects(req, res) {
         const stored = await service.findMyProjects(req);
         res.status(200).json(stored);
@@ -150,13 +154,32 @@ class LoginController {
 
         let projects = await service.projectsCrByTreatment(id);
         let tasks = await service.tasksByTreatment(id);
+        let customer = await service.customerByTreatment(id);
+
+        let nomes = ''
+        let cpfs = ''
+
+        let resta = customer.length
+
+        customer.map(c=>{
+            
+            if(resta > 1){
+                nomes += `${c.nome} (${c.cpf}) / `
+            }else{
+                nomes += `${c.nome} (${c.cpf})`
+            }
+
+            resta = resta-1;    
+        })
 
         const datavis = {
             id: tasks[0].visitaId,
             local: tasks[0].local,
             data: tasks[0].data,
-            produtor: tasks[0].nome,
-            cpf: tasks[0].cpf,
+            // produtor: tasks[0].nome,
+            produtor: nomes,
+            // cpf: tasks[0].cpf,
+            // cpf: cpfs,
         }
 
         tasks = tasks.map(t => {
@@ -175,7 +198,7 @@ class LoginController {
             local: datavis.local,
             data: datavis.data,
             produtor: datavis.produtor,
-            cpf: datavis.cpf,
+            // cpf: datavis.cpf,
             tasks: tasks,
             project: undefined
         }

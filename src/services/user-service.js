@@ -539,14 +539,12 @@ class UserService {
     }
 
     async projectsCrByTreatment(id) {
-        console.log(`Projetos de visita ID ${id}`);
+
         const query = `
             SELECT 
                 treatments.id as visitaId,
                 treatments.local as local,
                 treatments.data as data,
-                customers.name as nome,
-                customers.cpf as cpf,
                 crpropostas.id as idproposta,
                 crpropostas.banco as banco,
                 crpropostas.linha as linha,
@@ -562,22 +560,38 @@ class UserService {
                 itensfinanciados.valorunit as valorunit,
                 itensfinanciados.risked as risked,
                 ( qtditemfinanc * valorunit) as valorTotalItem
-                FROM smart.itensfinanciados
-                    left join crpropostas on itensfinanciados.idproposta = crpropostas.id
-                    left join treatments on crpropostas.id = treatments.id
-                    left join treatment_customers on treatment_customers.treatment_id = treatments.id
-                    left join customers on treatment_customers.customer_id = customers.id
+            FROM smart.itensfinanciados
+                left join crpropostas on itensfinanciados.idproposta = crpropostas.id
+                left join treatments on crpropostas.id = treatments.id
 
-            WHERE
-                treatments.id = '${id}'
-            ;
+                WHERE
+                    treatments.id = '${id}'
+                ;
         `;
 
         const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
         return response;
 
     }
+    async customerByTreatment(id){
 
+        const query = `
+            SELECT 
+                customers.name as nome,
+                customers.cpf as cpf
+
+            from customers
+                left join treatment_customers on treatment_customers.customer_id = customers.id
+                left join treatments on treatments.id = treatment_customers.treatment_id
+
+            WHERE
+                treatments.id = '${id}'
+                ;
+        `;
+
+        const response = await ActionModel.sequelize.query(query, { type: ActionModel.sequelize.QueryTypes.SELECT });
+        return response;
+    }
     async tasksByTreatment(id) {
 
         const query = `
@@ -586,8 +600,6 @@ class UserService {
             treatments.id as visitaId,
             treatments.local as local,
             treatments.data as data,
-            customers.name as nome,
-            customers.cpf as cpf,
             tasks.id as taskId,
             tasks.description as description, 
             tasks.qtd as qtd, 
@@ -597,8 +609,6 @@ class UserService {
             FROM tasks
                 left join treatments on treatments.id = tasks.treatment_id
                 left join users on users.id = tasks.userDesigned_id
-                left join treatment_customers on treatment_customers.treatment_id = treatments.id
-                left join customers on treatment_customers.customer_id = customers.id
             WHERE
                 tasks.treatment_id = '${id}'
             ;
@@ -1190,6 +1200,23 @@ class UserService {
 
         const tasks = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
         return tasks;
+    }
+
+    async addProject(request){
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+      
+
+        let prj = request.body;
+
+        prj.createdby = credendial.userId;
+        prj.created = moment();
+
+        const addRow = await projetcCRService.regCredRural(prj, prj.id);
+
+        return addRow;
+
     }
 
     async findMyProjects(request) {

@@ -58,6 +58,7 @@ routes.get(`${userPath}/projcr-by-treatment/:id`, asynchandler(class_1), asyncha
 routes.get(`${userPath}/tasks-and-projcr-by-treatment/:id`, asynchandler(class_1), asynchandler(logincontroller.taksAndProjectsCrByTreatment));
 routes.get(`${userPath}/find-by-itens-description/:description`, asynchandler(class_1), asynchandler(logincontroller.findByItensDescription));
 // TODO: Acesso restrito para usuários Gestores do Escritório
+routes.post(`${userPath}/my-projects`, asynchandler(class_1), asynchandler(logincontroller.addProject));
 routes.get(`${userPath}/my-projects`, asynchandler(class_1), asynchandler(logincontroller.findMyProjects));
 routes.get(`${userPath}/my-projects-acomp`, asynchandler(class_1), asynchandler(logincontroller.acompMyProjects));
 routes.get(`${userPath}/my-projects-actions`, asynchandler(class_1), asynchandler(logincontroller.myProjectsWithActions));
