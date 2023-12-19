@@ -60,6 +60,7 @@ routes.get(`${userPath}/find-by-itens-description/:description`, asynchandler(cl
 // TODO: Acesso restrito para usuários Gestores do Escritório
 routes.post(`${userPath}/my-projects`, asynchandler(class_1), asynchandler(logincontroller.addProject));
 routes.get(`${userPath}/my-projects`, asynchandler(class_1), asynchandler(logincontroller.findMyProjects));
+routes.get(`${userPath}/my-projects-details`, asynchandler(class_1), asynchandler(logincontroller.findMyProjectsonListDetails));
 routes.get(`${userPath}/my-projects-acomp`, asynchandler(class_1), asynchandler(logincontroller.acompMyProjects));
 routes.get(`${userPath}/my-projects-actions`, asynchandler(class_1), asynchandler(logincontroller.myProjectsWithActions));
 routes.get(`${userPath}/manager-routes`, asynchandler(class_1), asynchandler(logincontroller.managerRoutes));

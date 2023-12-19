@@ -133,13 +133,13 @@ class UserService {
         const credendial = await cache.getCredencial(request);
 
         const valor = request.body?.valor ? request.body?.valor : null;
-        
+
         const addRow = await projetcCRService.quitArtOnProject(request.params.id, valor, credendial);
-        
+
         return addRow;
     }
     async quitDaeOnProject(request) {
-        
+
         const credendial = await cache.getCredencial(request);
         const valor = request.body?.valor ? request.body?.valor : null;
 
@@ -573,7 +573,7 @@ class UserService {
         return response;
 
     }
-    async customerByTreatment(id){
+    async customerByTreatment(id) {
 
         const query = `
             SELECT 
@@ -1202,11 +1202,11 @@ class UserService {
         return tasks;
     }
 
-    async addProject(request){
+    async addProject(request) {
         const credendial = await cache.getCredencial(request);
         const partner_id = credendial.partnerId;
         const division_id = credendial.divisionId;
-      
+
 
         let prj = request.body;
 
@@ -1218,6 +1218,110 @@ class UserService {
         return addRow;
 
     }
+
+    async listItensOfProjectsById(id) {
+
+        const query = `
+        SELECT
+            itensfinanciados.qtditemfinanc as quantidade, 
+            itensfinanciados.valorunit as valor,
+            itensfinanciados.descricao as item
+       FROM itensfinanciados
+     
+       WHERE 
+            itensfinanciados.idproposta = '${id}'
+            and itensfinanciados.risked is null
+
+            ;
+        `;
+
+        const itens = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+        return itens;
+
+    }
+
+    async listProjectsByDivision(id) {
+        const query = `
+        SELECT 
+            crpropostas.id as idvisita,
+            crpropostas.trtok as trtok,
+            crpropostas.rdaok as rdaok,
+			treatments.data as data, 
+            treatments.local as local, 
+            users.name as usuario,
+            customers.name as customername,
+            customers.cpf as cpf,
+            ST_Y(treatments.point) as longitude,
+            ST_X(treatments.point) as latitude
+                    
+                FROM crpropostas
+                left join treatments on treatments.id = crpropostas.id
+                left join users on crpropostas.createdby = users.id
+                left join treatment_customers on treatment_customers.treatment_id = treatments.id
+                left join customers on customers.id = treatment_customers.customer_id
+
+                WHERE
+                    users.division_id =  '${id}'
+                    and (Year(treatments.data) = Year(now()) or ((trtok is null) or (rdaok is null)))
+
+                ORDER BY treatments.data DESC
+                limit 0, 8
+            ;
+        `;
+
+        const projects = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
+        return projects;
+
+    }
+
+    async findMyProjectsonListDetails(request) {
+        const credendial = await cache.getCredencial(request);
+        const partner_id = credendial.partnerId;
+        const division_id = credendial.divisionId;
+        const role_class = credendial.role_class;
+        const userId = credendial.userId;
+
+
+        //obter od dados de todos os projetos
+        let response = [];
+        const obj = this;
+        let projects;
+
+        await this.listProjectsByDivision(division_id).then(
+            data=>{
+
+                projects = data;
+            }
+        );
+
+        await projects.map(async (i)=>{
+            let financiados;
+
+            await obj.listItensOfProjectsById(i.idvisita).then(
+                itens =>{
+                    financiados = itens;
+
+                }
+            );
+
+            let item = ``;
+            await financiados.map(fin=>{
+                // item += `${fin.quantidade}`
+                // item += `${fin.valor}`
+                item += `${fin.item}, `
+            });
+
+            await response.push({...i, item});
+            
+        });
+
+        console.log(await response);
+
+
+        return await response;
+        
+    }
+
 
     async findMyProjects(request) {
         const credendial = await cache.getCredencial(request);
@@ -1424,14 +1528,14 @@ class UserService {
         return await this.findByPublic(request);
 
     }
-    async findByItensDescription(request){
-        
+    async findByItensDescription(request) {
+
         const query = `
         SELECT * FROM itensfinanciaveis 
         WHERE 
         descricao like('%${request.params.description}%')
         `;
-        
+
         const response = await credRuralItensFinanciaveis.sequelize.query(query);
 
         return response[0];

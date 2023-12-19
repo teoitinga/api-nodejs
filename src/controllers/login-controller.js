@@ -97,6 +97,12 @@ class LoginController {
         const stored = await service.addProject(req);
         res.status(200).json(stored);
     };
+    
+    async findMyProjectsonListDetails(req, res) {
+        const stored = await service.findMyProjectsonListDetails(req);
+        res.status(200).json(stored);
+    };
+
     async findMyProjects(req, res) {
         const stored = await service.findMyProjects(req);
         res.status(200).json(stored);
