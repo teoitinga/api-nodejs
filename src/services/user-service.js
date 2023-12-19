@@ -1242,32 +1242,34 @@ class UserService {
 
     async listProjectsByDivision(id) {
         const query = `
-        SELECT 
-            crpropostas.id as idvisita,
-            crpropostas.trtok as trtok,
-            crpropostas.rdaok as rdaok,
-			treatments.data as data, 
-            treatments.local as local, 
-            users.name as usuario,
-            customers.name as customername,
-            customers.cpf as cpf,
-            ST_Y(treatments.point) as longitude,
-            ST_X(treatments.point) as latitude
-                    
-                FROM crpropostas
-                left join treatments on treatments.id = crpropostas.id
-                left join users on crpropostas.createdby = users.id
-                left join treatment_customers on treatment_customers.treatment_id = treatments.id
-                left join customers on customers.id = treatment_customers.customer_id
+            SELECT
+                concat(itensfinanciados.descricao, ' (', itensfinanciados.qtditemfinanc, ' ' , itensfinanciados.unidade, ')') as itemfinanciado,
+                crpropostas.id as idvisita,
+                crpropostas.trtok as trtok,
+                crpropostas.rdaok as rdaok,
+                treatments.data as data,
+                treatments.local as local,
+                users.name as usuario,
+                customers.name as customername,
+                customers.cpf as cpf,
+                ST_Y(treatments.point) as longitude,
+                ST_X(treatments.point) as latitude
+
+                FROM itensfinanciados
+                    left join crpropostas on itensfinanciados.idproposta = crpropostas.id
+                    left join treatments on treatments.id = crpropostas.id
+                    left join users on crpropostas.createdby = users.id
+                    left join treatment_customers on treatment_customers.treatment_id = treatments.id
+                    left join customers on customers.id = treatment_customers.customer_id
 
                 WHERE
                     users.division_id =  '${id}'
                     and (Year(treatments.data) = Year(now()) or ((trtok is null) or (rdaok is null)))
+                    and itensfinanciados.risked is null
 
                 ORDER BY treatments.data DESC
-                limit 0, 8
-            ;
-        `;
+                ;
+                    `;
 
         const projects = await UserModel.sequelize.query(query, { type: UserModel.sequelize.QueryTypes.SELECT });
         return projects;
@@ -1283,43 +1285,12 @@ class UserService {
 
 
         //obter od dados de todos os projetos
-        let response = [];
-        const obj = this;
-        let projects;
 
-        await this.listProjectsByDivision(division_id).then(
-            data=>{
-
-                projects = data;
-            }
-        );
-
-        await projects.map(async (i)=>{
-            let financiados;
-
-            await obj.listItensOfProjectsById(i.idvisita).then(
-                itens =>{
-                    financiados = itens;
-
-                }
-            );
-
-            let item = ``;
-            await financiados.map(fin=>{
-                // item += `${fin.quantidade}`
-                // item += `${fin.valor}`
-                item += `${fin.item}, `
-            });
-
-            await response.push({...i, item});
-            
-        });
-
-        console.log(await response);
+        const projects = await this.listProjectsByDivision(division_id);
 
 
-        return await response;
-        
+        return projects;
+
     }
 
 
