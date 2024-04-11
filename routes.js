@@ -195,7 +195,8 @@ const customercontroller = new CustomerController();
 const customerPath = '/api/v1/customers';
 
 routes.get(`${customerPath}/:cpf`, asynchandler(customercontroller.findByCpf));
-
+routes.get(`${customerPath}/find/:like`, asynchandler(customercontroller.findByLike));
+routes.get(`${customerPath}/localizar-servicos/:idprodutor`, asynchandler(customercontroller.findActions));
 /**
  * Rotas Python Server
  */
